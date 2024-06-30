@@ -28,6 +28,7 @@ export type Comment = {
     rating: number;
     createdAt: Date;
     comment: string;
+    user: User;
 }
 
 
@@ -53,6 +54,8 @@ export type Manga = {
     category: Category;
     genres: Genre[];
     authors: Author[];
+    pictures: Picture[];
+    comments: Comment[];
 };
 
 export type OrdersStatus = {
@@ -83,4 +86,5 @@ export type User = {
     createdAt: Date; 
     address: Address; 
     gender: Gender;
+    img: string;
 };
