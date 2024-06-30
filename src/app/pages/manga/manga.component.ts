@@ -30,13 +30,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     </div>
     <div class="background-color-black-c16a50">
         <div class="flex justify-center mt-4 mb-5 h-30">
-            <img class="poster" src="{{base64}}" alt="">
+            <img class="poster" src="{{poster}}" alt="">
         </div>
         <div class="px-5 pb-44 mb-5  rounded-e-3xl  background-color-black">
             <p>Titre original : <span>{{manga?.title}}</span></p>
             <p>Origine : </p>
             <p>Année VF : <span>{{manga?.releaseDate}}</span></p>
-            <p>Type : <span>{{manga?.category?.name}}</span></p>
+            <p>Categorie : <span>{{manga?.category?.name}}</span></p>
             <p class="flex flex-wrap">
                 Genre : 
                 @for (genre of manga?.genres; track genre.id) {
@@ -87,9 +87,15 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         <div class="commentaries-box">
             <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES (6)</p></div>
             <ul class="mb-12">
-                @for (comment of comments; track comment.id) {
-                    <li><p class="comment-user h-24 pl-4 pt-8 mt-8 background-color-black-c16a25"></p></li>
-                    <li><p class="comment-body h-24 pl-4 pt-8 background-color-black-c37a50">{{comment.comment}}</p></li>
+                @for (comment of manga?.comments; track comment.id;) {
+                    <li class="">
+                    <div>
+                        <div class="comment-user items-center h-24 background-color-black-c16a25 flex">
+                            <img class="img-user ml-8 mr-8" src="{{base64+comment.user.img}}" alt="{{comment.user.username}}">
+                            <p class="pr-4">#{{counter()}}. Par <span class="">{{comment.user.username}}</span> le {{truncatDate(comment.createdAt)}}</p></div>
+                        </div>
+                    </li>
+                    <li><p class="comment-body px-4 py-8 mb-8 background-color-black-c37a50">{{comment.comment}}</p></li>
                 }
             </ul>
             <div class="comment-end h-20 pl-4 pt-8 background-color-black-c16a25 uppercase"></div>
@@ -100,8 +106,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   `,
   styles: [`
 
+    .img-user{
+        width:70px;
+        height:70px;
+    }
+
     .comment-end{
-        margin-top: -34px;
+        margin-top: -80px;
     }
 
     .comments-title{
@@ -161,12 +172,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 export class MangaComponent implements OnInit{
 
     manga!: Manga | null;
-    pictures!: Picture[];
-    picture!: Picture;
-    comments!: Comment[];
-    idUrl!: string;
+    posterUser!:string[];
+    pictures!:Picture[];
+    picture!:Picture;
+    comments!:Comment[];
+    idUrl!:string;
     base64:string="data:image/webp;base64,";
-
+    poster!:string;
+    count:number=1;
 
     //Icon list
     faStar=faStar;
@@ -176,37 +189,27 @@ export class MangaComponent implements OnInit{
     
     constructor(
         private mangaService: MangaService,
-        private pictureService: PictureService,
-        private commentService: CommentService,
-        private activatedRoute: ActivatedRoute        
+        private activatedRoute: ActivatedRoute,
     ){}
     
     ngOnInit(): void {
         this.idUrl=this.activatedRoute.snapshot.paramMap.get('id')!;
         this.mangaService.getManga(this.idUrl)
-        this.pictureService.getPicturesByIdManga(this.idUrl);
-        this.commentService.getCommentsByIdManga(this.idUrl);
         
         this.mangaService.currentManga.subscribe(manga=>{
             this.manga=manga
             this.strToLowerCaseAndFirstLetter();
-            
+            this.searchPicturesIsPoster();
+            this.sortCommentByDate();
         });
+    }
 
-        this.pictureService.currentPictures.subscribe(pictures=>{
-            this.pictures=pictures;
-            for (const picture of this.pictures) {
-                if(picture.isPoster) {
-                    this.picture=picture;
-                    break;
-                };
-            }
-            this.base64=this.base64+this.picture?.img;
-        });
+    truncatDate(date: Date){
+        return date.toString().substring(0, date.toString().indexOf('T'))
+    }
 
-        this.commentService.currentComments.subscribe(comments=>{
-            this.comments=comments;
-        })
+    counter(){
+        return this.count++;
     }
 
     strToLowerCaseAndFirstLetter(){
@@ -218,13 +221,33 @@ export class MangaComponent implements OnInit{
         }
     }
 
+    searchPicturesIsPoster(){
+        if(this.manga){
+            for (const picture of this.manga.pictures) {
+                if(picture.isPoster) {
+                    this.picture=picture;
+                    break;
+                };
+            }
+            
+            this.poster=this.base64+this?.picture?.img;
+        }
+    }
+
+    sortCommentByDate(){
+        if(this.manga){
+            console.log(this.manga.createdAt);
+            console.log(this.manga.createdAt);
+            
+            this.manga.comments.sort((a, b)=>{
+                
+                return new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf();
+            })
+        }
+    }
+
     log(val: Object){
         console.log(val);
     }
     
 }
-
-
-
-
-
