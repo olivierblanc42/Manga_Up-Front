@@ -22,10 +22,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         <div class="img"><img src="/assets/svg/heart-white-outline.svg" alt="heart-white-outline.svg"><span>12</span></div>
     </div>
     <div class="banner-3 background-color-black-c37a50 px-6 py-3 flex justify-center">
-        <div><img src="/assets/svg/star-yellow.svg" alt="star-yellow"></div>
-        <div class="ml-4">
-            <div>-/5</div>
-            <div class="text-xs">0 vote</div>
+        <!--<div><img src="/assets/svg/star-yellow.svg" alt="star-yellow"></div>-->
+        <div class="opinions-stars-one">
+            <div class="opinions-stars-one-empty"></div>
+            <div class="opinions-stars-one-full" style="width:{{calculSatisfactionRate()}}%"></div>
+        </div>
+        <div class="ml-4 content-center">
+            <div>{{calculAverageVote()}}/5</div>
+            <div class="text-xs">{{nbComments()}} vote</div>
         </div>
     </div>
     <div class="background-color-black-c16a50">
@@ -62,17 +66,19 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         </div>
     </div>
     <div class="opinions mb-4 h-56">
-        <ul class="list-unstyled flex justify-center">
+        <ul class="opinions-stars list-unstyled flex align-center">
+            <div class="opinions-stars-empty"></div>
+            <div class="opinions-stars-full" style="width:{{calculSatisfactionRate()}}%"></div>
+            <!--<div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
             <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
             <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
             <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
-            <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
-            <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
+            <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>-->
         </ul>
         <div>
             <div class="flex justify-around mt-4">
                 <div class="faHeart"><fa-icon [icon]="faHeart" size="2x"></fa-icon><span class="nbOpinions">12</span></div>
-                <div class="faMessage"><fa-icon [icon]="faMessage" size="2x"></fa-icon><span class="nbOpinions">12</span></div>
+                <div class="faMessage"><fa-icon [icon]="faMessage" size="2x"></fa-icon><span class="nbOpinions">{{nbComments()}}</span></div>
             </div>
             <div class="faBookBookmark flex justify-center"><fa-icon [icon]="faBookBookmark" size="2x"></fa-icon></div>
         </div>
@@ -85,7 +91,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
     <div class="commentaries mb-28">
         <div class="commentaries-box">
-            <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES (6)</p></div>
+            <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES ({{nbComments()}})</p></div>
             <ul class="mb-12">
                 @for (comment of manga?.comments; track comment.id;) {
                     <li class="">
@@ -105,6 +111,48 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 </div>
   `,
   styles: [`
+    .opinions-stars-one{
+        position: relative;
+        margin-left: 0px;
+        vertical-align: middle;
+        display: inline-block;
+        color: #b1b1b1;
+        overflow: hidden;
+
+    }
+
+    .opinions-stars, .opinions-stars-one{
+        position: relative;
+        vertical-align: middle;
+        display: inline-block;
+        color: #b1b1b1;
+        overflow: hidden;
+    }
+
+    .opinions-stars-full, .opinions-stars-one-full{
+        position: absolute;
+        left: 0;
+        top: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        color: rgba(254, 203, 4, 1);
+    }
+
+    .opinions-stars-one{
+        
+    }
+
+    .opinions-stars-one-empty:before,
+    .opinions-stars-one-full:before {
+        content: "\u2605";
+        font-size: 2.5rem;
+    }
+
+    .opinions-stars-empty:before,
+    .opinions-stars-full:before {
+        content: "\u2605\u2605\u2605\u2605\u2605";
+        font-size: 2.5rem;
+    }
 
     .img-user{
         width:70px;
@@ -201,7 +249,25 @@ export class MangaComponent implements OnInit{
             this.strToLowerCaseAndFirstLetter();
             this.searchPicturesIsPoster();
             this.sortCommentByDate();
+            this.nbComments();
         });
+    }
+
+    calculAverageVote(){
+        if(this.manga){
+            const sum=this.manga?.comments?.reduce((a, b)=>a+b?.rating, 0);
+            const total=sum/this.manga?.comments.length;
+            return Math.floor(total*100)/100;
+        }
+        return 0;
+    }
+
+    calculSatisfactionRate(){
+         return (this.calculAverageVote()/5)*100;
+    }
+
+    nbComments(){
+        return this.manga?.comments.length;
     }
 
     truncatDate(date: Date){
