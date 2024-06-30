@@ -24,7 +24,7 @@ import { ActivatedRoute } from '@angular/router';
     <img src="https://images.pexels.com/photos/16645682/pexels-photo-16645682/free-photo-of-close-up-of-green-leaves.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load" alt="" />
 
   </div>
-  <p>test</p>
+  <ng-content></ng-content>
 </div>
 
   `,

@@ -8,6 +8,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MangaService {
     url="http://localhost:8080/api/mangas";
+    urlTenManga = "http://localhost:8080/api/mangas/ten";
+
 
     headers=new HttpHeaders()
         .set("content-type", "application/json")
@@ -24,13 +26,28 @@ export class MangaService {
     constructor(
         private http: HttpClient, 
     ) {
-        //this.http.get<Manga[]>(this.url)
-        //.pipe()
-        //.toPromise()
-        //.then((r) => {
-        //   if (!r) return;
-        //   this.mangas.next(r);
-        //})
+        this.http.get<Manga[]>(this.url)
+        .pipe()
+        .toPromise()
+        .then((r) => {
+          if (!r) return;
+          this.mangas.next(r);
+        })
+    }
+
+    /**
+     * Récupère 10 mangas
+     *
+     */
+   getTenManga(){
+       this.http.get<Manga[]>(this.urlTenManga)
+           .pipe()
+           .toPromise()
+           .then((r) => {
+               if (!r) return;
+               this.mangas.next(r);
+           })
+
     }
 
     /**

@@ -1,6 +1,6 @@
-import { PictureService } from './../../services/picture.service';
+import { PictureService } from '../../services/picture.service';
 import { CommentService } from '../../services/comment.service';
-import { MangaService } from './../../services/manga.service';
+import { MangaService } from '../../services/manga.service';
 import { Component, OnInit } from '@angular/core';
 import { Comment, Manga, Picture } from '../../types';
 import { ActivatedRoute } from '@angular/router';

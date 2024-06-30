@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import {ActivatedRoute, RouterModule} from '@angular/router';
 import { CardComponent } from '../../components/card/card.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { PictureService } from '../../services/picture.service';
+import { MangaService } from '../../services/manga.service';
+import { Comment, Manga, Picture } from '../../types';
 
 
 @Component({
@@ -12,24 +15,29 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
   template: `
 
 
-<section class="container mx-auto px-5 md:px-10  my-5	">
+    <section class="container mx-auto px-5 md:px-10  my-5\t">
 
-    <a routerLink="/mangas" class="flex flex-row items-center	gap-2">
+      <a routerLink="/mangas" class="flex flex-row items-center\tgap-2">
         <h2 class="my-5">Manga</h2>
         <fa-icon [icon]="faArrowRight"></fa-icon>
-    </a>
-    <div>
+      </a>
+      <div class="content-manga ">
+        @for (manga of mangas; track manga.id) {
 
-        <ui-card class="" size="card-manga"></ui-card>
-    </div>
-</section>
+          <ui-card class="" size="card-manga">
+            <p>{{ manga.title }}</p>
+           
+            @for (picture of pictures; track picture.id){
+              <img alt="{{picture.title}}" src="{{base64 + picture.img}}">
+            }
+          </ui-card>
+
+        }
+      </div>
+    </section>
 
 
-
-
-
-
-<div class="py-3 bg-dark flex flex-row justify-center items-center gap-10	utile-desktop">
+    <div class="py-3 bg-dark flex flex-row justify-center items-center gap-10	utile-desktop">
 
     <div class="flex flex-row justify-center items-center gap-4	">
         <img src="assets/svg/shield.svg" alt="">
@@ -119,18 +127,31 @@ display:flex;
 }
 }
 
-
+.content-manga{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem 10rem;}
 
 
 
 `]
 })
 export class HomeComponent implements OnInit {
-
+  mangas!: Manga[] |null;
+  pictures!: Picture[];
+  idUrl!: string;
+  base64:string="data:image/webp;base64,";
   faArrowRight = faArrowRight;
-
+  constructor(
+      private mangaService: MangaService,
+      private pictureService: PictureService,
+      private activatedRoute: ActivatedRoute
+  ){}
   ngOnInit(): void {
-
+    this.mangaService.currentMangas.subscribe(mangas => this.mangas = mangas)
+    this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
   }
 
 
