@@ -87,11 +87,4 @@ export type User = {
     address: Address; 
     gender: Gender;
     img: string;
-    //lol salu
-    lasttest
-    un aut re test
 };
-// Autre test le dernier
-//test
-//test2 merge
-
