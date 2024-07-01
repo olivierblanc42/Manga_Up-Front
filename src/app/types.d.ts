@@ -88,6 +88,7 @@ export type User = {
     gender: Gender;
     img: string;
     //lol salu
+    lasttest
 };
 
 //test
