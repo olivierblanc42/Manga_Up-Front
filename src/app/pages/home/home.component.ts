@@ -139,7 +139,7 @@ display:flex;
 `]
 })
 export class HomeComponent implements OnInit {
-  mangas!: Manga[] |null;
+  mangas!: Manga[] ;
   pictures!: Picture[];
   idUrl!: string;
   base64:string="data:image/webp;base64,";
@@ -150,9 +150,14 @@ export class HomeComponent implements OnInit {
       private activatedRoute: ActivatedRoute
   ){}
   ngOnInit(): void {
+    this.mangaService.getTenManga()
+
     this.mangaService.currentMangas.subscribe(mangas => this.mangas = mangas)
     this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
+
   }
 
-
+  log(val: Object[]){
+    console.log(val);
+  }
 }
