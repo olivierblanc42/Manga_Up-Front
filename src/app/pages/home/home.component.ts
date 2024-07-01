@@ -139,11 +139,19 @@ display:flex;
 `]
 })
 export class HomeComponent implements OnInit {
+
   mangas!: Manga[] ;
   pictures!: Picture[];
+  picture!:Picture;
+
   idUrl!: string;
   base64:string="data:image/webp;base64,";
+
+  poster!:string;
   faArrowRight = faArrowRight;
+
+
+
   constructor(
       private mangaService: MangaService,
       private pictureService: PictureService,
@@ -156,6 +164,22 @@ export class HomeComponent implements OnInit {
     this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
 
   }
+
+  searchPicturesIsPoster(){
+    if(this.mangas){
+      for (const manga of this.mangas) {
+        for (const picture of manga.pictures){
+          if(picture.isPoster) {
+            this.picture=picture;
+            break;
+
+          }
+        }
+        this.poster=this.base64+this?.picture?.img;
+      }
+    }
+  }
+
 
   log(val: Object[]){
     console.log(val);
