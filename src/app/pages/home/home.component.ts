@@ -5,7 +5,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { PictureService } from '../../services/picture.service';
 import { MangaService } from '../../services/manga.service';
-import { Comment, Manga, Picture } from '../../types';
+import {GenreService} from "../../services/genre.service";
+import { Comment, Manga, Picture, Genre } from '../../types';
 
 
 @Component({
@@ -82,9 +83,14 @@ import { Comment, Manga, Picture } from '../../types';
         <h2 class="my-5">Genre</h2>
         <fa-icon [icon]="faArrowRight"></fa-icon>
     </a>
-    <div>
+    <div class="content-genre">
+      @for (genre of genres; track genre.id) {
+        <ui-card class="card" size="card-genre">
+          <img src="{{base64G+genre.img}}">
 
-        <ui-card class="" size="card-genre"></ui-card>
+          <p>{{ genre.label }}</p>
+        </ui-card>
+      }
     </div>
 </section>
 
@@ -127,12 +133,20 @@ display:flex;
 }
 }
 
-.content-manga{
+.content-manga,.content-genre{
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   flex-wrap: wrap;
   gap: 2rem 10rem;}
+
+.card{
+  img{
+    border-radius: 10px;
+    height:100%;
+    width:100%;
+  }
+}
 
 
 
@@ -143,25 +157,28 @@ export class HomeComponent implements OnInit {
   mangas!: Manga[] ;
   pictures!: Picture[];
   picture!:Picture;
-
   idUrl!: string;
   base64:string="data:image/webp;base64,";
-
+  base64G:string="data:image/webp;base64,";
   poster!:string;
   faArrowRight = faArrowRight;
-
+  genres!: Genre[];
 
 
   constructor(
       private mangaService: MangaService,
       private pictureService: PictureService,
-      private activatedRoute: ActivatedRoute
+      private activatedRoute: ActivatedRoute,
+      private genreService : GenreService ,
   ){}
   ngOnInit(): void {
     this.mangaService.getTenManga()
-
     this.mangaService.currentMangas.subscribe(mangas => this.mangas = mangas)
     this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
+
+    this.genreService.getSixgenre();
+    this.genreService.currentGenres.subscribe(genres => this.genres = genres)
+
 
   }
 
