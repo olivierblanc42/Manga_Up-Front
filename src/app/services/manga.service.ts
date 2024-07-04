@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { Manga } from '../types';
+import { DataManga, Manga } from '../types';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -8,19 +8,21 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MangaService {
     url="http://localhost:8080/api/mangas";
+    urlLike=`${this.url}/like`;
     urlTenManga = "http://localhost:8080/api/mangas/ten";
 
 
-    headers=new HttpHeaders()
-        .set("content-type", "application/json")
-        .set("Access-Control-Allow-Origin", '*');
-
-
+    httpOptions = {
+        headers: new HttpHeaders()
+            .set("content-type", "application/json")
+            .set("Access-Control-Allow-Origin", '*')
+    }
+    
     mangas=new BehaviorSubject<Manga[]>([]);
-    manga=new BehaviorSubject<Manga | null>(null);
+    dataManga=new BehaviorSubject<DataManga | null>(null);
     
     currentMangas=this.mangas.asObservable();
-    currentManga=this.manga.asObservable();
+    currentDataManga=this.dataManga.asObservable();
 
 
     constructor(
@@ -39,7 +41,7 @@ export class MangaService {
      * Récupère 10 mangas
      *
      */
-   getTenManga(){
+    getTenManga(){
        this.http.get<Manga[]>(this.urlTenManga)
            .pipe()
            .toPromise()
@@ -47,22 +49,49 @@ export class MangaService {
                if (!r) return;
                this.mangas.next(r);
            })
-
     }
 
     /**
-     * Récupère le Manga.
+     * Récupère un manga.
      * @param id 
      */
     getManga(id: string){
-        this.http.get<Manga>(`${this.url}/${id}`, {
+        this.http.get<DataManga>(`${this.url}/${id}`, {
             headers: {'Access-Control-Allow-Origin': '*'}
          })
         .pipe()
         .toPromise()
         .then((r)=>{
             if(!r) return;
-            this.manga.next(r);
+            console.log("mangaService : ", r);            
+            this.dataManga.next(r);
         })
+    }
+
+    /**
+     * Ajoute le manga en favoris pour l'utilisateur.
+     * @param idManga 
+     * @param idUser 
+     */
+    addUserInFavorite(idManga: string, idUser: number | undefined){
+        console.log("addUserInFavorite");
+        this.http.post<DataManga>(`${this.url}/${idManga}`, {
+            headers: {'Access-Control-Allow-Origin': '*'}, idUser})
+        .subscribe((r) => {
+            this.dataManga.next(r); // -> Je dois récupérer un user pour changer en favorite
+        });
+     }
+
+    /**
+     * Supprime le manga en favoris pour l'utilisateur.
+     * @param idManga 
+     * @param idUser 
+     */ 
+    deleteUserAsFavorite(idManga: string, idUser: number | undefined){
+        //console.log("deleteUserAsFavorite");
+        //this.http.delete<DataManga>(`${this.url}/${idManga}`, {headers:this.httpOptions, body: idUser})
+        //.subscribe((r) => {
+        //    this.dataManga.next(r); // -> Je dois renvoyer un user pour changer en non favoris
+        //})
     }
 }

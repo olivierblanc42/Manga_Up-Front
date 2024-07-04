@@ -2,10 +2,11 @@ import { PictureService } from './../../services/picture.service';
 import { CommentService } from '../../services/comment.service';
 import { MangaService } from './../../services/manga.service';
 import { Component, OnInit } from '@angular/core';
-import { Comment, Manga, Picture } from '../../types';
+import { Comment, DataManga, Manga, Picture, User } from '../../types';
 import { ActivatedRoute } from '@angular/router';
 import { faBookBookmark, faMessage, faHeart, faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AccountService } from '../../services/account.service';
 
 @Component({
   selector: 'app-manga',
@@ -15,14 +16,19 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 <div class="flex justify-center mb-5 mt-5">
 <div class="block max-w-[20rem] rounded-lg bg-secondary text-white shadow-secondary-1">
-    <div class="banner-1 background-color-black-c16a25 px-6 py-3">{{manga?.title}}</div>
+    <div class="banner-1 background-color-black-c16a25 px-6 py-3">{{data?.manga?.title}}</div>
     <div class="banner-2 background-color-black-c60a10 px-6 py-3 flex justify-between">
-        <div class="img"><img src="/assets/svg/star-white.svg" alt="star-white.svg"><span>12</span></div>
-        <div class="img"><img src="/assets/svg/comment-white-fill.svg" alt="comment-white-fill.svg"><span>12</span></div>
-        <div class="img"><img src="/assets/svg/heart-white-outline.svg" alt="heart-white-outline.svg"><span>12</span></div>
+        <div class="flex align-center flex-col -mt-4">
+            <div class="opinions-stars-one">
+                <div class="opinions-stars-one-empty"></div>
+                <div class="opinions-stars-one-full" style="width:{{calculSatisfactionRate()}}%"></div>
+            </div>
+            <span>{{calculAverageVote()}}</span>
+        </div>
+        <div class="faMessage flex align-center flex-col"><fa-icon [icon]="faMessage" size="2x"></fa-icon><span>{{nbComments()}}</span></div>
+        <div class="faHeart-{{colorIconHeart}} flex align-center flex-col cursor-pointer" (click)="addToMyFavorites()"><fa-icon [icon]="faHeart" size="2x"></fa-icon><span>{{calculNbLikes()}}</span></div>
     </div>
     <div class="banner-3 background-color-black-c37a50 px-6 py-3 flex justify-center">
-        <!--<div><img src="/assets/svg/star-yellow.svg" alt="star-yellow"></div>-->
         <div class="opinions-stars-one">
             <div class="opinions-stars-one-empty"></div>
             <div class="opinions-stars-one-full" style="width:{{calculSatisfactionRate()}}%"></div>
@@ -37,20 +43,20 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
             <img class="poster" src="{{poster}}" alt="">
         </div>
         <div class="px-5 pb-44 mb-5  rounded-e-3xl  background-color-black">
-            <p>Titre original : <span>{{manga?.title}}</span></p>
+            <p>Titre original : <span>{{data?.manga?.title}}</span></p>
             <p>Origine : </p>
-            <p>Année VF : <span>{{manga?.releaseDate}}</span></p>
-            <p>Categorie : <span>{{manga?.category?.name}}</span></p>
+            <p>Année VF : <span>{{data?.manga?.releaseDate}}</span></p>
+            <p>Categorie : <span>{{data?.manga?.category?.name}}</span></p>
             <p class="flex flex-wrap">
                 Genre : 
-                @for (genre of manga?.genres; track genre.id) {
+                @for (genre of data?.manga?.genres; track genre.id) {
                     <span class="ml-4">{{genre.label}}</span>
                 }
             </p>
             <p>Thèmes : </p>
             <p class="flex flex-wrap">
                 Auteur : 
-                @for (author of manga?.authors; track author.id) {
+                @for (author of data?.manga?.authors; track author.id) {
                     <span class="ml-4">{{author?.lastname}}</span>
                 }
             </p>
@@ -59,7 +65,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
             <p>Prépublié dans : </p>
             <p>Nb volume VO : 10 (Terminé)</p>
             <p>Nb volume VF : 0 (À paraître)</p>
-            <p>Prix : <span>{{manga?.price}} €</span></p>
+            <p>Prix : <span>{{data?.manga?.price}} €</span></p>
             <p>Âge conseillé : </p>
             <p>Pour public averti : </p>
             <p>Se trouve dans le commerce en France : </p>
@@ -69,15 +75,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         <ul class="opinions-stars list-unstyled flex align-center">
             <div class="opinions-stars-empty"></div>
             <div class="opinions-stars-full" style="width:{{calculSatisfactionRate()}}%"></div>
-            <!--<div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
-            <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
-            <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
-            <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>
-            <div class="faStar"><fa-icon [icon]="faStar" size="2x"></fa-icon></div>-->
         </ul>
         <div>
             <div class="flex justify-around mt-4">
-                <div class="faHeart"><fa-icon [icon]="faHeart" size="2x"></fa-icon><span class="nbOpinions">12</span></div>
+                <div class="faHeart-{{colorIconHeart}} cursor-pointer" (click)="addToMyFavorites()"><fa-icon [icon]="faHeart" size="2x"></fa-icon><span class="nbOpinions">{{calculNbLikes()}}</span></div>
                 <div class="faMessage"><fa-icon [icon]="faMessage" size="2x"></fa-icon><span class="nbOpinions">{{nbComments()}}</span></div>
             </div>
             <div class="faBookBookmark flex justify-center"><fa-icon [icon]="faBookBookmark" size="2x"></fa-icon></div>
@@ -86,20 +87,21 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     
     <div class="synopsis mb-72">
         <p class="title-synopsis pl-4 pt-8 background-color-black-c16a50 uppercase">synopsis</p>
-        <p class="summary pt-8 px-8 pb-8 background-color-black-c16a25">{{manga?.summary}}</p>
+        <p class="summary pt-8 px-8 pb-8 background-color-black-c16a25">{{data?.manga?.summary}} {{log(data?.manga!)}}</p>
     </div>
 
     <div class="commentaries mb-28">
         <div class="commentaries-box">
             <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES ({{nbComments()}})</p></div>
             <ul class="mb-12">
-                @for (comment of manga?.comments; track comment.id;) {
+                @for (comment of data?.comments; track comment.id; let count=$index) {
                     <li class="">
                     <div>
                         <div class="comment-user items-center h-24 background-color-black-c16a25 flex">
                             <img class="img-user ml-8 mr-8" src="{{base64+comment.user.img}}" alt="{{comment.user.username}}">
-                            <p class="pr-4">#{{counter()}}. Par <span class="">{{comment.user.username}}</span> le {{truncatDate(comment.createdAt)}}</p></div>
+                            <p class="pr-4">#{{count+1}}. Par <span class="">{{comment.user.username}}</span> le {{truncatDate(comment.createdAt)}}</p>
                         </div>
+                    </div>
                     </li>
                     <li><p class="comment-body px-4 py-8 mb-8 background-color-black-c37a50">{{comment.comment}}</p></li>
                 }
@@ -111,6 +113,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 </div>
   `,
   styles: [`
+
     .opinions-stars-one{
         position: relative;
         margin-left: 0px;
@@ -118,7 +121,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         display: inline-block;
         color: #b1b1b1;
         overflow: hidden;
+        margin-top: -17px;
+    }
 
+    .opinions-stars{
+        margin-left: 2.4rem;
     }
 
     .opinions-stars, .opinions-stars-one{
@@ -138,20 +145,16 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         color: rgba(254, 203, 4, 1);
     }
 
-    .opinions-stars-one{
-        
-    }
-
     .opinions-stars-one-empty:before,
     .opinions-stars-one-full:before {
         content: "\u2605";
-        font-size: 2.5rem;
+        font-size: 3.5rem;
     }
 
     .opinions-stars-empty:before,
     .opinions-stars-full:before {
         content: "\u2605\u2605\u2605\u2605\u2605";
-        font-size: 2.5rem;
+        font-size: 3.5rem;
     }
 
     .img-user{
@@ -211,52 +214,85 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         color: rgba(254, 203, 4, 1);
     }
 
-    .faBookBookmark, .faHeart, .faMessage{
+    .faBookBookmark, .faHeart-yellow, .faMessage{
         color: rgba(231, 224, 139, 1);
+    }
+    .faHeart-grey{
+        color: #b1b1b1;
     }
   `]
 })
 
 export class MangaComponent implements OnInit{
 
-    manga!: Manga | null;
+    data!: DataManga | null;
     posterUser!:string[];
     pictures!:Picture[];
     picture!:Picture;
     comments!:Comment[];
-    idUrl!:string;
+    idUrl!:string; // id du manga récupéré à partir de l'url.
     base64:string="data:image/webp;base64,";
     poster!:string;
-    count:number=1;
+    count:number=1; // Pour compter le nombre de commentaires.
+    nbLikes:number=0;
+    colorIconHeart:string="grey"; // Définie la couleur lorsque le manga est en favorie ou pas.
+    user!:User | null;
+    isFavorit!:boolean;
 
     //Icon list
     faStar=faStar;
     faHeart=faHeart;
     faMessage=faMessage;
     faBookBookmark=faBookBookmark;
+   
     
     constructor(
         private mangaService: MangaService,
         private activatedRoute: ActivatedRoute,
+        private accountService: AccountService
     ){}
     
     ngOnInit(): void {
         this.idUrl=this.activatedRoute.snapshot.paramMap.get('id')!;
         this.mangaService.getManga(this.idUrl)
         
-        this.mangaService.currentManga.subscribe(manga=>{
-            this.manga=manga
+        this.mangaService.currentDataManga.subscribe(data=>{
+            this.data=data
             this.strToLowerCaseAndFirstLetter();
             this.searchPicturesIsPoster();
             this.sortCommentByDate();
             this.nbComments();
+            console.log("this.data?.comments : ", this.data?.comments)
+            
+            if(this.accountService.isLogged()){
+                this.user=this.accountService.getUser();
+                this.isFavorit=this.user?.mangas.filter((manga)=>manga.id===this.user?.id) ? true : false;
+                this.colorIconHeart=this.isFavorit ? "yellow" : "grey"
+            }
         });
     }
 
+    addToMyFavorites(){
+        console.log("addToMyFavorites");
+        
+        if(this.isFavorit){
+            this.mangaService.deleteUserAsFavorite(this.idUrl, this.user?.id) 
+        }else{
+            this.mangaService.addUserInFavorite(this.idUrl, this.user?.id)
+        }
+    }
+
+    calculNbLikes(){
+        if(this.data){
+            return this.nbLikes=this.data?.manga?.users?.length;
+        }
+        return 0;
+    }
+
     calculAverageVote(){
-        if(this.manga){
-            const sum=this.manga?.comments?.reduce((a, b)=>a+b?.rating, 0);
-            const total=sum/this.manga?.comments.length;
+        if(this.data){
+            const sum=this.data?.comments?.reduce((a, b)=>a+b?.rating, 0);
+            const total=sum/this.data?.comments.length;
             return Math.floor(total*100)/100;
         }
         return 0;
@@ -267,7 +303,7 @@ export class MangaComponent implements OnInit{
     }
 
     nbComments(){
-        return this.manga?.comments.length;
+        return this.data?.comments.length;
     }
 
     truncatDate(date: Date){
@@ -279,8 +315,8 @@ export class MangaComponent implements OnInit{
     }
 
     strToLowerCaseAndFirstLetter(){
-        if(this.manga){
-            for (let genre of this.manga?.genres) {
+        if(this.data){
+            for (let genre of this.data?.manga?.genres) {
                 let tmp=genre.label.toLocaleLowerCase();
                 genre.label=tmp.charAt(0).toUpperCase()+tmp.slice(1);
             }
@@ -288,8 +324,8 @@ export class MangaComponent implements OnInit{
     }
 
     searchPicturesIsPoster(){
-        if(this.manga){
-            for (const picture of this.manga.pictures) {
+        if(this.data){
+            for (const picture of this.data.manga.pictures) {
                 if(picture.isPoster) {
                     this.picture=picture;
                     break;
@@ -301,19 +337,15 @@ export class MangaComponent implements OnInit{
     }
 
     sortCommentByDate(){
-        if(this.manga){
-            console.log(this.manga.createdAt);
-            console.log(this.manga.createdAt);
-            
-            this.manga.comments.sort((a, b)=>{
-                
+        if(this.data){
+            this.data.comments.sort((a, b)=>{
                 return new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf();
             })
         }
     }
 
     log(val: Object){
-        console.log(val);
+        console.log("manga.component.ts : ", val);
     }
     
 }
