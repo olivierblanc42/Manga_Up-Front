@@ -36,6 +36,22 @@ export class MangaService {
     }
 
     /**
+    * recuprere tout les manga et en garde un seul
+    *
+    *
+     */
+    getManga1(){
+        this.http.get<Manga[]>(this.url)
+            .pipe()
+            .toPromise()
+            .then((r) => {
+                if (!r) return;
+                console.log(r)
+                this.mangas.next(r);
+            })
+    }
+
+    /**
      * Récupère 10 mangas
      *
      */

@@ -173,6 +173,7 @@ export class HomeComponent implements OnInit {
   ){}
   ngOnInit(): void {
     this.mangaService.getTenManga()
+    this.mangaService.getManga1();
     this.mangaService.currentMangas.subscribe(mangas => this.mangas = mangas)
     this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
 
