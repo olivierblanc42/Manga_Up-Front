@@ -52,10 +52,10 @@ export type Manga = {
     price: number;
     pointFidelity: number;
     category: Category;
-    genres: Genre[];
     authors: Author[];
+    genres: Genre[];
     pictures: Picture[];
-    comments: Comment[];
+    users: User[];
 };
 
 export type OrdersStatus = {
@@ -84,7 +84,13 @@ export type User = {
     fisrtname: string; 
     lastname: string; 
     createdAt: Date; 
+    img: string;
     address: Address; 
     gender: Gender;
-    img: string;
+    mangas: Manga[];
 };
+
+export type DataManga = {
+    comments: Comment[];
+    manga: Manga;
+}
