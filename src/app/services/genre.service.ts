@@ -38,6 +38,7 @@ export class GenreService {
              .toPromise()
              .then((r) =>{
                  if(!r) return;
+
                  this.genres.next(r);
              })
     }

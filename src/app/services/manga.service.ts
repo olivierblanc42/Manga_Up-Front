@@ -45,6 +45,7 @@ export class MangaService {
            .toPromise()
            .then((r) => {
                if (!r) return;
+
                this.mangas.next(r);
            })
 
