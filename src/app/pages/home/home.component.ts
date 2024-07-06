@@ -23,7 +23,7 @@ import { Comment, Manga, Picture, Genre } from '../../types';
         <fa-icon [icon]="faArrowRight"></fa-icon>
       </a>
       <div class="content-manga ">
-        @for (manga of mangas; track manga.id) {
+        @for (manga of nineMangas; track manga.id) {
 
           <ui-card class="" size="card-manga">
             <p>{{ manga.title }}</p>
@@ -58,17 +58,26 @@ import { Comment, Manga, Picture, Genre } from '../../types';
     </div>
 
 </div>
-<section class="container mx-auto px-5 md:px-10	my-5	">
+    <section class="container mx-auto px-5 md:px-10  my-5\t">
 
-    <a class="flex flex-row items-center 	gap-2 ">
-        <h2 class="my-5">Les plus vue</h2>
+      <a routerLink="/mangas" class="flex flex-row items-center\tgap-2">
+        <h2 class="my-5">les plus récents </h2>
         <fa-icon [icon]="faArrowRight"></fa-icon>
-    </a>
-    <div>
+      </a>
+      <div class="content-manga ">
+        @for (manga of dateOrderMangas; track manga.id) {
 
-        <ui-card class="" size="card-manga"></ui-card>
-    </div>
-</section>
+          <ui-card class="" size="card-manga">
+            <p>{{ manga.title }}</p>
+
+            @for (picture of pictures; track picture.id) {
+              <img alt="{{picture.title}}" src="{{base64 + picture.img}}">
+            }
+          </ui-card>
+
+        }
+      </div>
+    </section>
 
 <div class="bg-dark flex flex-col py-3 text-center avis-desktop">
     <img class="mx-auto py-3" src="assets/img/stars.png" alt="">
@@ -163,8 +172,8 @@ export class HomeComponent implements OnInit {
   poster!:string;
   faArrowRight = faArrowRight;
   genres!: Genre[];
-
-
+  nineMangas! : Manga[];
+  dateOrderMangas! : Manga[] ;
   constructor(
       private mangaService: MangaService,
       private pictureService: PictureService,
@@ -173,13 +182,28 @@ export class HomeComponent implements OnInit {
   ){}
   ngOnInit(): void {
     this.mangaService.getTenManga()
-    this.mangaService.getManga1();
-    this.mangaService.currentMangas.subscribe(mangas => this.mangas = mangas)
+    this.mangaService.currentTenMangas.subscribe(nineMangas =>{
+      this.nineMangas = nineMangas;
+    })
+
+this.mangaService.getOrderDateManga()
+this.mangaService.currentOrderDateManga.subscribe(dateOrderMangas =>{
+  this.dateOrderMangas =dateOrderMangas;
+})
+
+
+    this.mangaService.currentMangas.subscribe(mangas => {
+      this.mangas = mangas
+    })
     this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
+  //  this.mangaService.getManga1();
 
+    //genre
     this.genreService.getSixgenre();
-    this.genreService.currentGenres.subscribe(genres => this.genres = genres)
-
+    this.genreService.currentGenresSix.subscribe(genres =>{
+      this.genres = genres
+    })
+   // this.genreService.currentGenres.subscribe(genres => this.genres = genres)
 
   }
 
@@ -197,7 +221,9 @@ export class HomeComponent implements OnInit {
       }
     }
   }
-
+ splitFonction(val : Object[]){
+    val.splice(1,1)
+ }
 
   log(val: Object[]){
     console.log(val);

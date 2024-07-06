@@ -18,6 +18,9 @@ export class GenreService {
     genres=new BehaviorSubject<Genre[]>([]);
     genre=new BehaviorSubject<Genre | null>(null);
 
+    genresSix =   new BehaviorSubject<Genre[]>([]);
+    currentGenresSix = this.genresSix.asObservable();
+
     currentGenres = this.genres.asObservable();
     currentGenre =this.genre.asObservable();
 
@@ -39,7 +42,7 @@ export class GenreService {
              .then((r) =>{
                  if(!r) return;
 
-                 this.genres.next(r);
+                 this.genresSix.next(r);
              })
     }
 
