@@ -87,10 +87,15 @@ export type User = {
     img: string;
     address: Address; 
     gender: Gender;
-    mangas: Manga[];
 };
 
 export type DataManga = {
     comments: Comment[];
     manga: Manga;
+}
+
+export type DataUser = {
+    user: User;
+    mangasId: number[];
+
 }
