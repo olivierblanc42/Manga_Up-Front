@@ -273,6 +273,8 @@ export class MangaComponent implements OnInit, OnDestroy{
 
         this.mangaService.currentDataManga.subscribe(data=>{
             this.data=data;
+            console.log("276 - ngOnInit this.data : ", this.data);
+            
             this.strToLowerCaseAndFirstLetter();
             this.searchPicturesIsPoster();
             this.sortCommentByDate();
@@ -306,6 +308,8 @@ export class MangaComponent implements OnInit, OnDestroy{
             });
         })
     }
+
+    
 
     /**
      * Cherche si l'utilisateur à mis en favoris le manga
@@ -391,6 +395,10 @@ export class MangaComponent implements OnInit, OnDestroy{
     strToLowerCaseAndFirstLetter(){
         if(this.data){
             console.log("this.data : ", this.data);
+            this.data?.manga?.genres.sort((a, b)=>{
+                return a.label.localeCompare(b.label);
+            });
+            console.log();
             
             for (let genre of this.data?.manga?.genres) {
                 let tmp=genre.label.toLocaleLowerCase();
