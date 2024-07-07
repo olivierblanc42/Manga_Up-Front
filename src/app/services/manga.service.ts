@@ -1,6 +1,6 @@
+import { DataManga, Manga } from './../types.d';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { DataManga, Manga } from '../types';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -11,19 +11,26 @@ export class MangaService {
     urlLike=`${this.url}/like`;
     urlTenManga = "http://localhost:8080/api/mangas/ten";
 
+    /**
+     * Ajoute des options dans le header et dans le body
+     */
+    options = {
+        headers: new HttpHeaders({
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": '*'
+        }),
+        body: {
+          id: '',
+        },
+    };
 
-    httpOptions = {
-        headers: new HttpHeaders()
-            .set("content-type", "application/json")
-            .set("Access-Control-Allow-Origin", '*')
-    }
-    
     mangas=new BehaviorSubject<Manga[]>([]);
     dataManga=new BehaviorSubject<DataManga | null>(null);
-    
+    isFavorite=new BehaviorSubject<boolean | null>(null);
+
     currentMangas=this.mangas.asObservable();
     currentDataManga=this.dataManga.asObservable();
-
+    currentIsFavorite=this.isFavorite.asObservable();
 
     constructor(
         private http: HttpClient, 
@@ -55,15 +62,14 @@ export class MangaService {
      * Récupère un manga.
      * @param id 
      */
-    getManga(id: string){
+    getManga(id: number){
         this.http.get<DataManga>(`${this.url}/${id}`, {
-            headers: {'Access-Control-Allow-Origin': '*'}
+            headers: this.options.headers
          })
         .pipe()
         .toPromise()
         .then((r)=>{
             if(!r) return;
-            console.log("mangaService : ", r);            
             this.dataManga.next(r);
         })
     }
@@ -73,12 +79,13 @@ export class MangaService {
      * @param idManga 
      * @param idUser 
      */
-    addUserInFavorite(idManga: string, idUser: number | undefined){
-        console.log("addUserInFavorite");
-        this.http.post<DataManga>(`${this.url}/${idManga}`, {
-            headers: {'Access-Control-Allow-Origin': '*'}, idUser})
+    addUserInFavorite(idManga: number, idUser: number | undefined){
+        const data= {
+            "id":idUser
+        }
+        this.http.post<boolean>(`${this.url}/${idManga}`, data, {headers: this.options.headers})
         .subscribe((r) => {
-            this.dataManga.next(r); // -> Je dois récupérer un user pour changer en favorite
+            this.isFavorite.next(true);
         });
      }
 
@@ -87,11 +94,13 @@ export class MangaService {
      * @param idManga 
      * @param idUser 
      */ 
-    deleteUserAsFavorite(idManga: string, idUser: number | undefined){
-        //console.log("deleteUserAsFavorite");
-        //this.http.delete<DataManga>(`${this.url}/${idManga}`, {headers:this.httpOptions, body: idUser})
-        //.subscribe((r) => {
-        //    this.dataManga.next(r); // -> Je dois renvoyer un user pour changer en non favoris
-        //})
+    deleteUserAsFavorite(idManga: number, idUser: number | undefined){
+        this.options.body.id=String(idUser);
+        console.log(this.options);
+        
+        this.http.delete<boolean>(`${this.url}/${idManga}`, this.options)
+        .subscribe((r) => {
+            this.isFavorite.next(false);
+        })
     }
 }
