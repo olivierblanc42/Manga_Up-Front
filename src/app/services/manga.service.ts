@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 export class MangaService {
     url="http://localhost:8080/api/mangas";
     urlNineManga = "http://localhost:8080/api/mangas/nine";
-    urlOneManga = "http://localhost:8080/api/mangas/one";
+    urlOneManga = "http://localhost:8080/api/mangas/oderOne";
     urlOrderDate  = "http://localhost:8080/api/mangas/oderDate" ;
 
     headers=new HttpHeaders()
@@ -22,6 +22,9 @@ export class MangaService {
   //   Récupère la requête de neuf mangas par ordre de creation du plus recente au plus ancien.
     orderDateManga =new BehaviorSubject<Manga[]>([]);
    currentOrderDateManga = this.orderDateManga.asObservable();
+// Récupère un seul Manga
+    oneManga =  new BehaviorSubject<Manga | null>(null);
+    currentMangaOne=this.oneManga.asObservable();
 
     mangas=new BehaviorSubject<Manga[]>([]);
     manga=new BehaviorSubject<Manga | null>(null);
@@ -36,11 +39,21 @@ export class MangaService {
     }
 
     /**
-    * recuprere tout les manga et en garde un seul
+    * recuprere tout  un seul Manga
     *
     *
      */
-
+    getOneManga(){
+        this.http.get<Manga>(this.urlOneManga, {
+            headers: {'Access-Control-Allow-Origin': '*'}
+        })
+            .pipe()
+            .toPromise()
+            .then((r)=>{
+                if(!r) return;
+                this.oneManga.next(r);
+            })
+    }
 
     /**
      * Récupère 9 mangas
