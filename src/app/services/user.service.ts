@@ -38,7 +38,7 @@ export class UserService {
         .toPromise()
         .then(r=>{
             if(!r) return;
-            console.log("user.service getUser : ", r);            
+           // console.log("user.service getUser : ", r);
             this.dataUser.next(r);
         })
     }
