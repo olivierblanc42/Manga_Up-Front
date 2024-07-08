@@ -28,7 +28,7 @@ export class UserComponent implements OnInit {
 
   ngOnInit(): void {
     this.idOfUrl = this.activatedRoute.snapshot.paramMap.get('id');
-   // this.userService.getUser(this.idOfUrl)
+    this.userService.getUser(this.idOfUrl)
 
 
 

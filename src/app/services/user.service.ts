@@ -32,7 +32,7 @@ export class UserService {
 
     constructor(private http: HttpClient ) { }
 
-    getUser(id: string){
+    getUser(id: string | null){
         this.http.get<DataUser>(`${this.url}/${id}`, {headers: this.options.headers})
         .pipe()
         .toPromise()
