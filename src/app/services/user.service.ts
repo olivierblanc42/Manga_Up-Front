@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { DataUser, User } from '../types';
+import {DataUser, Manga, User} from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,7 @@ import { DataUser, User } from '../types';
 export class UserService {
 
     url="http://localhost:8080/api/users";
+    urlAdmin = "http://localhost:8080/api/users/admin"
 
     options = {
         headers: new HttpHeaders({
@@ -19,6 +20,12 @@ export class UserService {
           id: '',
         },
     };
+
+
+    users = new BehaviorSubject<User[]>([]) ;
+    currentUsers = this.users.asObservable()
+    user = new BehaviorSubject<User | null>(null) ;
+    currentUser = this.user.asObservable()
 
     dataUser=new BehaviorSubject<DataUser | null>(null)
     currentDataUser=this.dataUser.asObservable();
@@ -35,4 +42,26 @@ export class UserService {
             this.dataUser.next(r);
         })
     }
+
+
+
+
+
+
+    /**
+     * Récupère tout les utlisateur
+     *
+     */
+    getUsers(){
+        this.http.get<User[]>(this.urlAdmin)
+            .pipe()
+            .toPromise()
+            .then((r) => {
+                if (!r) return;
+
+                this.users.next(r);
+            })
+    }
+
+
 }
