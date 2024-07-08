@@ -24,7 +24,7 @@ import { Comment, Manga, Picture, Genre } from '../../types';
           </a>
           <div class="content-manga ">
               @for (manga of nineMangas; track manga.id) {
-
+                  <a [routerLink]="'/manga/' + manga.id">
                   <ui-card class="" size="card-manga">
                       <p>{{ manga.title }}</p>
 
@@ -32,8 +32,9 @@ import { Comment, Manga, Picture, Genre } from '../../types';
                           <img alt="{{picture.title}}" src="{{base64+picture.img}}">
                       }
                   </ui-card>
-
+                  </a>
               }
+                      
           </div>
       </section>
 
@@ -66,7 +67,7 @@ import { Comment, Manga, Picture, Genre } from '../../types';
           </a>
           <div class="content-manga ">
               @for (manga of dateOrderMangas; track manga.id) {
-
+                  <a [routerLink]="'/manga/' + manga.id">
                   <ui-card class="" size="card-manga">
                       <p>{{ manga.title }}</p>
 
@@ -74,7 +75,7 @@ import { Comment, Manga, Picture, Genre } from '../../types';
                           <img alt="{{picture.title}}" src="{{base64+picture.img}}">
                       }
                   </ui-card>
-
+                  </a>
               }
           </div>
       </section>
@@ -94,11 +95,13 @@ import { Comment, Manga, Picture, Genre } from '../../types';
           </a>
           <div class="content-genre">
               @for (genre of genres; track genre.id) {
+                  <a [routerLink]="'/manga/' + genre.id">
                   <ui-card class="card" size="card-genre">
                       <img src="{{base64G+genre.img}}">
 
                       <p>{{ genre.label }}</p>
                   </ui-card>
+                      </a>
               }
           </div>
       </section>
