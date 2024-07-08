@@ -53,7 +53,6 @@ import { AccountService } from '../../services/account.service';
         </div>
         <div class="px-5 pb-44 mb-5  rounded-e-3xl  background-color-black">
             <p>Titre original : <span>{{data?.manga?.title}}</span></p>
-            <p>Origine : </p>
             <p>Année VF : <span>{{dateFormatFrDMY(data?.manga?.releaseDate!)}}</span></p>
             <p>Categorie : <span>{{data?.manga?.category?.name}}</span></p>
             <p class="flex flex-wrap">
@@ -62,22 +61,13 @@ import { AccountService } from '../../services/account.service';
                     <span class="ml-4">{{genre.label}}</span>
                 }
             </p>
-            <p>Thèmes : </p>
             <p class="flex flex-wrap">
                 Auteur : 
                 @for (author of data?.manga?.authors; track author.id) {
                     <span class="ml-4">{{author?.lastname}}</span>
                 }
             </p>
-            <p>Éditeur VO : </p>
-            <p>Éditeur VF : </p>
-            <p>Prépublié dans : </p>
-            <p>Nb volume VO : 10 (Terminé)</p>
-            <p>Nb volume VF : 0 (À paraître)</p>
             <p>Prix : <span>{{data?.manga?.price}} €</span></p>
-            <p>Âge conseillé : </p>
-            <p>Pour public averti : </p>
-            <p>Se trouve dans le commerce en France : </p>
         </div>
     </div>
     <div class="opinions mb-4 h-56">
