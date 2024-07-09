@@ -41,6 +41,7 @@ export type Genre = {
     id: number; 
     label: string; 
     createdDate: Date;
+    img: string;
 };
 
 export type Manga = {

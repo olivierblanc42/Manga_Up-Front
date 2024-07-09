@@ -10,7 +10,9 @@ export class MangaService {
     url="http://localhost:8080/api/mangas";
     urlLike=`${this.url}/like`;
     urlTenManga = "http://localhost:8080/api/mangas/ten";
-
+    urlNineManga = "http://localhost:8080/api/mangas/nine";
+    urlOneManga = "http://localhost:8080/api/mangas/oderOne";
+    urlOrderDate  = "http://localhost:8080/api/mangas/oderDate" ;
     /**
      * Ajoute des options dans le header et dans le body
      */
@@ -24,39 +26,88 @@ export class MangaService {
         },
     };
 
+    headers=new HttpHeaders()
+        .set("content-type", "application/json")
+        .set("Access-Control-Allow-Origin", '*');
+
+   // Récupère la requête sql de neuf mangas.
+    nineMangas =new BehaviorSubject<Manga[]>([]);
+    currentTenMangas = this.nineMangas.asObservable()
+  //   Récupère la requête de neuf mangas par ordre de creation du plus recente au plus ancien.
+    orderDateManga =new BehaviorSubject<Manga[]>([]);
+   currentOrderDateManga = this.orderDateManga.asObservable();
+// Récupère un seul Manga
+    oneManga =  new BehaviorSubject<Manga | null>(null);
+    currentMangaOne=this.oneManga.asObservable();
+
     mangas=new BehaviorSubject<Manga[]>([]);
     dataManga=new BehaviorSubject<DataManga | null>(null);
     isFavorite=new BehaviorSubject<boolean | null>(null);
+    manga=new BehaviorSubject<Manga | null>(null);
 
     currentMangas=this.mangas.asObservable();
+    currentManga=this.manga.asObservable();
     currentDataManga=this.dataManga.asObservable();
     currentIsFavorite=this.isFavorite.asObservable();
 
     constructor(
         private http: HttpClient, 
     ) {
-        this.http.get<Manga[]>(this.url)
-        .pipe()
-        .toPromise()
-        .then((r) => {
-          if (!r) return;
-          this.mangas.next(r);
-        })
+
     }
 
     /**
-     * Récupère 10 mangas
+    * recuprere   un seul Manga
+    *
+    *
+     */
+    getOneManga(){
+        this.http.get<Manga>(this.urlOneManga, {
+            headers: {'Access-Control-Allow-Origin': '*'}
+        })
+            .pipe()
+            .toPromise()
+            .then((r)=>{
+                if(!r) return;
+                this.oneManga.next(r);
+            })
+    }
+
+    /**
+     * Récupère 9 mangas
      *
      */
-    getTenManga(){
-       this.http.get<Manga[]>(this.urlTenManga)
+   getTenManga(){
+       this.http.get<Manga[]>(this.urlOrderDate)
            .pipe()
            .toPromise()
            .then((r) => {
                if (!r) return;
-               this.mangas.next(r);
+               console.log(r)
+               this.orderDateManga.next(r);
            })
+
     }
+
+
+    /**
+     * Récupère 9 mangas par date
+     *
+     */
+    getOrderDateManga(){
+        this.http.get<Manga[]>(this.urlNineManga)
+            .pipe()
+            .toPromise()
+            .then((r) => {
+                if (!r) return;
+                console.log(r)
+                this.nineMangas.next(r);
+            })
+
+    }
+
+
+
 
     /**
      * Récupère un manga.
@@ -76,8 +127,8 @@ export class MangaService {
 
     /**
      * Ajoute le manga en favoris pour l'utilisateur.
-     * @param idManga 
-     * @param idUser 
+     * @param idManga
+     * @param idUser
      */
     addUserInFavorite(idManga: number, idUser: number | undefined){
         const data= {
@@ -91,13 +142,13 @@ export class MangaService {
 
     /**
      * Supprime le manga en favoris pour l'utilisateur.
-     * @param idManga 
-     * @param idUser 
-     */ 
+     * @param idManga
+     * @param idUser
+     */
     deleteUserAsFavorite(idManga: number, idUser: number | undefined){
         this.options.body.id=String(idUser);
         console.log(this.options);
-        
+
         this.http.delete<boolean>(`${this.url}/${idManga}`, this.options)
         .subscribe((r) => {
             this.isFavorite.next(false);
