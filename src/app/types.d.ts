@@ -99,3 +99,11 @@ export type DataUser = {
     mangasId: number[];
 
 }
+
+export type Address = {
+    city : string;
+    line1: string;
+    line2: string;
+    line3: string;
+    postal_code: string;
+}

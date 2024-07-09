@@ -10,20 +10,20 @@ import {RouterModule} from "@angular/router";
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
-      <div class="flex flex-col gap-2 mt-4">
+      <div class="flex flex-col gap-2 mt-4 users-container">
           <table>
               <thead>
               <tr>
+                  <th>Utilisateur</th>
                   <th>Email</th>
-                  <th>Password</th>
                   <th>Action</th>
               </tr>
               </thead>
               <tbody>
                   @for (user of users; track user.id) {
                       <tr class="border">
+                          <td>{{"lastname: " +user.lastname + " " +" "+ user.fisrtname}}</td>
                           <td>{{user.email}}</td>
-                        
                           <td>
                               <a [routerLink]="'/users/' + user.id">🔎</a>
                               <button >🗑️</button>
@@ -35,7 +35,23 @@ import {RouterModule} from "@angular/router";
       </div>
       
   `,
-  styles: ``
+  styles: [`
+    .users-container{
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+      background-color: rgb(37,37,37,50%) ;
+      border-radius: 10px;
+      table{
+        tbody{
+          tr{
+       border: none;
+          }
+        }
+      }
+    }
+`]
 })
 export class UsersComponent  implements OnInit {
    users! : User[];
