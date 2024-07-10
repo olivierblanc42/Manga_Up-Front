@@ -1,12 +1,10 @@
 import { UserService } from './../../services/user.service';
 import { NgClass, CommonModule } from '@angular/common';
-import { PictureService } from './../../services/picture.service';
-import { CommentService } from '../../services/comment.service';
 import { MangaService } from './../../services/manga.service';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Comment, DataManga, Manga, Picture, User } from '../../types';
 import { ActivatedRoute } from '@angular/router';
-import { faBookBookmark, faMessage, faHeart, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faBookBookmark, faMessage, faHeart, faStar, faHouse, faHome, faCartShopping} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AccountService } from '../../services/account.service';
 
@@ -16,29 +14,29 @@ import { AccountService } from '../../services/account.service';
   imports: [FontAwesomeModule, NgClass, CommonModule],
   template: `
 
-<div class="flex justify-center mb-5 mt-5">
-<div class="block max-w-[20rem] rounded-lg bg-secondary text-white shadow-secondary-1">
+
+<div class="flex flex-col items-center justify-center mb-5 mt-5">
+<div class="path block -ml-20 mb-20 text-sx"><a href="/"><span><fa-icon [icon]="faHouse" size="1x"></fa-icon></span></a><span>/{{data?.manga?.title}}</span></div>
+<div class="detail-box block rounded-lg bg-secondary text-white shadow-secondary-1">
     <div class="banner-1 background-color-black-c16a25 px-6 py-3">{{data?.manga?.title}}</div>
     <div class="banner-2 background-color-black-c60a10 px-6 py-3 flex justify-between">
-        <div class="flex align-center flex-col -mt-4">
+        <div class="star flex align-center flex-col -mt-2">
             <div class="opinions-stars-one">
                 <div class="opinions-stars-one-empty"></div>
                 <div class="opinions-stars-one-full" style="width:{{calculSatisfactionRate()}}%"></div>
             </div>
-            <span>{{calculAverageVote()}}</span>
+            <div class="opinions-star-one-vote"><span>{{calculAverageVote()}}</span></div>
         </div>
-        <div class="faMessage flex align-center flex-col"><fa-icon [icon]="faMessage" size="2x"></fa-icon><span>{{nbComments()}}</span></div>
-        <!--<div 
-            class="flex align-center flex-col cursor-pointer" 
-            [ngClass]="{'faHeart-yellow': is_Favorite==='true', 'faHeart-grey': is_Favorite==='false'}"
-            (click)="addToMyFavorites()">-->
-        <div class="faHeart-{{colorIconHeart}} flex align-center flex-col cursor-pointer" (click)="addToMyFavorites()">
+        <div class="faMessage flex align-center flex-col"><fa-icon [icon]="faMessage" size="2x"></fa-icon>
+            <div class="faMessage-comments mt-4"><span>{{nbComments()}}</span></div>
+        </div>
+        <div class="faHeart faHeart-{{colorIconHeart}} flex align-center flex-col cursor-pointer" (click)="addToMyFavorites()">
             <fa-icon [icon]="faHeart" size="2x"></fa-icon>
-            <span>{{calculNbLikes()}}</span>
+            <div class="faHeart-likes mt-4"><span>{{calculNbLikes()}}</span></div>
         </div>
     </div>
     <div class="banner-3 background-color-black-c37a50 px-6 py-3 flex justify-center">
-        <div class="opinions-stars-one">
+        <div class="opinions-stars-one-vote">
             <div class="opinions-stars-one-empty"></div>
             <div class="opinions-stars-one-full" style="width:{{calculSatisfactionRate()}}%"></div>
         </div>
@@ -47,11 +45,11 @@ import { AccountService } from '../../services/account.service';
             <div class="text-xs">{{nbComments()}} vote</div>
         </div>
     </div>
-    <div class="background-color-black-c16a50">
-        <div class="flex justify-center mt-4 mb-5 h-30">
+    <div class="manga_box background-color-black-c16a50">
+        <div class="manga_box-image flex justify-center mt-4 mb-5 h-30">
             <img class="poster" src="{{poster}}" alt="">
         </div>
-        <div class="px-5 pb-44 mb-5  rounded-e-3xl  background-color-black">
+        <div class="manga_box-info px-5 pb-44 mb-5  rounded-e-3xl  background-color-black">
             <p>Titre original : <span>{{data?.manga?.title}}</span></p>
             <p>Année VF : <span>{{dateFormatFrDMY(data?.manga?.releaseDate!)}}</span></p>
             <p>Categorie : <span>{{data?.manga?.category?.name}}</span></p>
@@ -70,18 +68,18 @@ import { AccountService } from '../../services/account.service';
             <p>Prix : <span>{{data?.manga?.price}} €</span></p>
         </div>
     </div>
-    <div class="opinions mb-4 h-56">
+    <div class="opinions mb-4 h-56 background-color-black-c37a50 rounded-b-lg">
         <ul class="opinions-stars list-unstyled flex align-center">
             <div class="opinions-stars-empty"></div>
             <div class="opinions-stars-full" style="width:{{calculSatisfactionRate()}}%"></div>
         </ul>
-        <div>
+        <div class="info-box">
             <div class="flex justify-around mt-4">
-                <!--<div class="faHeart-{{colorIconHeart}} cursor-pointer" (click)="addToMyFavorites()"><fa-icon [icon]="faHeart" size="2x"></fa-icon><span class="nbOpinions">{{test}}</span></div>-->
-                <div class="faHeart-{{colorIconHeart}} cursor-pointer" (click)="addToMyFavorites()"><fa-icon [icon]="faHeart" size="2x"></fa-icon><span class="nbOpinions">{{calculNbLikes()}}</span></div>
+                <div class="faHeart faHeart-{{colorIconHeart}} cursor-pointer" (click)="addToMyFavorites()"><fa-icon [icon]="faHeart" size="2x"></fa-icon><span class="nbOpinions">{{calculNbLikes()}}</span></div>
                 <div class="faMessage"><fa-icon [icon]="faMessage" size="2x"></fa-icon><span class="nbOpinions">{{nbComments()}}</span></div>
             </div>
             <div class="faBookBookmark flex justify-center"><fa-icon [icon]="faBookBookmark" size="2x"></fa-icon></div>
+            <div class="faCartShopping flex justify-center"><fa-icon [icon]="faCartShopping" size="2x"></fa-icon></div>
         </div>
     </div>
     
@@ -114,14 +112,14 @@ import { AccountService } from '../../services/account.service';
   `,
   styles: [`
 
-    .opinions-stars-one{
+    .opinions-stars-one, .opinions-stars-one-vote{
         position: relative;
         margin-left: 0px;
         vertical-align: middle;
         display: inline-block;
         color: #b1b1b1;
         overflow: hidden;
-        margin-top: -17px;
+        margin-top: -1rem;
     }
 
     .opinions-stars{
@@ -214,11 +212,131 @@ import { AccountService } from '../../services/account.service';
         color: rgba(254, 203, 4, 1);
     }
 
-    .faBookBookmark, .faHeart-yellow, .faMessage{
+    .faBookBookmark, .faHeart, .faMessage, .faCartShopping{
         color: rgba(231, 224, 139, 1);
     }
     .faHeart-grey{
         color: #b1b1b1;
+    }
+
+    @media screen and (min-width: 360px){
+        .faCartShopping{
+            display:none;
+        }
+
+        .path{
+            display:none;
+        }
+
+        .detail-box{
+            width: 20rem;
+        }
+
+        .star{
+            height: 5rem;
+        }
+    }
+
+    @media screen and (min-width: 1920px){
+
+        .faBookBookmark, .faCartShopping{
+            margin-top: 2rem;
+            margin-left: 1rem;
+            display:block;
+        }
+
+        .faMessage, .faHeart{
+            margin-top: 0.75rem;
+            margin-left: 1rem;
+        }
+
+        .info-box{
+            display: flex;
+        }
+
+        .manga_box-info{
+            margin-top: 2rem;
+            padding-left: 2.5rem;
+        }
+
+        .poster{
+            margin-top: -4rem;
+            margin-left: 1rem;
+        }
+
+        .manga_box{
+            display: flex;
+        }
+
+        .path{
+            display: block;
+            margin-left: 0;
+            padding-right: 65rem;
+            margin-bottom: 3rem;
+        }
+
+        .detail-box{
+            width: 1280px;
+        }
+
+        .banner-1{
+            display: flex;
+            align-items: center;
+            text-transform: uppercase;
+            font-size: 1.5rem;
+
+        }
+
+        .banner-2{
+            justify-content: flex-start;
+            padding-left: 1rem;
+        }
+
+        .banner-3{
+            padding-right: 32rem;
+            text-align: center;
+        }
+
+        .faMessage{
+            flex-direction: row;
+        }
+
+        .faHeart{
+            flex-direction: row;
+        }
+
+        .star{
+            flex-direction: row;
+            margin-right: 1.5rem;
+        }
+
+        .faMessage-comments, .faHeart-likes{
+            margin-left: 1rem;
+            margin-top: 0rem;
+        }
+
+        .opinions{
+            display: flex;
+            justify-content: center;
+            height: 6rem;
+            margin-bottom: 12.5rem;
+        }
+        .opinions-stars{
+            margin-left: 1rem;
+        }
+
+        .opinions-star-one-vote{
+            margin-right: 1rem;
+            margin-top: 1rem;
+        }
+
+        .opinions-stars-one{
+            margin-right: 1rem
+        }
+
+        .faHeart, .faMessage, .faBookBookmark, .faCartShopping{
+            margin-left: 5rem;
+        }
     }
   `]
 })
@@ -246,6 +364,9 @@ export class MangaComponent implements OnInit, OnDestroy{
     faHeart=faHeart;
     faMessage=faMessage;
     faBookBookmark=faBookBookmark;
+    faHome=faHome;
+    faHouse=faHouse;
+    faCartShopping=faCartShopping;
    
     
     constructor(
