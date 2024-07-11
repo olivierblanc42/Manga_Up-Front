@@ -10,6 +10,9 @@ import {RouterModule} from "@angular/router";
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
+
+      <a [routerLink]="'/admin'">retour admin</a>
+
       <div class="flex flex-col gap-2 mt-4 users-container">
           <table>
               <thead>
@@ -25,7 +28,7 @@ import {RouterModule} from "@angular/router";
                           <td>{{"lastname: " +user.lastname + " " +" "+ user.fisrtname}}</td>
                           <td>{{user.email}}</td>
                           <td>
-                              <a [routerLink]="'/users/' + user.id">🔎</a>
+                              <a [routerLink]="'/admin/users/' + user.id">🔎</a>
                               <button >🗑️</button>
                           </td>
                       </tr>

@@ -6,7 +6,7 @@ import { ErrorComponent } from './pages/error/error.component';
 
 import { UsersComponent } from './pages/Admin/users/users.component';
 import { UserComponent } from './pages/Admin/user/user.component';
-
+import  {AdminLayoutComponent} from "./pages/Admin/admin-layout/admin-layout.component";
 import { MangaComponent } from './pages/manga/manga.component';
 import { MangasComponent } from './pages/mangas/mangas.component';
 import { ContactComponent } from './pages/contact/contact.component';
@@ -22,8 +22,12 @@ export const routes: Routes = [
     {path: "mangas", component: MangasComponent},
     {path: "manga/:id", component: MangaComponent},
     { path: "genres", component: GenresComponent },
-    {path: "users", component: UsersComponent},
-    {path: "users/:id", component: UserComponent},
+    {path: "admin",
+        component:AdminLayoutComponent,
+    children:[
+        {path: "users", component: UsersComponent},
+        {path: "users/:id", component: UserComponent},
+    ]},
     {path: "error/:code", component: ErrorComponent},
     {path: "**", redirectTo: "error/404"}
 ]; 

@@ -3,13 +3,17 @@ import { RouterOutlet, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesome/free-solid-svg-icons';
 
+
+
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, RouterModule,FontAwesomeModule],
   template: `
 
-<div class="container mx-auto">
+ 
+    
+<div class="container mx-auto ">
        <!-- nav mobile -->
    <nav class="flex   py-3 justify-evenly nav-mobile" >
    <ul class="flex flex-row items-center gap-x-8 ">
@@ -19,38 +23,41 @@ import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesom
     <li><a class="icon-panier"><img src="assets/svg/carbon_shopping-cart-plus.svg" ></a></li>
    </ul>
    </nav>
+</div>
 
-     <!-- nav desktop -->
-<nav class="py-3 flex flex-row px-10 justify-around nav-desktop">
+<div class="bannierre">
+  <div class="container mx-auto  ">
+    <!-- nav desktop -->
+    <nav class="py-3 flex flex-row px-10 justify-around nav-desktop ">
       <a routerLink="/"><img  src="assets/img/logo.png" alt=""></a>
 
-    <div class="mb-5  ">
+      <div class="mb-5  ">
 
-  <div class="search-div">
-    <form action="/action_page.php">
-      <div class=" flex flex-row">
-      <input type="text" placeholder="Search.." name="search">
-      <button type="submit" class="ml-1 search-btn"><fa-icon [icon]="faSearch"></fa-icon></button>
+        <div class="search-div">
+          <form action="/action_page.php">
+            <div class=" flex flex-row">
+              <input type="text" placeholder="Search.." name="search">
+              <button type="submit" class="ml-1 search-btn"><fa-icon [icon]="faSearch"></fa-icon></button>
+            </div>
+          </form>
+
+        </div>
+
+        <ul class="flex flex-row justify-around py-1">
+          <li ><a class="flex flex-row" href=""><fa-icon class="mr-1"  [icon]="faBook"></fa-icon> Genres</a></li>
+          <li><a class="flex flex-row" href=""><img class="mr-1"  src="assets/svg/new.svg" alt="">News</a></li>
+          <li><a class="flex flex-row" href=""><fa-icon class="mr-1"  [icon]="faShuffle"></fa-icon>Découverte</a></li>
+
+        </ul>
       </div>
-    </form>
-  
-</div>
-    
-    <ul class="flex flex-row justify-around py-1">
-      <li ><a class="flex flex-row" href=""><fa-icon class="mr-1"  [icon]="faBook"></fa-icon> Genres</a></li>
-      <li><a class="flex flex-row" href=""><img class="mr-1"  src="assets/svg/new.svg" alt="">News</a></li>
-      <li><a class="flex flex-row" href=""><fa-icon class="mr-1"  [icon]="faShuffle"></fa-icon>Découverte</a></li>
-      
-    </ul>
-    </div>
-    <div class="flex flex-row gap-10">
-    <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
-    <a class="icon-user"><fa-icon [icon]="faUser"></fa-icon></a>
-    </div>
-</nav>
+      <div class="flex flex-row gap-10">
+        <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
+        <a class="icon-user"><fa-icon [icon]="faUser"></fa-icon></a>
+      </div>
+    </nav>
 
+  </div>
 </div>
-
 
 
 
@@ -154,7 +161,11 @@ import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesom
     display:flex;
 }
 
-
+.bannierre{
+ background-image: url("/assets/img/bannierre_mangas_mono.webp");
+ color: #E7E08B;
+  height: 593px;
+}
 .search-div{
     width:449px;
     overflow: hidden;

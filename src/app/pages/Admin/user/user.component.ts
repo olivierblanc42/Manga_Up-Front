@@ -9,7 +9,8 @@ import { DataUser, User,} from "../../../types";
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
-    
+    <a [routerLink]="'/admin'">retour admin</a>
+
     <section class="user">
       <h1>Information sur l'utilisateur {{ dataUser?.user?.fisrtname }} , {{ dataUser?.user?.lastname }} </h1>
       <div>
