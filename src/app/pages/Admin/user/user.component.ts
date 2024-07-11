@@ -42,6 +42,8 @@ import { DataUser, User,} from "../../../types";
     border-radius: 10px;
     background-color: rgb(37,37,37,50%) ;
     padding: 1rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
   }
   
   `]

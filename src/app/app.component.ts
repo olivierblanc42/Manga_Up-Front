@@ -28,8 +28,10 @@ import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesom
 
   <div class="search-div">
     <form action="/action_page.php">
+      <div class=" flex flex-row">
       <input type="text" placeholder="Search.." name="search">
-      <button type="submit" class="ml-1"><fa-icon [icon]="faSearch"></fa-icon></button>
+      <button type="submit" class="ml-1 search-btn"><fa-icon [icon]="faSearch"></fa-icon></button>
+      </div>
     </form>
   
 </div>
@@ -177,6 +179,18 @@ import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesom
   
   cursor: pointer;
 }
+  }
+  
+  .search-btn{
+    border: solid 2px;
+    border-radius: 10px;
+    border-top-left-radius: 0%;
+    border-bottom-left-radius: 0%;
+    border-left: none;
+    border-color: #E7E08B;
+    margin-left: 0px;
+    padding-right: 4px;
+    padding-left: 4px;
   }
  }
 
