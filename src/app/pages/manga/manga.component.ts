@@ -1,12 +1,12 @@
 import { UserService } from './../../services/user.service';
 import { NgClass, CommonModule } from '@angular/common';
 import { MangaService } from './../../services/manga.service';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Comment, DataManga, Manga, Picture, User } from '../../types';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Comment, DataManga, Picture, User } from '../../types';
 import { ActivatedRoute } from '@angular/router';
 import { faBookBookmark, faMessage, faHeart, faStar, faHouse, faHome, faCartShopping} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { AccountService } from '../../services/account.service';
+
 
 @Component({
   selector: 'app-manga',
@@ -83,7 +83,7 @@ import { AccountService } from '../../services/account.service';
         </div>
     </div>
     
-    <div class="synopsis mb-72">
+    <div class="synopsis mb-24">
         <p class="title-synopsis pl-4 pt-8 background-color-black-c16a50 uppercase">synopsis</p>
         <p class="summary pt-8 px-8 pb-8 background-color-black-c16a25">{{data?.manga?.summary}}</p>
     </div>
@@ -91,8 +91,8 @@ import { AccountService } from '../../services/account.service';
     <div class="commentaries mb-28">
         <div class="commentaries-box">
             <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES ({{nbComments()}})</p></div>
-            <ul class="mb-12">
-                @for (comment of data?.comments; track comment.id; let count=$index) {
+            <ul class="commentaries-box-ul mb-12">
+                @for (comment of data?.comments?.content; track comment.id; let count=$index) {
                     <li class="">
                     <div>
                         <div class="comment-user items-center h-24 background-color-black-c16a25 flex">
@@ -100,11 +100,43 @@ import { AccountService } from '../../services/account.service';
                             <p class="pr-4">#{{count+1}}. Par <span class="">{{comment.user.username}}</span> le {{dateFormatFrDMY(comment.createdAt)}}</p>
                         </div>
                     </div>
+                    <p class="comment-body px-4 py-8 mb-8 background-color-black-c37a50">{{comment.comment}}</p>
                     </li>
-                    <li><p class="comment-body px-4 py-8 mb-8 background-color-black-c37a50">{{comment.comment}}</p></li>
                 }
             </ul>
-            <div class="comment-end h-20 pl-4 pt-8 background-color-black-c16a25 uppercase"></div>
+            <div class="comment-end h-20 pl-4 pt-8 background-color-black-c16a25 uppercase">
+                <div class="navigation">
+                    <nav>
+                        <ul class="inline-flex -space-x-px text-base h-10">
+                            @for(page of pages; track page; let count=$index){
+                                @if(count===0){
+                                    <li>
+                                        <button 
+                                            (click)="pagePrevious()"
+                                            [ngClass]="currentPage <= 0 ? 'grey-desactive-btn': 'blue-active-btn'" 
+                                            class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</button>
+                                    </li>
+                                }
+                                <li>
+                                    <button (click)="pageComments(page)" 
+                                        class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 background-color-pagination-yellow dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
+                                    >
+                                        {{count+1}}
+                                    </button>
+                                </li>
+                                @if(count===lastPage-1){
+                                    <li>
+                                        <button 
+                                            (click)="pageNext()" 
+                                            [ngClass]="currentPage===lastPage-1 ? 'grey-desactive-btn': 'blue-active-btn'" 
+                                            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -234,10 +266,45 @@ import { AccountService } from '../../services/account.service';
 
         .star{
             height: 5rem;
+            margin-top: -1rem;
+        }
+
+        .navigation{
+            display:none;
         }
     }
 
     @media screen and (min-width: 1920px){
+
+        .grey-desactive-btn{
+            background-color: grey;
+        }
+
+        .blue-active-btn{
+            background-color: blue;
+        }
+
+        .navigation nav{
+            margin-left: 2rem;
+        }
+
+        .navigation {
+            display:block;
+        }
+
+        .comment-end{
+            margin-top:0;
+            height: 7rem;
+        }
+
+        .commentaries-box-ul{
+            padding: 0 3rem;
+        }
+
+        .commentaries-box{
+            background-color: rgba(16, 16, 16, 0.25);
+            border-radius: 1rem;
+        }
 
         .faBookBookmark, .faCartShopping{
             margin-top: 2rem;
@@ -358,6 +425,9 @@ export class MangaComponent implements OnInit, OnDestroy{
     mangasIdOfUser!: number[]; // Liste des id des mangas de l'utilisateur.
     isFavorite!:boolean | null;
     test!: boolean;
+    pages!: number[]; // Nombre de page 
+    lastPage!: number;
+    currentPage!: number;
 
     //Icon list
     faStar=faStar;
@@ -372,25 +442,22 @@ export class MangaComponent implements OnInit, OnDestroy{
     constructor(
         private mangaService: MangaService,
         private activatedRoute: ActivatedRoute,
-        private accountService: AccountService,
         private userService: UserService
-    ){}
+    ){
+        this.currentPage=0;
+    }
     
     ngOnInit(): void {
-        console.log("dans ngOnInit");
-
         this.idOfUrl=parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
         this.mangaService.getManga(this.idOfUrl)
 
         this.mangaService.currentDataManga.subscribe(data=>{
             this.data=data;
-            console.log("276 - ngOnInit this.data : ", this.data);
-            
+            this.pages=this.convertNumberToArray(this.data?.comments?.totalPages!)
+            this.lastPage=this.data?.comments?.totalPages!;
             this.strToLowerCaseAndFirstLetter();
             this.searchPicturesIsPoster();
-            this.sortCommentByDate();
             this.nbComments();
-
             
             // Commenté pour l'instant.
             //if(this.accountService.isLogged()){
@@ -420,7 +487,43 @@ export class MangaComponent implements OnInit, OnDestroy{
         })
     }
 
-    
+    /**
+     * Crée un tableau de la taille spécifiér en paramètre, contenant des valeurs allant de 0 à n+1.
+     * @param size La taille du tableau à créer.
+     * @returns {Array} Tableau contenant une suite de 0 à n+1.
+     */
+    convertNumberToArray(size: number){
+        const array=new Array<number>(size);
+        for (let i = 0; i < array.length; i++) {
+            array[i]=i;
+        }
+        return array;
+    }
+
+    pagePrevious(){
+        console.log("dans pagePrevious currentPage : ", this.currentPage);
+        if(this.currentPage > 0){
+            this.pageComments(this.currentPage-1);
+        }
+    }
+
+    pageNext(){
+        console.log("dans pageNext currentPage : ", this.currentPage);
+        if(this.currentPage < this.lastPage-1){
+            this.pageComments(this.currentPage+1);
+        }
+    }
+
+    /**
+     * Récupère la page des commentaires souhaité.
+     * @param {string} page 
+     */
+    pageComments(page: number){
+        console.log("dans pageComments page : ", page);
+        this.currentPage=page;
+        console.log("dans pageComments currentPage : ", this.currentPage);        
+        this.mangaService.getManga(this.idOfUrl, page);
+    }
 
     /**
      * Cherche si l'utilisateur à mis en favoris le manga
@@ -463,8 +566,9 @@ export class MangaComponent implements OnInit, OnDestroy{
      */
     calculAverageVote(){
         if(this.data){
-            const sum=this.data?.comments?.reduce((a, b)=>a+b?.rating, 0);
-            const total=sum/this.data?.comments.length;
+            //const sum=this.data?.comments?.content.reduce((a, b)=>a+b?.rating, 0);
+            const sum=this.data?.ratingAll.reduce((a, b)=>a+b, 0);
+            const total=sum/this.nbComments()!
             return Math.floor(total*100)/100;
         }
         return 0;
@@ -483,7 +587,7 @@ export class MangaComponent implements OnInit, OnDestroy{
      * @returns {number} 
      */
     nbComments(){
-        return this.data?.comments.length;
+        return this.data?.comments?.totalElements;
     }
 
     /**
@@ -505,12 +609,9 @@ export class MangaComponent implements OnInit, OnDestroy{
      */
     strToLowerCaseAndFirstLetter(){
         if(this.data){
-            console.log("this.data : ", this.data);
             this.data?.manga?.genres.sort((a, b)=>{
                 return a.label.localeCompare(b.label);
             });
-            console.log();
-            
             for (let genre of this.data?.manga?.genres) {
                 let tmp=genre.label.toLocaleLowerCase();
                 genre.label=tmp.charAt(0).toUpperCase()+tmp.slice(1);
@@ -531,17 +632,6 @@ export class MangaComponent implements OnInit, OnDestroy{
             }
             
             this.poster=this.base64+this?.picture?.img;
-        }
-    }
-
-    /**
-     * Tri les commentaires par date
-     */
-    sortCommentByDate(){
-        if(this.data){
-            this.data.comments.sort((a, b)=>{
-                return new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf();
-            })
         }
     }
 
