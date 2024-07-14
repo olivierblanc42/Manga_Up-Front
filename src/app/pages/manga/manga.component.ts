@@ -278,6 +278,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
         .grey-desactive-btn{
             background-color: grey;
+            cursor: default;
+            color: rgb(149 163 170);
         }
 
         .blue-active-btn{
