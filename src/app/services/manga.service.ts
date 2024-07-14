@@ -30,13 +30,13 @@ export class MangaService {
         .set("content-type", "application/json")
         .set("Access-Control-Allow-Origin", '*');
 
-   // Récupère la requête sql de neuf mangas.
+    // Récupère la requête sql de neuf mangas.
     nineMangas =new BehaviorSubject<Manga[]>([]);
     currentTenMangas = this.nineMangas.asObservable()
-  //   Récupère la requête de neuf mangas par ordre de creation du plus recente au plus ancien.
+    //   Récupère la requête de neuf mangas par ordre de creation du plus recente au plus ancien.
     orderDateManga =new BehaviorSubject<Manga[]>([]);
-   currentOrderDateManga = this.orderDateManga.asObservable();
-// Récupère un seul Manga
+    currentOrderDateManga = this.orderDateManga.asObservable();
+    // Récupère un seul Manga
     oneManga =  new BehaviorSubject<Manga | null>(null);
     currentMangaOne=this.oneManga.asObservable();
 
@@ -44,11 +44,13 @@ export class MangaService {
     dataManga=new BehaviorSubject<DataManga | null>(null);
     isFavorite=new BehaviorSubject<boolean | null>(null);
     manga=new BehaviorSubject<Manga | null>(null);
+    //pageComments=new BehaviorSubject<Comment[]>([]);
 
     currentMangas=this.mangas.asObservable();
     currentManga=this.manga.asObservable();
     currentDataManga=this.dataManga.asObservable();
     currentIsFavorite=this.isFavorite.asObservable();
+    //currentPageComments=this.pageComments.asObservable();
 
     constructor(
         private http: HttpClient, 
@@ -57,10 +59,26 @@ export class MangaService {
     }
 
     /**
+     * Récupère la page des commentaires du manga.
+     * @param id L'id du manga.
+     * @param page Le numéro de page.
+     */
+    //getPageComments(idManga: number, page: number){
+    //    this.http.get<Comment[]>(`${this.url}/${idManga}?page=${page}`, {
+    //        headers: this.options.headers
+    //     })
+    //     .pipe()
+    //     .toPromise()
+    //     .then(r=>{
+    //        if(!r) return;
+    //        this.pageComments.next(r);
+    //     })
+    //}
+
+    /**
     * recuprere   un seul Manga
     *
-    *
-     */
+    */
     getOneManga(){
         this.http.get<Manga>(this.urlOneManga, {
             headers: {'Access-Control-Allow-Origin': '*'}
@@ -100,21 +118,17 @@ export class MangaService {
             .toPromise()
             .then((r) => {
                 if (!r) return;
-                console.log(r)
+                //console.log(r)
                 this.nineMangas.next(r);
             })
-
     }
-
-
-
 
     /**
      * Récupère un manga.
      * @param id 
      */
-    getManga(id: number){
-        this.http.get<DataManga>(`${this.url}/${id}`, {
+    getManga(id: number, page: number=0){
+        this.http.get<DataManga>(`${this.url}/${id}?page=${page}`, {
             headers: this.options.headers
          })
         .pipe()
@@ -147,8 +161,6 @@ export class MangaService {
      */
     deleteUserAsFavorite(idManga: number, idUser: number | undefined){
         this.options.body.id=String(idUser);
-        console.log(this.options);
-
         this.http.delete<boolean>(`${this.url}/${idManga}`, this.options)
         .subscribe((r) => {
             this.isFavorite.next(false);
