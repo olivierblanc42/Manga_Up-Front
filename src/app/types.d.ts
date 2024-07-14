@@ -31,6 +31,12 @@ export type Comment = {
     user: User;
 }
 
+export type Comments = {
+    content: Comment[];
+    size: number;
+    totalElements: number;
+    totalPages: number;
+}
 
 export type Gender = {
     id: number;
@@ -91,8 +97,9 @@ export type User = {
 };
 
 export type DataManga = {
-    comments: Comment[];
+    comments: Comments;
     manga: Manga;
+    ratingAll: number[];
 }
 
 export type DataUser = {
