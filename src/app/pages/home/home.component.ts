@@ -10,10 +10,10 @@ import { Comment, Manga, Picture, Genre } from '../../types';
 
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [RouterModule, CardComponent, FontAwesomeModule],
-  template: `
+    selector: 'app-home',
+    standalone: true,
+    imports: [RouterModule, CardComponent, FontAwesomeModule],
+    template: `
 
 
       <section class="container mx-auto px-5 md:px-10  my-5\t">
@@ -26,11 +26,12 @@ import { Comment, Manga, Picture, Genre } from '../../types';
               @for (manga of nineMangas; track manga.id) {
                   <a [routerLink]="'/manga/' + manga.id">
                   <ui-card class="" size="card-manga">
-                      <p>{{ manga.title }}</p>
+                      
 
                       @for (picture of manga.pictures; track picture.id) {
                           <img alt="{{picture.title}}" src="{{base64+picture.img}}">
                       }
+                      <p>{{ manga.title }}</p>
                   </ui-card>
                   </a>
               }
@@ -69,11 +70,12 @@ import { Comment, Manga, Picture, Genre } from '../../types';
               @for (manga of dateOrderMangas; track manga.id) {
                   <a [routerLink]="'/manga/' + manga.id">
                   <ui-card class="" size="card-manga">
-                      <p>{{ manga.title }}</p>
+                    
 
                       @for (picture of manga.pictures; track picture.id) {
                           <img alt="{{picture.title}}" src="{{base64+picture.img}}">
                       }
+                      <p>{{ manga.title }}</p>
                   </ui-card>
                   </a>
               }
@@ -112,28 +114,44 @@ import { Comment, Manga, Picture, Genre } from '../../types';
 
 
       <section class="mx-auto ">
-          <div class="card_single_Home">
-              <h2>{{ justeOne?.title }}</h2>
-              @for (genre of justeOne?.genres; track genre.id) {
-                  <p>{{genre.label}}</p>
-              }
-
+          <a  [routerLink]="'/manga/' + justeOne?.id">
+          <div class="card_single_home">
+              <div class="card_single_home__img">
+                  
               
-              <p>{{ justeOne?.summary }}</p>
+              @for (picture of justeOne?.pictures; track picture.id) {
+                  <img alt="{{picture.title}}" src="{{base64+picture.img}}" class="">
+              }
+              </div>
+              <div class="card_single_home__infos">
+              <h3>{{ justeOne?.title }}</h3>
+              
+              <ul>
+                <li><span>Genre:</span></li>  
+              @for (genre of justeOne?.genres; track genre.id) {
+                  <li>{{genre.label}}, </li>
+              }
+              </ul>
+              
+              <p> <span>Résume: </span>{{ justeOne?.summary}}</p>
+                  <button >Voir le manga</button>
+              </div>
           </div>
-
+          </a>
       </section>
 
   `,
-  styles: [`
+    styles: [`
 .bg-dark{
 background-color: #101010;
 }
 
 
 a{
-color:#E7E08B;
-text-transform: uppercase
+h2{
+  color:#E7E08B;
+  text-transform: uppercase
+}
 }
 .line-none{
 display:none;
@@ -142,7 +160,30 @@ display:none;
 display:none;
 }
 
-
+.card_single_home{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+  padding: 5px;
+  border-radius: 10px;
+  background-color: rgb(60,60,60,10%) ;
+   img{
+     border-radius: 10px;
+   }
+  h3{
+     text-transform: uppercase;
+      text-align: center;
+    font-weight:bold;
+   }
+  ul{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 10px;
+  }
+}
 @media (min-width: 1250px) {
 
 .stars-none{
@@ -151,10 +192,18 @@ display:flex;
 .line-none{
 display:flex;
 }
-  .card_single_Home{
-    width: 50%;
+  .card_single_home{
+    width: 40%;
     margin: auto;
     background-color: rgb(60,60,60,10%) ;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    .card_single_home__img{
+      width: 50%;
+    }
+    
   }
 }
 
@@ -182,78 +231,78 @@ display:flex;
 })
 export class HomeComponent implements OnInit {
 
-  mangas!: Manga[] ;
-  pictures!: Picture[];
-  picture!:Picture;
-  idUrl!: string;
-  base64:string="data:image/webp;base64,";
-  base64G:string="data:image/webp;base64,";
-  poster!:string;
-  faArrowRight = faArrowRight;
-  genres!: Genre[];
-  nineMangas! : Manga[];
-  dateOrderMangas! : Manga[] ;
-  justeOne! : Manga | null ;
+    mangas!: Manga[] ;
+    pictures!: Picture[];
+    picture!:Picture;
+    idUrl!: string;
+    base64:string="data:image/webp;base64,";
+    base64G:string="data:image/webp;base64,";
+    poster!:string;
+    faArrowRight = faArrowRight;
+    genres!: Genre[];
+    nineMangas! : Manga[];
+    dateOrderMangas! : Manga[] ;
+    justeOne! : Manga | null ;
 
-  constructor(
-      private mangaService: MangaService,
-      private pictureService: PictureService,
-      private activatedRoute: ActivatedRoute,
-      private genreService : GenreService ,
-  ){}
-  ngOnInit(): void {
-    this.mangaService.getTenManga()
-    this.mangaService.currentTenMangas.subscribe(nineMangas =>{
-      this.nineMangas = nineMangas;
-    })
+    constructor(
+        private mangaService: MangaService,
+        private pictureService: PictureService,
+        private activatedRoute: ActivatedRoute,
+        private genreService : GenreService ,
+    ){}
+    ngOnInit(): void {
+        this.mangaService.getTenManga()
+        this.mangaService.currentTenMangas.subscribe(nineMangas =>{
+            this.nineMangas = nineMangas;
+        })
 
-this.mangaService.getOrderDateManga()
-this.mangaService.currentOrderDateManga.subscribe(dateOrderMangas =>{
-  this.dateOrderMangas =dateOrderMangas;
-})
+        this.mangaService.getOrderDateManga()
+        this.mangaService.currentOrderDateManga.subscribe(dateOrderMangas =>{
+            this.dateOrderMangas =dateOrderMangas;
+        })
 
 
-    this.mangaService.currentMangas.subscribe(mangas => {
-      this.mangas = mangas
+        this.mangaService.currentMangas.subscribe(mangas => {
+            this.mangas = mangas
 
-    })
-    this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
+        })
+        this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
 
-      // One manga
-      this.mangaService.getOneManga()
-      this.mangaService.currentMangaOne.subscribe(justeOne =>{
-          this.justeOne = justeOne
-           console.log(this.justeOne)
-      })
+        // One manga
+        this.mangaService.getOneManga()
+        this.mangaService.currentMangaOne.subscribe(justeOne =>{
+            this.justeOne = justeOne
+            console.log(this.justeOne)
+        })
 
-    //genre
-    this.genreService.getSixgenre();
-    this.genreService.currentGenresSix.subscribe(genres =>{
-      this.genres = genres
-    })
-   // this.genreService.currentGenres.subscribe(genres => this.genres = genres)
+        //genre
+        this.genreService.getSixgenre();
+        this.genreService.currentGenresSix.subscribe(genres =>{
+            this.genres = genres
+        })
+        // this.genreService.currentGenres.subscribe(genres => this.genres = genres)
 
-  }
-
-  searchPicturesIsPoster(){
-    if(this.mangas){
-      for (const manga of this.mangas) {
-        for (const picture of manga.pictures){
-          if(picture.isPoster) {
-            this.picture=picture;
-            break;
-
-          }
-        }
-        this.poster=this.base64+this?.picture?.img;
-      }
     }
-  }
- splitFonction(val : Object[]){
-    val.splice(1,1)
- }
 
-  log(val: Object[]){
-    console.log(val);
-  }
+    searchPicturesIsPoster(){
+        if(this.mangas){
+            for (const manga of this.mangas) {
+                for (const picture of manga.pictures){
+                    if(picture.isPoster) {
+                        this.picture=picture;
+                        break;
+
+                    }
+                }
+                this.poster=this.base64+this?.picture?.img;
+            }
+        }
+    }
+    splitFonction(val : Object[]){
+        val.splice(1,1)
+    }
+
+    log(val: Object[]){
+        console.log(val);
+    }
 }

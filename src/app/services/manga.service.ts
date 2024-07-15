@@ -1,4 +1,4 @@
-import { DataManga, Manga } from './../types.d';
+import {DataManga, Manga, Mangas} from './../types.d';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
@@ -52,11 +52,20 @@ export class MangaService {
     currentIsFavorite=this.isFavorite.asObservable();
     //currentPageComments=this.pageComments.asObservable();
 
+    // utilisation de la pagination
+
+    mangaPagination  = new BehaviorSubject<Mangas | null>(null);
+    currentMangaPagination = this.mangaPagination.asObservable()
+
     constructor(
         private http: HttpClient, 
     ) {
 
     }
+
+
+
+
 
     /**
      * Récupère la page des commentaires du manga.
@@ -74,6 +83,26 @@ export class MangaService {
     //        this.pageComments.next(r);
     //     })
     //}
+//`${this.url}/${id}?page=${page}`
+    /**
+     * recuprere   tout les mangas
+     *
+     */
+    getMangas( page: number=0){
+        this.http.get<Mangas>(`${this.url}?page=${page}`, {
+            headers: {'Access-Control-Allow-Origin': '*'}
+        })
+            .pipe()
+            .toPromise()
+            .then((r)=>{
+                if(!r) return;
+
+                this.mangaPagination.next(r);
+            })
+    }
+
+
+
 
     /**
     * recuprere   un seul Manga
