@@ -114,14 +114,18 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
                                         <button 
                                             (click)="pagePrevious()"
                                             [ngClass]="currentPage <= 0 ? 'grey-desactive-btn': 'blue-active-btn'" 
-                                            class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</button>
+                                            class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                                        >Previous</button>
                                     </li>
                                 }
                                 <li>
+                                    {{log(page, "page")}}
+                                    {{log(currentPage, "currentPage")}}
                                     <button (click)="pageComments(page)" 
-                                        class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 background-color-pagination-yellow dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"
+                                        class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-yellow-100 dark:hover:text-gray-700"
+                                        [ngClass]="currentPage===page ? 'bg-yellow-100':'background-color-pagination-yellow'"
                                     >
-                                        {{count+1}}
+                                    {{count+1}}
                                     </button>
                                 </li>
                                 @if(count===lastPage-1){
