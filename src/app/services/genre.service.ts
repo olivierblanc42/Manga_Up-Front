@@ -41,7 +41,6 @@ export class GenreService {
              .toPromise()
              .then((r) =>{
                  if(!r) return;
-               console.log(r)
                  this.genresSix.next(r);
              })
     }

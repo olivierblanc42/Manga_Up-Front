@@ -18,9 +18,9 @@ export type Cart = {
 
 export type Category = {
     id: number;
-    name: string; 
-    description: string; 
-    createdAt: Date; 
+    name: string;
+    description: string;
+    createdAt: Date;
 };
 
 export type Comment = {
@@ -44,11 +44,20 @@ export type Gender = {
 };
 
 export type Genre = {
-    id: number; 
-    label: string; 
+    id: number;
+    label: string;
     createdDate: Date;
     img: string;
 };
+
+
+export type Genres ={
+    content: Genre[];
+    size: number;
+    totalElements: number;
+    totalPages: number;
+}
+
 
 export type Manga = {
     id: number;
@@ -65,14 +74,21 @@ export type Manga = {
     users: User[];
 };
 
+export type Mangas ={
+    content: Manga[];
+    size: number;
+    totalElements: number;
+    totalPages: number;
+}
+
 export type OrdersStatus = {
     id: number;
     label: string;
 };
 
 export type PaymentCart = {
-    id: number; 
-    label: string; 
+    id: number;
+    label: string;
     createdAt: Date;
 };
 
@@ -84,15 +100,15 @@ export type Picture = {
 }
 
 export type User = {
-    id: number; 
-    username: string; 
-    email: string; 
-    password: string; 
-    fisrtname: string; 
-    lastname: string; 
-    createdAt: Date; 
+    id: number;
+    username: string;
+    email: string;
+    password: string;
+    fisrtname: string;
+    lastname: string;
+    createdAt: Date;
     img: string;
-    address: Address; 
+    address: Address;
     gender: Gender;
 };
 
