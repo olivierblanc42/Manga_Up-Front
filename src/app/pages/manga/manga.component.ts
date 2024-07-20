@@ -6,12 +6,13 @@ import { Comment, DataManga, Picture, User } from '../../types';
 import { ActivatedRoute } from '@angular/router';
 import { faBookBookmark, faMessage, faHeart, faStar, faHouse, faHome, faCartShopping} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { InfiniteScrollModule } from "ngx-infinite-scroll";
 
 
 @Component({
   selector: 'app-manga',
   standalone: true,
-  imports: [FontAwesomeModule, NgClass, CommonModule],
+  imports: [FontAwesomeModule, NgClass, CommonModule, InfiniteScrollModule],
   template: `
 
 
@@ -88,12 +89,18 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         <p class="summary pt-8 px-8 pb-8 background-color-black-c16a25">{{data?.manga?.summary}}</p>
     </div>
 
-    <div class="commentaries mb-28">
+    <div class="commentaries mb-28 ">
         <div class="commentaries-box">
             <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES ({{nbComments()}})</p></div>
-            <ul class="commentaries-box-ul mb-12">
-                @for (comment of data?.comments?.content; track comment.id; let count=$index) {
-                    <li class="">
+            <ul class="commentaries-box-ul mb-12 scroll" 
+                infiniteScroll 
+                [infiniteScrollDistance]="2"
+                [infiniteScrollThrottle]="500"
+                (scrolled)="onScroll()"
+                [scrollWindow]="false"
+            >
+                @for (comment of comments; track $index; let count=$index) {
+                    <li class="data-card">
                     <div>
                         <div class="comment-user items-center h-24 background-color-black-c16a25 flex">
                             <img class="img-user ml-8 mr-8" src="{{base64+comment.user.img}}" alt="{{comment.user.username}}">
@@ -102,6 +109,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
                     </div>
                     <p class="comment-body px-4 py-8 mb-8 background-color-black-c37a50">{{comment.comment}}</p>
                     </li>
+                }
+                @if(isLoading){
+                <div>Loading...</div>
                 }
             </ul>
             <div class="comment-end h-20 pl-4 pt-8 background-color-black-c16a25 uppercase">
@@ -119,8 +129,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
                                     </li>
                                 }
                                 <li>
-                                    {{log(page, "page")}}
-                                    {{log(currentPage, "currentPage")}}
                                     <button (click)="pageComments(page)" 
                                         class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-yellow-100 dark:hover:text-gray-700"
                                         [ngClass]="currentPage===page ? 'bg-yellow-100':'background-color-pagination-yellow'"
@@ -147,6 +155,11 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 </div>
   `,
   styles: [`
+
+    .scroll{
+        overflow: scroll;
+        height:98rem;
+    }
 
     .opinions-stars-one, .opinions-stars-one-vote{
         position: relative;
@@ -434,6 +447,9 @@ export class MangaComponent implements OnInit, OnDestroy{
     pages!: number[]; // Nombre de page 
     lastPage!: number;
     currentPage!: number;
+    isLoading:boolean=false;
+    currentPageScroll!:number;
+    oldCommentsScroll!:Comment[];
 
     //Icon list
     faStar=faStar;
@@ -454,35 +470,58 @@ export class MangaComponent implements OnInit, OnDestroy{
     }
     
     ngOnInit(): void {
+        this.currentPageScroll=0;
+        this.toggleLoading();
         this.idOfUrl=parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
         this.mangaService.getManga(this.idOfUrl)
 
+        this.currentDataMangaSubs();
+
+        this.userService.getUser("5");
+        this.currentDataUserSubs();
+
+        this.currentIsFavoriteSubs();
+
+    }
+
+    /**
+     * Récupération des dates traitements pour hydrater la vue.
+     */
+    currentDataMangaSubs(){
         this.mangaService.currentDataManga.subscribe(data=>{
             this.data=data;
+            if(this.oldCommentsScroll && this.currentPageScroll > 0 ){
+                this.oldCommentsScroll=[...this.oldCommentsScroll, ...this.data?.comments.content!]
+            }else{
+                this.oldCommentsScroll=[...this.data?.comments.content!]
+            }
+            console.log("this.oldCommentsScroll : ", this.oldCommentsScroll);
+            this.comments=this.oldCommentsScroll;
+
             this.pages=this.convertNumberToArray(this.data?.comments?.totalPages!)
             this.lastPage=this.data?.comments?.totalPages!;
             this.strToLowerCaseAndFirstLetter();
             this.searchPicturesIsPoster();
             this.nbComments();
-            
-            // Commenté pour l'instant.
-            //if(this.accountService.isLogged()){
-                //this.user=this.accountService.getUser();
-                // En attente d'avoir une gestion des utilisateurs.
-                //this.isFavorite=this.searchIfMangaIsFavorite(this.user!);
-                //this.isFavorite=true;
-            //    this.colorIconHeart=this.isFavorite ? "yellow" : "grey"
-            //}
         });
+    }
 
-        this.userService.getUser("5");
+    /**
+     * Récupération des data du user.
+     */
+    currentDataUserSubs(){
         this.userService.currentDataUser.subscribe(dataUser => {
             this.user=dataUser?.user!
             this.mangasIdOfUser=dataUser?.mangasId!;
             this.isFavorite=this.searchIfMangaIsFavorite(this.mangasIdOfUser);
             this.colorIconHeart=this.isFavorite ? "yellow" : "grey"
         })
+    }
 
+    /**
+     * Récupération des data si on a cliqué sur favoris.
+     */
+    currentIsFavoriteSubs(){
         this.mangaService.currentIsFavorite.subscribe(favorite=>{
             this.isFavorite=favorite
             this.colorIconHeart=this.isFavorite ? "yellow" : "grey"
@@ -491,6 +530,29 @@ export class MangaComponent implements OnInit, OnDestroy{
                 this.data=data;
             });
         })
+    }
+
+    /**
+     * Méthode qui sera appelé si on scroll au delà du dernier commentaire.
+     */
+    onScroll(){
+        this.currentPageScroll++;
+        this.appendData();
+    }
+
+    /**
+     * Récupère les 6 commentaires suivant en faisant appel au back
+     */
+    appendData(){
+        this.toggleLoading();
+        this.mangaService.getManga(this.idOfUrl, this.currentPageScroll);
+    }
+
+    /**
+     * Pour passer de true à false ou inversement si le chargement est effectué ou pas.
+     */
+    toggleLoading(){
+        this.isLoading=!this.isLoading;
     }
 
     /**
@@ -506,28 +568,30 @@ export class MangaComponent implements OnInit, OnDestroy{
         return array;
     }
 
+    /**
+     * Récupère la page précédente des commentaires si ont est en mode desktop.
+     */
     pagePrevious(){
-        console.log("dans pagePrevious currentPage : ", this.currentPage);
         if(this.currentPage > 0){
             this.pageComments(this.currentPage-1);
         }
     }
 
+    /**
+     * Récupère la page suivante des commentaires si ont est en mode desktop.
+     */
     pageNext(){
-        console.log("dans pageNext currentPage : ", this.currentPage);
         if(this.currentPage < this.lastPage-1){
             this.pageComments(this.currentPage+1);
         }
     }
 
     /**
-     * Récupère la page des commentaires souhaité.
+     * Récupère la page des commentaires souhaité si on est en mode desktop.
      * @param {string} page 
      */
     pageComments(page: number){
-        console.log("dans pageComments page : ", page);
         this.currentPage=page;
-        console.log("dans pageComments currentPage : ", this.currentPage);        
         this.mangaService.getManga(this.idOfUrl, page);
     }
 
