@@ -427,7 +427,7 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
   `]
 })
 
-export class MangaComponent implements OnInit, OnDestroy{
+export class MangaComponent implements OnInit{
 
     data!: DataManga | null;
     posterUser!:string[];
@@ -713,12 +713,4 @@ export class MangaComponent implements OnInit, OnDestroy{
     log(val: Object, msg: string=""){
         console.log(msg, val);
     }
-
-    /**
-     * Pour supprimer l"abonnement à l'observables"
-     */
-    ngOnDestroy(): void {
-        //console.log("destroy ErrorComponent")
-      }
-    
 }
