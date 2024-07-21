@@ -19,6 +19,8 @@ export class MangaService {
     options = {
         headers: new HttpHeaders({
           "Content-Type": "application/json",
+          "Accept":"application/json",
+          "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE",
           "Access-Control-Allow-Origin": '*'
         }),
         body: {
