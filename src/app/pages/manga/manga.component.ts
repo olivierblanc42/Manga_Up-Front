@@ -1,6 +1,6 @@
-import { UserService } from './../../services/user.service';
+import { UserService} from "../../services/user.service";
 import { NgClass, CommonModule } from '@angular/common';
-import { MangaService } from './../../services/manga.service';
+import { MangaService} from "../../services/manga.service";
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Comment, DataManga, Picture, User } from '../../types';
 import { ActivatedRoute } from '@angular/router';
