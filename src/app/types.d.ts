@@ -118,11 +118,22 @@ export type DataManga = {
     ratingAll: number[];
 }
 
+export type DataAuthor = {
+    mangas: Mangas;
+    author: Author;
+}
+
+export type DataGenre = {
+    mangas: Mangas;
+    genre: Genre;
+}
 export type DataUser = {
     user: User;
     mangasId: number[];
 
 }
+
+
 
 export type Address = {
     city : string;

@@ -12,14 +12,20 @@ import { GeneralConditionComponent } from './pages/general-condition/general-con
 import { GenresComponent } from './pages/genres/genres.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './services/auth.guard';
+import {GenreComponent} from "./pages/genre/genre.component";
+import {AuthorComponent} from "./pages/author/author.component";
+import {AuthorsComponent} from "./pages/authors/authors.component";
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'about', component: AboutComponent },
     { path: 'contact', component: ContactComponent },
+    { path: 'authors', component: AuthorsComponent },
+    { path: 'author', component: AuthorComponent },
     { path: 'mention_legale', component: GeneralConditionComponent },
     { path: 'mangas', component: MangasComponent },
     { path: 'manga/:id', component: MangaComponent },
+    { path: "genre/:id", component: GenreComponent },
     { path: 'genres', component: GenresComponent },
     { path: 'login', component: LoginComponent },
     {

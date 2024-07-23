@@ -97,7 +97,7 @@ import { Comment, Manga, Picture, Genre } from '../../types';
           </a>
           <div class="content-genre">
               @for (genre of genres; track genre.id) {
-                  <a [routerLink]="'/manga/' + genre.id">
+                  <a [routerLink]="'/genre/' + genre.id">
                   <ui-card class="card" size="card-genre">
                       <img src="{{base64G+genre.img}}">
 
