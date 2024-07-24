@@ -35,12 +35,13 @@ export class AuthorService {
      * Récupère toute les autheur
      *
      */
-    getAuthor(){
+    getAuthors(){
         this.http.get<Author[]>(this.url)
             .pipe()
             .toPromise()
             .then((r) =>{
                 if(!r) return;
+                console.log(r)
                 this.authors.next(r);
             })
     }

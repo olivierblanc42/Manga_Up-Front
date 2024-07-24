@@ -21,7 +21,7 @@ export const routes: Routes = [
     { path: 'about', component: AboutComponent },
     { path: 'contact', component: ContactComponent },
     { path: 'authors', component: AuthorsComponent },
-    { path: 'author', component: AuthorComponent },
+    { path: 'author/:id', component: AuthorComponent },
     { path: 'mention_legale', component: GeneralConditionComponent },
     { path: 'mangas', component: MangasComponent },
     { path: 'manga/:id', component: MangaComponent },

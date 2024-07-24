@@ -24,7 +24,6 @@ export class GenreComponent implements OnInit {
   constructor(
       private genreService: GenreService,
       private activatedRoute: ActivatedRoute,
-      private userService: UserService
   ){
     this.currentPage=0;
   }
