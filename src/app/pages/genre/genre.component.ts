@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { Comment, Picture, User } from '../../types';
+import {Comment, DataGenre, Picture, User} from '../../types';
 import {MangaService} from "../../services/manga.service";
 import {ActivatedRoute} from "@angular/router";
 import {UserService} from "../../services/user.service";
@@ -21,6 +21,7 @@ export class GenreComponent implements OnInit {
   pages!: number[]; // Nombre de page
   lastPage!: number;
   currentPage!: number;
+  dataGenre! : DataGenre | null;
   constructor(
       private genreService: GenreService,
       private activatedRoute: ActivatedRoute,
@@ -31,5 +32,10 @@ export class GenreComponent implements OnInit {
     this.idOfUrl=parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
 
     this.genreService.getMangaGenre(this.idOfUrl)
+
+    this.genreService.currentDataGenre.subscribe( dataGenre =>{
+      this.dataGenre = dataGenre;
+    } )
+
   }
 }

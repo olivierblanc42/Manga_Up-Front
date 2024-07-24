@@ -27,10 +27,14 @@ export class AuthorsComponent implements OnInit {
 ){
 
 }
-  authors!: Author|null;
+  authors!: Author[]|null;
 
 
   ngOnInit(): void {
     this.authorService.getAuthors()
+
+    this.authorService.currentAuthors.subscribe(authors =>{
+      this.authors = authors
+    })
   }
 }

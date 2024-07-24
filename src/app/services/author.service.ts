@@ -24,6 +24,7 @@ export class AuthorService {
     };
 
     authors = new BehaviorSubject<Author[]>([]);
+    currentAuthors = this.authors.asObservable();
     dataAuthor  = new BehaviorSubject<DataAuthor | null>(null);
     currentDataAuthor = this.dataAuthor.asObservable();
 
