@@ -7,12 +7,13 @@ import { PictureService } from '../../services/picture.service';
 import { MangaService } from '../../services/manga.service';
 import {GenreService} from "../../services/genre.service";
 import { Comment, Manga, Picture, Genre } from '../../types';
+import { PicturesPipe } from '../../pipes/pictures.pipe';
 
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [RouterModule, CardComponent, FontAwesomeModule],
+    imports: [RouterModule, CardComponent, FontAwesomeModule, PicturesPipe],
     template: `
 
 
@@ -27,11 +28,11 @@ import { Comment, Manga, Picture, Genre } from '../../types';
                   <a [routerLink]="'/manga/' + manga.id">
                   <ui-card class="" size="card-manga">
                       
-
-                      @for (picture of manga.pictures; track picture.id) {
-                          <img alt="{{picture.title}}" src="{{base64+picture.img}}">
-                      }
-                      <p>{{ manga.title }}</p>
+                    <img class="h-64 w-40" src="{{base64+ (manga | pictures)}}" alt="{{manga | pictures: false}}" />
+                    <!--@for (picture of manga.pictures; track picture.id) {
+                        <img alt="{{picture.title}}" src="{{base64+picture.img}}">
+                    }-->
+                    <p>{{ manga.title }}</p>
                   </ui-card>
                   </a>
               }
@@ -71,11 +72,11 @@ import { Comment, Manga, Picture, Genre } from '../../types';
                   <a [routerLink]="'/manga/' + manga.id">
                   <ui-card class="" size="card-manga">
                     
-
-                      @for (picture of manga.pictures; track picture.id) {
-                          <img alt="{{picture.title}}" src="{{base64+picture.img}}">
-                      }
-                      <p>{{ manga.title }}</p>
+                    <img class="h-64 w-40" src="{{base64+ (manga | pictures)}}" alt="{{manga | pictures: false}}" />
+                    <!--@for (picture of manga.pictures; track picture.id) {
+                        <img alt="{{picture.title}}" src="{{base64+picture.img}}">
+                    }-->
+                    <p>{{ manga.title }}</p>
                   </ui-card>
                   </a>
               }
@@ -118,10 +119,10 @@ import { Comment, Manga, Picture, Genre } from '../../types';
           <div class="card_single_home">
               <div class="card_single_home__img">
                   
-              
-              @for (picture of justeOne?.pictures; track picture.id) {
+              <img class="mx-auto" src="{{base64+ (justeOne! | pictures)}}" alt="{{justeOne! | pictures: false}}" />
+              <!--@for (picture of justeOne?.pictures; track picture.id) {
                   <img alt="{{picture.title}}" src="{{base64+picture.img}}" class="">
-              }
+              }-->
               </div>
               <div class="card_single_home__infos">
               <h3>{{ justeOne?.title }}</h3>
@@ -272,6 +273,7 @@ export class HomeComponent implements OnInit {
         this.mangaService.getOneManga()
         this.mangaService.currentMangaOne.subscribe(justeOne =>{
             this.justeOne = justeOne
+            //this.searchPicturesIsPosterManga(this.justeOne!);
             console.log(this.justeOne)
         })
 
