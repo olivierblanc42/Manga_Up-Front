@@ -1,20 +1,58 @@
 import {Component, OnInit} from '@angular/core';
 import {Comment, DataGenre, Picture, User} from '../../types';
 import {MangaService} from "../../services/manga.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 import {UserService} from "../../services/user.service";
 import {GenreService} from "../../services/genre.service";
+import {CardComponent} from "../../components/card/card.component";
+import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
 @Component({
   selector: 'app-genre',
   standalone: true,
-  imports: [],
+  imports: [
+    CardComponent,
+    FaIconComponent,
+    RouterLink
+  ],
   template: `
-    <p>
-      genre works!
-    </p>
+
+    
+    <section class="container mx-auto px-5 md:px-10  my-5\t">
+
+      <h1>{{ dataGenre?.genre?.label }}</h1>
+    
+      <div class="content-manga ">
+        @for (manga of dataGenre?.mangas?.content; track manga.id) {
+          <a [routerLink]="'/manga/' + manga.id">
+            <ui-card class="" size="card-manga">
+
+
+         
+              <p>{{ manga.title }}</p>
+            </ui-card>
+          </a>
+        }
+
+      </div>
+    </section>
+
   `,
-  styles: ``
+  styles: [`
+    .content-manga{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 2rem 20rem;}
+
+    .card {
+      img {
+        border-radius: 10px;
+        height: 100%;
+        width: 100%;
+      }
+    }`]
 })
 export class GenreComponent implements OnInit {
   idOfUrl!:number; // id du genre récupéré à partir de l'url.
