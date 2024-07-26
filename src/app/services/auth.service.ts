@@ -8,7 +8,7 @@ import { User } from '../types';
     providedIn: 'root'
 })
 export class AuthService {
-    private authUrl = 'http://localhost:8080/swagger-ui/index.html';
+    private authUrl = 'http://localhost:8080/api/user';
     private authenticated: boolean = false;
 
     constructor(private http: HttpClient) {}
