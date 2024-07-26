@@ -1,13 +1,18 @@
+import { FormsModule } from '@angular/forms';
+import { SearchMangaService } from './services/search-manga.service';
 import { Component, Input } from '@angular/core';
-import { RouterOutlet, RouterModule } from '@angular/router';
+import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { Manga } from './types';
+import { PicturesPipe } from "./pipes/pictures.pipe"
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, FontAwesomeModule],
+  imports: [RouterOutlet, RouterModule, FontAwesomeModule, FormsModule, PicturesPipe],
   template: `
+  <div (click)="removeDisplaySearchManga()">
     <div class="container mx-auto">
       <!-- nav mobile -->
       <nav class="flex py-3 justify-evenly nav-mobile">
@@ -22,23 +27,50 @@ import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesom
 
     <div class="bannierre">
       <div class="container mx-auto">
+            @if(!msg){
+              <div class="nav-desktop-box-mangas-find flex flex-wrap justify-around bg-black h-auto w-auto">
+              @for (manga of mangas; track manga.id) {
+                <div class="mb-4 mt-8 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                  <a [routerLink]="'/manga/' + manga.id">
+                      <img class="rounded-t-lg" src="{{base64+ (manga | pictures)}}" alt="{{manga | pictures: false}}" />
+                  </a>
+                  <div class="p-5">
+                      <a [routerLink]="'/manga/' + manga.id">
+                          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Synopsis</h5>
+                      </a>
+                      <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{manga.summary}}</p>
+                      <a [routerLink]="'/manga/' + manga.id" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                          Lire plus
+                          <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                          </svg>
+                      </a>
+                  </div>
+                </div>
+              }
+            </div>
+            }
         <!-- nav desktop -->
         <nav class="py-3 flex flex-row px-10 justify-around nav-desktop">
           <a routerLink="/"><img src="assets/img/logo.png" alt=""></a>
           <div class="mb-5">
             <div class="search-div">
-              <form action="/action_page.php">
+              <form (submit)="searchManga($event)">
                 <div class="flex flex-row">
-                  <input type="text" placeholder="Search.." name="search">
+                  <input type="text" [(ngModel)]="manga" name="manga" placeholder="Search.." >
                   <button type="submit" class="ml-1 search-btn"><fa-icon [icon]="faSearch"></fa-icon></button>
                 </div>
               </form>
             </div>
-            <ul class="flex flex-row justify-around py-1">
+
+            <ul class="nav-desktop-box-items flex flex-row justify-around py-1">
               <li><a class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faBook"></fa-icon> Genres</a></li>
               <li><a class="flex flex-row" href=""><img class="mr-1" src="assets/svg/new.svg" alt="">News</a></li>
               <li><a class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faShuffle"></fa-icon>Découverte</a></li>
             </ul>
+            @if(msg){
+              <div class="text-center">{{msg}}</div>
+            }
           </div>
           <div class="flex flex-row gap-10">
             <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
@@ -95,8 +127,21 @@ import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesom
         <br>Contact, Mention legale - All rights reserved
       </p>
     </footer>
+    </div>
   `,
   styles: [`
+
+    .bannierre{
+      position:relative;
+    }
+
+    .nav-desktop-box-mangas-find{
+      position:absolute;
+      position: absolute;
+      margin: 6rem 10rem;
+      z-index: 9999;
+    }
+
     .nav-desktop {
       display: none;
     }
@@ -176,4 +221,46 @@ export class AppComponent {
   faCartShopping = faCartShopping;
   faUser = faUser;
   faSearch = faSearch;
+
+  base64:string="data:image/webp;base64,";
+  mangas!: Manga[];
+  manga: string="";
+  msg: string="";
+  isClick: boolean=false;
+
+  constructor(private searchMangaService: SearchMangaService, private router: Router){}
+
+  ngOnInit(){
+    this.searchMangaService.currentSearch.subscribe(mangas=>{
+      this.mangas=mangas;
+      console.log("isClick ", this.isClick);
+      
+      if(mangas.length===0 && this.isClick){
+        this.msg="Le mangas n'a pas été trouvé";
+        console.log("if!mangas");
+        
+        setTimeout(() => {
+          this.msg="";
+        }, 3000);
+      }
+    })
+  }
+
+  removeDisplaySearchManga(){
+    this.isClick=false;
+    this.mangas=[];
+  }
+
+  searchManga(event: Event){
+
+    this.isClick=true;
+
+    if(!this.manga){
+      return;
+    }
+
+    event.preventDefault();
+    this.searchMangaService.searchManga(this.manga);
+    this.manga="";
+  }
 }

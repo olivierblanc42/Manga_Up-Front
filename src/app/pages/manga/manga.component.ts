@@ -3,7 +3,7 @@ import { NgClass, CommonModule } from '@angular/common';
 import { MangaService} from "../../services/manga.service";
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Comment, DataManga, Picture, User } from '../../types';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { faBookBookmark, faMessage, faHeart, faStar, faHouse, faHome, faCartShopping} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
@@ -450,6 +450,7 @@ export class MangaComponent implements OnInit{
     isLoading:boolean=false;
     currentPageScroll!:number;
     oldCommentsScroll!:Comment[];
+    oldIdOfUrl!:number;
 
     //Icon list
     faStar=faStar;
@@ -464,15 +465,21 @@ export class MangaComponent implements OnInit{
     constructor(
         private mangaService: MangaService,
         private activatedRoute: ActivatedRoute,
-        private userService: UserService
+        private userService: UserService,
+        private router: Router
     ){
         this.currentPage=0;
+        this.router.routeReuseStrategy.shouldReuseRoute = function() {
+            return false;
+        };
     }
     
     ngOnInit(): void {
         this.currentPageScroll=0;
         this.toggleLoading();
+        
         this.idOfUrl=parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
+        
         this.mangaService.getManga(this.idOfUrl)
 
         this.currentDataMangaSubs();
