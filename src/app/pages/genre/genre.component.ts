@@ -19,16 +19,22 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
     
     <section class="container mx-auto px-5 md:px-10  my-5\t">
-
+  <div>
       <h1>{{ dataGenre?.genre?.label }}</h1>
-    
+      <img src="{{base64G+dataGenre?.genre?.img}}">
+  </div>
       <div class="content-manga ">
         @for (manga of dataGenre?.mangas?.content; track manga.id) {
           <a [routerLink]="'/manga/' + manga.id">
             <ui-card class="" size="card-manga">
 
 
-         
+              @for (picture of manga.pictures ; track picture.id) {
+                <img src="{{base64G+picture.img}}">
+
+              }
+
+
               <p>{{ manga.title }}</p>
             </ui-card>
           </a>
@@ -60,6 +66,9 @@ export class GenreComponent implements OnInit {
   lastPage!: number;
   currentPage!: number;
   dataGenre! : DataGenre | null;
+  base64G:string="data:image/webp;base64,";
+
+
   constructor(
       private genreService: GenreService,
       private activatedRoute: ActivatedRoute,

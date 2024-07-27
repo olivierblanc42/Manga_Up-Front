@@ -3,7 +3,7 @@ import { SearchMangaService } from './services/search-manga.service';
 import { Component, Input } from '@angular/core';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBook, faSearch, faUser, faCartShopping, faShuffle } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faSearch, faUser, faCartShopping, faShuffle,faBars } from '@fortawesome/free-solid-svg-icons';
 import { Manga } from './types';
 import { PicturesPipe } from "./pipes/pictures.pipe"
 
@@ -73,6 +73,7 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
             }
           </div>
           <div class="flex flex-row gap-10">
+            <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
             <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
             <a routerLink="/login" class="icon-user"><fa-icon [icon]="faUser"></fa-icon></a>
           </div>
@@ -221,7 +222,7 @@ export class AppComponent {
   faCartShopping = faCartShopping;
   faUser = faUser;
   faSearch = faSearch;
-
+  faBars = faBars;
   base64:string="data:image/webp;base64,";
   mangas!: Manga[];
   manga: string="";
