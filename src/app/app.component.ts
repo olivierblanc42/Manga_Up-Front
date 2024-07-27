@@ -3,7 +3,16 @@ import { SearchMangaService } from './services/search-manga.service';
 import { Component, Input } from '@angular/core';
 import { RouterOutlet, RouterModule, Router } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBook, faSearch, faUser, faCartShopping, faShuffle,faBars } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBook,
+  faSearch,
+  faUser,
+  faCartShopping,
+  faShuffle,
+  faBars,
+  faPen,
+  faAddressCard, faTag
+} from '@fortawesome/free-solid-svg-icons';
 import { Manga } from './types';
 import { PicturesPipe } from "./pipes/pictures.pipe"
 
@@ -64,16 +73,15 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
             </div>
 
             <ul class="nav-desktop-box-items flex flex-row justify-around py-1">
-              <li><a class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faBook"></fa-icon> Genres</a></li>
-              <li><a class="flex flex-row" href=""><img class="mr-1" src="assets/svg/new.svg" alt="">News</a></li>
-              <li><a class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faShuffle"></fa-icon>Découverte</a></li>
+              <li><a routerLink="/genres"  class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faBook"></fa-icon> Genres</a></li>
+              <li><a  routerLink="/authors"  class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faAddressCard"></fa-icon> Autheur</a></li>
+              <li><a  routerLink="/categories"    class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faTag"></fa-icon>Categories</a></li>
             </ul>
             @if(msg){
               <div class="text-center">{{msg}}</div>
             }
           </div>
           <div class="flex flex-row gap-10">
-            <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
             <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
             <a routerLink="/login" class="icon-user"><fa-icon [icon]="faUser"></fa-icon></a>
           </div>
@@ -174,10 +182,14 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
       .footer-desktop {
         display: flex;
       }
+      
+      // faire les media pour le background
       .bannierre {
         background-image: url("/assets/img/bannierre_mangas_mono.webp");
         color: #E7E08B;
         height: 593px;
+        background-repeat: no-repeat;
+        background-size: cover;
       }
       .search-div {
         width: 449px;
@@ -217,12 +229,15 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
 })
 export class AppComponent {
   title = 'app';
-  faBook = faBook;
-  faShuffle = faShuffle;
-  faCartShopping = faCartShopping;
-  faUser = faUser;
-  faSearch = faSearch;
-  faBars = faBars;
+  protected readonly faBook = faBook;
+  protected readonly faShuffle = faShuffle;
+  protected readonly faCartShopping = faCartShopping;
+  protected readonly faUser = faUser;
+  protected readonly faSearch = faSearch;
+  protected readonly  faBars = faBars;
+  protected readonly faPen = faPen;
+  protected readonly faAddressCard = faAddressCard;
+  protected readonly faTag = faTag;
   base64:string="data:image/webp;base64,";
   mangas!: Manga[];
   manga: string="";
@@ -264,4 +279,7 @@ export class AppComponent {
     this.searchMangaService.searchManga(this.manga);
     this.manga="";
   }
+
+
+
 }

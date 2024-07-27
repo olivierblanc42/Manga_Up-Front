@@ -15,6 +15,8 @@ import { AuthGuard } from './services/auth.guard';
 import {GenreComponent} from "./pages/genre/genre.component";
 import {AuthorComponent} from "./pages/author/author.component";
 import {AuthorsComponent} from "./pages/authors/authors.component";
+import {CategoriesComponent} from "./pages/categories/categories.component";
+import {CategoryComponent} from "./pages/category/category.component";
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -27,6 +29,10 @@ export const routes: Routes = [
     { path: 'manga/:id', component: MangaComponent },
     { path: "genre/:id", component: GenreComponent },
     { path: 'genres', component: GenresComponent },
+    { path: 'genres', component: GenresComponent },
+    { path: "category/:id", component: CategoryComponent },
+    { path: "categories", component: CategoriesComponent },
+
     { path: 'login', component: LoginComponent },
     {
         path: 'admin',
