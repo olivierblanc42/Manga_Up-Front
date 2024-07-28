@@ -88,7 +88,7 @@ export class LoginComponent {
                 console.log('User authenticated', user);
                 this.router.navigate(['/']);
             },
-            error: (err) => console.error('Authentication failed', err)
+           // error: (err) => console.error('Authentication failed', err)
         });
     }
 }
