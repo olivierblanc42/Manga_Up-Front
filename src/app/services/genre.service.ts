@@ -10,9 +10,9 @@ import {Genre, Genres, DataGenre} from '../types';
 })
 
 export class GenreService {
-    url="http://localhost:8080/api/genres";
-    urlSixForHome ="http://localhost:8080/api/genres/six"
-    urlMangaInGenre = "http://localhost:8080/api/genres/genre"
+    url="/api/genres";
+    urlSixForHome ="/api/genres/six"
+    urlMangaInGenre = "/api/genres/genre"
     /**
      * Ajoute des options dans le header et dans le body
      */

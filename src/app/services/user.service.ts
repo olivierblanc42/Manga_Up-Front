@@ -8,8 +8,8 @@ import {DataUser, Manga, User} from '../types';
 })
 export class UserService {
 
-    url="http://localhost:8080/api/users";
-    urlAdmin = "http://localhost:8080/api/users/admin"
+    url="/api/users";
+    urlAdmin = "/api/users/admin"
 
     options = {
         headers: new HttpHeaders({

@@ -10,8 +10,8 @@ import {Category, Categories,Genre, Genres, DataGenre,DataCategory} from '../typ
 })
 
 export class CategoryService {
-    url="http://localhost:8080/api/categories";
-    urlMangaInCategory = "http://localhost:8080/api/categories/category"
+    url="/api/categories";
+    urlMangaInCategory = "/api/categories/category"
     /**
      * Ajoute des options dans le header et dans le body
      */

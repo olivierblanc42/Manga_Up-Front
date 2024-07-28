@@ -5,9 +5,13 @@ import { Manga } from '../types';
   name: 'pictures',
   standalone: true
 })
+
 export class PicturesPipe implements PipeTransform {
 
     transform(manga: Manga, searcheImg: boolean=true): String {
+        if(!manga || !manga.pictures){
+            return '';
+        }
         let img="";
         let title="";
         for (const picture of manga.pictures) {

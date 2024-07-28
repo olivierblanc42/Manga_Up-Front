@@ -8,8 +8,8 @@ import {BehaviorSubject} from "rxjs";
 })
 export class AuthorService {
 
-    url="http://localhost:8080/api/authors";
-    urlDataAuthor ="http://localhost:8080/api/authors/author"
+    url="/api/authors";
+    urlDataAuthor ="/api/authors/author"
     /**
      * Ajoute des options dans le header et dans le body
      */

@@ -10,18 +10,22 @@ import { User } from '../../types';
     standalone: true,
     imports: [FormsModule, CommonModule],
     template: `
-    <div>
-      <h2>Login</h2>
-      <form (submit)="login($event)">
-        <label for="username">Username</label>
-        <input type="text" [(ngModel)]="username" name="username" required>
-        
-        <label for="password">Password</label>
-        <input type="password" [(ngModel)]="password" name="password" required>
-        
-        <button type="submit">Login</button>
-      </form>
-    </div>
+        <div *ngIf="!isAuthenticated">
+            <form (submit)="login($event)">
+                <div>
+                    <label for="username">Username</label>
+                    <input id="username" [(ngModel)]="username" name="username" required>
+                </div>
+                <div>
+                    <label for="password">Password</label>
+                    <input id="password" type="password" [(ngModel)]="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        <div *ngIf="isAuthenticated">
+            <p>Vous êtes connecté maintenant!</p>
+        </div>
   `,
     styles: [`
     .login-container {
@@ -78,6 +82,7 @@ import { User } from '../../types';
 export class LoginComponent {
     username: string = '';
     password: string = '';
+    isAuthenticated: boolean = false;
 
     constructor(private authService: AuthService, private router: Router) {}
 
@@ -86,6 +91,7 @@ export class LoginComponent {
         this.authService.login(this.username, this.password).subscribe({
             next: (user: User) => {
                 console.log('User authenticated', user);
+                this.isAuthenticated = true;
                 this.router.navigate(['/']);
             },
            // error: (err) => console.error('Authentication failed', err)

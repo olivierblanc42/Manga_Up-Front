@@ -7,7 +7,7 @@ import { Comment } from '../types';
     providedIn: 'root'
 })
 export class CommentService {
-    url="http://localhost:8080/api/comments";
+    url="/api/comments";
 
     headers=new HttpHeaders()
         .set("content-type", "application/json")

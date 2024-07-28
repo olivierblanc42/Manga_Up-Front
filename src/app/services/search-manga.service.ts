@@ -15,7 +15,7 @@ export class SearchMangaService {
         "Access-Control-Allow-Origin": '*'
     })
 
-    url="http://localhost:8080/api/mangas/search"
+    url="/api/mangas/search"
     search=new BehaviorSubject<Manga[]>([]);
     currentSearch=this.search.asObservable();
 

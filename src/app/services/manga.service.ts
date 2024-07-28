@@ -7,12 +7,12 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class MangaService {
-    url="http://localhost:8080/api/mangas";
+    url="/api/mangas";
     urlLike=`${this.url}/like`;
-    urlTenManga = "http://localhost:8080/api/mangas/ten";
-    urlNineManga = "http://localhost:8080/api/mangas/nine";
-    urlOneManga = "http://localhost:8080/api/mangas/oderOne";
-    urlOrderDate  = "http://localhost:8080/api/mangas/oderDate" ;
+    urlTenManga = "/api/mangas/ten";
+    urlNineManga = "/api/mangas/nine";
+    urlOneManga = "/api/mangas/oderOne";
+    urlOrderDate  = "/api/mangas/oderDate" ;
     /**
      * Ajoute des options dans le header et dans le body
      */

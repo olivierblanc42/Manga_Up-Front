@@ -8,7 +8,7 @@ import { User } from '../types';
     providedIn: 'root'
 })
 export class AuthService {
-    private authUrl = 'http://localhost:8080/api/user';
+    private authUrl = '/api/user';
     private authenticated: boolean = false;
 
     options = {
@@ -30,7 +30,7 @@ export class AuthService {
         });
 
 
-        return this.http.get<User>(this.authUrl, { headers:this.options.headers /*withCredentials: true*/ }).pipe(
+        return this.http.get<User>(this.authUrl, { headers:this.options.headers, withCredentials: true }).pipe(
             tap((user: User) => {
                 this.authenticated = true;
             })

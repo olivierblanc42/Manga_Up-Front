@@ -7,7 +7,7 @@ import { Picture } from '../types';
   providedIn: 'root'
 })
 export class PictureService {
-    url="http://localhost:8080/api/pictures";
+    url="/api/pictures";
 
     headers=new HttpHeaders()
         .set("content-type", "application/json")
