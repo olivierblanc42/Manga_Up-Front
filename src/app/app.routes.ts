@@ -18,6 +18,18 @@ import {AuthorsComponent} from "./pages/authors/authors.component";
 import {CategoriesComponent} from "./pages/categories/categories.component";
 import {CategoryComponent} from "./pages/category/category.component";
 
+// ADMIN Component
+import {CategoriesAdminComponent} from "./pages/Admin/categories/categoriesAdmin.component";
+import {CategoryAdminComponent} from "./pages/Admin/category/categoryAdmin.component";
+import {AuthorAdminComponent} from "./pages/Admin/author/author.component";
+import {AuthorsAdminComponent} from "./pages/Admin/authors/authors.component";
+import {MangasAdminComponent} from "./pages/Admin/mangas/mangas.component";
+import {MangaAdminComponent} from "./pages/Admin/manga/manga.component";
+import {GenresAdminComponent} from "./pages/Admin/genres/genres.component";
+import {GenreAdminComponent} from "./pages/Admin/genre/genre.component";
+
+
+
 export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'about', component: AboutComponent },
@@ -29,18 +41,26 @@ export const routes: Routes = [
     { path: 'manga/:id', component: MangaComponent },
     { path: "genre/:id", component: GenreComponent },
     { path: 'genres', component: GenresComponent },
-    { path: 'genres', component: GenresComponent },
     { path: "category/:id", component: CategoryComponent },
     { path: "categories", component: CategoriesComponent },
+
 
     { path: 'login', component: LoginComponent },
     {
         path: 'admin',
         component: AdminLayoutComponent,
-        canActivate: [AuthGuard],
+       canActivate: [AuthGuard],
         children: [
-            { path: 'users', component: UsersComponent },
-            { path: 'users/:id', component: UserComponent },
+            {path: 'users', component: UsersComponent },
+            {path: 'users/:id', component: UserComponent },
+            {path: "categories", component: CategoriesAdminComponent},
+            {path: "category/:id", component: CategoryAdminComponent},
+            {path: "authors", component: AuthorsAdminComponent},
+            {path: "author/:id", component: AuthorAdminComponent},
+            {path: 'mangas', component: MangasAdminComponent },
+            {path: 'manga/:id', component: MangaAdminComponent },
+            {path: "genre/:id", component: GenreAdminComponent },
+            {path: 'genres', component: GenresAdminComponent },
         ]
     },
     { path: 'error/:code', component: ErrorComponent },

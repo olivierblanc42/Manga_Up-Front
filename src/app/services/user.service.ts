@@ -53,12 +53,12 @@ export class UserService {
      *
      */
     getUsers(){
-        this.http.get<User[]>(this.urlAdmin)
+        this.http.get<User[]>(`${this.url}`, {headers: this.options.headers})
             .pipe()
             .toPromise()
-            .then((r) => {
-                if (!r) return;
-
+            .then(r=>{
+                if(!r) return;
+                console.log("user.service getUser : ", r);
                 this.users.next(r);
             })
     }

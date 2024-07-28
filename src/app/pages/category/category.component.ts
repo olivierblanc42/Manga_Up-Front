@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {CardComponent} from "../../components/card/card.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {ActivatedRoute, RouterLink} from "@angular/router";
@@ -53,7 +53,7 @@ import {DataCategory} from "../../types";
       }
     }`]
 })
-export class CategoryComponent {
+export class CategoryComponent implements OnInit{
   idOfUrl!:number; // id du genre récupéré à partir de l'url.
   pages!: number[]; // Nombre de page
   lastPage!: number;

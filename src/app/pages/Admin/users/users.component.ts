@@ -11,9 +11,9 @@ import {RouterModule} from "@angular/router";
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
 
-      <a [routerLink]="'/admin'">retour admin</a>
+    
 
-      <div class="flex flex-col gap-2 mt-4 users-container">
+      <div class="flex flex-col gap-2 mt-4 admin-container">
           <table>
               <thead>
               <tr>
@@ -39,7 +39,7 @@ import {RouterModule} from "@angular/router";
       
   `,
   styles: [`
-    .users-container{
+    .admin-container{
       width: 80%;
       margin-left: auto;
       margin-right: auto;
