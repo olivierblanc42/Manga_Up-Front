@@ -1,35 +1,29 @@
-import {Component, OnInit} from '@angular/core';
-import {Comment, DataGenre, Picture, User} from '../../types';
-import {MangaService} from "../../services/manga.service";
-import {ActivatedRoute, RouterLink} from "@angular/router";
-import {UserService} from "../../services/user.service";
-import {GenreService} from "../../services/genre.service";
+import { Component } from '@angular/core';
 import {CardComponent} from "../../components/card/card.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {ActivatedRoute, RouterLink} from "@angular/router";
+import {CategoryService} from "../../services/category.service";
+import {DataCategory} from "../../types";
 
 @Component({
-  selector: 'app-genre',
+  selector: 'app-category',
   standalone: true,
   imports: [
-    CardComponent,
+      CardComponent,
     FaIconComponent,
-    RouterLink
-  ],
+    RouterLink],
   template: `
-
-    
     <section class="container mx-auto px-5 md:px-10  my-5\t">
-  <div>
-      <h1>{{ dataGenre?.genre?.label }}</h1>
-      <img src="{{base64G+dataGenre?.genre?.img}}">
-  </div>
-      <div class="content-manga ">
-        @for (manga of dataGenre?.mangas?.content; track manga.id) {
+      <div>
+        <h1>{{ data?.category?.name }}</h1>
+      </div>
+      <div class="content-category ">
+        @for (manga of data?.mangas?.content; track manga.id) {
           <a [routerLink]="'/manga/' + manga.id">
             <ui-card class="" size="card-manga">
 
 
-              @for (picture of manga.pictures ; track picture.id) {
+              @for (picture of manga.pictures; track picture.id) {
                 <img src="{{base64G+picture.img}}">
 
               }
@@ -42,10 +36,9 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
       </div>
     </section>
-
   `,
-  styles: [`
-    .content-manga{
+  styles:  [`
+    .content-category{
       display: flex;
       flex-direction: row;
       justify-content: space-around;
@@ -60,29 +53,31 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
       }
     }`]
 })
-export class GenreComponent implements OnInit {
+export class CategoryComponent {
   idOfUrl!:number; // id du genre récupéré à partir de l'url.
   pages!: number[]; // Nombre de page
   lastPage!: number;
   currentPage!: number;
-  dataGenre! : DataGenre | null;
+  data! : DataCategory | null;
   base64G:string="data:image/webp;base64,";
 
 
   constructor(
-      private genreService: GenreService,
+      private categoryService: CategoryService,
       private activatedRoute: ActivatedRoute,
   ){
-    this.currentPage=0;
+   // this.currentPage=0;
   }
+
   ngOnInit(): void {
     this.idOfUrl=parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
 
-    this.genreService.getMangaGenre(this.idOfUrl)
-
-    this.genreService.currentDataGenre.subscribe( dataGenre =>{
-      this.dataGenre = dataGenre;
+this.categoryService.getMangaCategory(this.idOfUrl);
+    this.categoryService.currentDataCategory.subscribe( data =>{
+      this.data = data;
     } )
 
   }
+
+
 }

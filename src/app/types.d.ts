@@ -23,6 +23,14 @@ export type Category = {
     createdAt: Date;
 };
 
+
+export type Categories = {
+    content: Category[];
+    size: number;
+    totalElements: number;
+    totalPages: number;
+};
+
 export type Comment = {
     id: number;
     rating: number;
@@ -133,6 +141,11 @@ export type DataUser = {
 
 }
 
+export type DataCategory = {
+    mangas: Mangas;
+    category: Category;
+
+}
 
 
 export type Address = {

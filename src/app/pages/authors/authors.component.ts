@@ -14,9 +14,22 @@ import {Author, Genres} from "../../types";
     RouterLink,
     NgClass],
   template: `
-    <p>
-      authors works!
-    </p>
+    <section class="container mx-auto px-5 md:px-10	my-5	">
+
+      <h2 class="my-5">Auteurs</h2>
+
+
+      <div class="content-genre">
+        @for (author of authors; track author.id) {
+          <a [routerLink]="'/author/' + author.id">
+            <ui-card class="card" size="card-genre">
+
+              <p>{{ author.lastname }}</p>
+            </ui-card>
+          </a>
+        }
+      </div>
+    </section>
   `,
   styles: ``
 })
@@ -28,6 +41,7 @@ export class AuthorsComponent implements OnInit {
 
 }
   authors!: Author[]|null;
+  base64G:string="data:image/webp;base64,";
 
 
   ngOnInit(): void {
