@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { SearchMangaService } from './services/search-manga.service';
-import { Component, Input } from '@angular/core';
-import { RouterOutlet, RouterModule, Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterOutlet, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faBook,
@@ -244,17 +244,14 @@ export class AppComponent {
   msg: string="";
   isClick: boolean=false;
 
-  constructor(private searchMangaService: SearchMangaService, private router: Router){}
+  constructor(private searchMangaService: SearchMangaService){}
 
   ngOnInit(){
     this.searchMangaService.currentSearch.subscribe(mangas=>{
       this.mangas=mangas;
-      console.log("isClick ", this.isClick);
       
       if(mangas.length===0 && this.isClick){
         this.msg="Le mangas n'a pas été trouvé";
-        console.log("if!mangas");
-        
         setTimeout(() => {
           this.msg="";
         }, 3000);
