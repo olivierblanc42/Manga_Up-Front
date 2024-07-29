@@ -8,7 +8,7 @@ import {ActivatedRoute} from "@angular/router";
   standalone: true,
   imports: [],
   template: `
-    <section class="user">
+    <section class="admin-container">
       <h1>Information sur le Genre {{ data?.genre?.label }}  </h1>
       <ul>
   
@@ -23,7 +23,7 @@ import {ActivatedRoute} from "@angular/router";
     </section>
   `,
   styles:  [`
-  .user{
+  .admin-container{
     width: 80%;
     margin-right: auto;
     margin-left: auto;

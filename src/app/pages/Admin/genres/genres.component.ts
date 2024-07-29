@@ -10,6 +10,7 @@ import {RouterLink} from "@angular/router";
     RouterLink
   ],
   template: `
+    <h2>Genre des mangas</h2>
     <div class="flex flex-col gap-2 mt-4 admin-container">
       <table>
         <thead>

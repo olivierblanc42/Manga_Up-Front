@@ -11,36 +11,32 @@ import {UserService} from "../../../services/user.service";
     RouterLink
   ],
   template: `
-    <section class="user">
-      <h1>Information sur le manga {{ data?.manga?.title }}  </h1>
-     <ul>
-      @for (author of data?.manga?.authors; track author.id) {
-        <li><a  [routerLink]="'/admin/author/' + author.id">{{author.firstname}}</a></li>
-      }
-     </ul>
+    <section class="admin-container">
+      <h1>Information sur le manga {{ data?.manga?.title }} </h1>
+      <div>
+        <p><span>date de creation:</span> {{ data?.manga?.createdAt }}</p>
+        <p><span>date debut de publication:</span> {{ data?.manga?.releaseDate }}</p>
+        <ul>
+         <li><span>Auteur(S): </span></li>
+          @for (author of data?.manga?.authors; track author.id) {
+            <li><a [routerLink]="'/admin/author/' + author.id">{{ author.firstname }}</a>,</li>
+          }
+        </ul>
+        <p><span>Resumé: </span> {{ data?.manga?.summary }}</p>
+        <p><span>price:</span> {{ data?.manga?.price }}</p>
+        <p><span>Catégorie:</span> {{ data?.manga?.category?.name }}</p>
+        <ul>
+          <li><span>Genre:</span></li>
+          @for(genre of data?.manga?.genres ; track genre.id ){
+            <li><a [routerLink]="'/admin/genre/' + genre.id">{{ genre.label }}</a>,</li>
 
-        <div>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <div>
-          <p>   </p>
-          <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-
-          </ul>
-
-        </div>
+          }
+        </ul>
       </div>
     </section>
   `,
   styles:  [`
-  .user{
+  .admin-container{
     width: 80%;
     margin-right: auto;
     margin-left: auto;
@@ -49,6 +45,10 @@ import {UserService} from "../../../services/user.service";
     padding: 1rem;
     margin-bottom: 1rem;
     margin-top: 1rem;
+    span{
+      font-weight: bolder;
+      text-transform: uppercase;
+    }
   }
   
   `]

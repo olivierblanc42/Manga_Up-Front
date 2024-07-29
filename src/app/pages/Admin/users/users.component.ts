@@ -11,7 +11,7 @@ import {RouterModule} from "@angular/router";
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
 
-    
+      <h2>Compte utilisateur</h2>
 
       <div class="flex flex-col gap-2 mt-4 admin-container">
           <table>

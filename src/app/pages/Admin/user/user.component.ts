@@ -10,22 +10,22 @@ import { DataUser, User,} from "../../../types";
   imports: [CommonModule, FormsModule, RouterModule],
   template: `
 
-    <section class="user">
-      <h1>Information sur l'utilisateur {{ dataUser?.user?.fisrtname }} , {{ dataUser?.user?.lastname }} </h1>
-      <div>
-        <p>Firstname:  {{ dataUser?.user?.fisrtname }}</p>
-        <p>Lastname:  {{ dataUser?.user?.lastname }}</p>
-        <p>Username:  {{ dataUser?.user?.username }}</p>
-        <p>Email:  {{ dataUser?.user?.email }}</p>
-        <p>Genre: {{ dataUser?.user?.gender?.label}}</p>
-        <div>
-          <p>Adresse:  </p>
+    <section class="admin-container">
+      <h1>Information sur l'utilisateur <span>{{ dataUser?.user?.fisrtname }} , {{ dataUser?.user?.lastname }}</span> </h1>
+      
+      <div class="content-div">
+        <p><span>Firstname: </span> {{ dataUser?.user?.fisrtname }}</p>
+        <p><span>Lastname: </span> {{ dataUser?.user?.lastname }}</p>
+        <p><span>Username: </span> {{ dataUser?.user?.username }}</p>
+        <p><span>Email: </span> {{ dataUser?.user?.email }}</p>
+        <p><span>Genre:</span> {{ dataUser?.user?.gender?.label}}</p>
+        <div class="adresse">
+          <p><span>Adresse:</span>  </p>
           <ul>
             <li>{{ dataUser?.user?.address?.line1}}</li>
             <li>{{ dataUser?.user?.address?.line2}}</li>
             <li>{{ dataUser?.user?.address?.line3}}</li>
             <li>{{ dataUser?.user?.address?.postal_code}}</li>
-
           </ul>
           
         </div>
@@ -35,7 +35,7 @@ import { DataUser, User,} from "../../../types";
     
   `,
   styles: [`
-  .user{
+  .admin-container{
     width: 80%;
     margin-right: auto;
     margin-left: auto;
@@ -44,6 +44,19 @@ import { DataUser, User,} from "../../../types";
     padding: 1rem;
     margin-bottom: 1rem;
     margin-top: 1rem;
+  }
+  .content-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 1rem;
+    span{
+      font-weight: bolder;
+      text-transform: uppercase;
+    }
+    .adresse li{
+      padding-left: 0.8REM ;
+    }
   }
   
   `]

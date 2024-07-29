@@ -27,6 +27,8 @@ import {MangasAdminComponent} from "./pages/Admin/mangas/mangas.component";
 import {MangaAdminComponent} from "./pages/Admin/manga/manga.component";
 import {GenresAdminComponent} from "./pages/Admin/genres/genres.component";
 import {GenreAdminComponent} from "./pages/Admin/genre/genre.component";
+import {GendersAdminComponent} from "./pages/Admin/genders/genders.component";
+import {GenderAdminComponent} from "./pages/Admin/gender/gender.component";
 
 
 
@@ -49,7 +51,7 @@ export const routes: Routes = [
     {
         path: 'admin',
         component: AdminLayoutComponent,
-       canActivate: [AuthGuard],
+      //  canActivate: [AuthGuard],
         children: [
             {path: 'users', component: UsersComponent },
             {path: 'users/:id', component: UserComponent },
@@ -61,6 +63,9 @@ export const routes: Routes = [
             {path: 'manga/:id', component: MangaAdminComponent },
             {path: "genre/:id", component: GenreAdminComponent },
             {path: 'genres', component: GenresAdminComponent },
+            {path: 'genders', component: GendersAdminComponent },
+            {path: 'gender/:id', component: GenderAdminComponent },
+
         ]
     },
     { path: 'error/:code', component: ErrorComponent },

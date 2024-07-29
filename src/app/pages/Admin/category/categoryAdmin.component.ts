@@ -8,34 +8,18 @@ import {ActivatedRoute} from "@angular/router";
   standalone: true,
   imports: [],
   template: `
-    <section class="user">
-      <h1>Information sur le catégorie {{ data?.category?.name}}  </h1>
-      <ul>
- 
-      </ul>
+    <section class="admin-container">
+      <h1>Information sur le catégorie <span> {{ data?.category?.name}} </span> </h1>
+    <div class="content-div">
+      
+     <p><span>Date de creation: </span>{{ data?.category?.description}}</p>
+      <p><span>Description: </span>{{ data?.category?.description}}</p>
 
-      <div>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <div>
-          <p>   </p>
-          <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
-
-          </ul>
-
-        </div>
-      </div>
+    </div>
     </section>
   `,
   styles:  [`
-  .user{
+  .admin-container{
     width: 80%;
     margin-right: auto;
     margin-left: auto;
@@ -44,6 +28,10 @@ import {ActivatedRoute} from "@angular/router";
     padding: 1rem;
     margin-bottom: 1rem;
     margin-top: 1rem;
+      span{
+        font-weight: bolder;
+        text-transform: uppercase;
+    }
   }
   
   `]

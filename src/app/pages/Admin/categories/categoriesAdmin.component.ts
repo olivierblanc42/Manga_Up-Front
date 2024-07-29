@@ -10,12 +10,13 @@ import {RouterLink} from "@angular/router";
     RouterLink
   ],
   template: `
+    <h2>Catégories</h2>
     <div class="flex flex-col gap-2 mt-4 admin-container">
       <table>
         <thead>
         <tr>
-          <th>Utilisateur</th>
-          <th>Email</th>
+          <th>Nom</th>
+          <th>Description</th>
           <th>Action</th>
         </tr>
         </thead>
