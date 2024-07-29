@@ -1,12 +1,13 @@
 import { UserService} from "../../services/user.service";
 import { NgClass, CommonModule } from '@angular/common';
 import { MangaService} from "../../services/manga.service";
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Comment, DataManga, Picture, User } from '../../types';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { faBookBookmark, faMessage, faHeart, faStar, faHouse, faHome, faCartShopping} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { InfiniteScrollModule } from "ngx-infinite-scroll";
+import { filter } from "rxjs";
 
 
 @Component({
@@ -92,7 +93,7 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
     <div class="commentaries mb-28 ">
         <div class="commentaries-box">
             <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES ({{nbComments()}})</p></div>
-            <ul class="commentaries-box-ul mb-12 scroll" 
+            <ul class="commentaries-box-ul mb-12" [ngClass]="{'noScroll': comments.length === 0, 'scroll': comments.length > 0}" 
                 infiniteScroll 
                 [infiniteScrollDistance]="2"
                 [infiniteScrollThrottle]="500"
@@ -110,8 +111,9 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
                     <p class="comment-body px-4 py-8 mb-8 background-color-black-c37a50">{{comment.comment}}</p>
                     </li>
                 }
-                @if(isLoading){
-                <div>Loading...</div>
+                
+                @if(isLoading && comments.length > 0){
+                    <div class="lds-circle"><div></div></div>
                 }
             </ul>
             <div class="comment-end h-20 pl-4 pt-8 background-color-black-c16a25 uppercase">
@@ -156,9 +158,47 @@ import { InfiniteScrollModule } from "ngx-infinite-scroll";
   `,
   styles: [`
 
+    .lds-circle {
+        display: inline-block;
+        transform: translateZ(1px);
+    }
+
+    .lds-circle > div {
+        display: inline-block;
+        width: 124px;
+        height: 124px;
+        margin: 8px;
+        border-radius: 50%;
+        background: #c51162;
+        animation: lds-circle 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+    
+    @keyframes lds-circle {
+        0%, 100% {
+            animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+        }
+
+        0% {
+            transform: rotateY(0deg);
+        }
+
+        50% {
+            transform: rotateY(1800deg);
+            animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+        }
+
+        100% {
+            transform: rotateY(3600deg);
+        }
+    }
+
     .scroll{
         overflow: scroll;
         height:98rem;
+    }
+
+    .noScroll{
+        height:auto;
     }
 
     .opinions-stars-one, .opinions-stars-one-vote{
@@ -452,6 +492,7 @@ export class MangaComponent implements OnInit{
     oldCommentsScroll!:Comment[];
     oldIdOfUrl!:number;
 
+
     //Icon list
     faStar=faStar;
     faHeart=faHeart;
@@ -464,9 +505,9 @@ export class MangaComponent implements OnInit{
     
     constructor(
         private mangaService: MangaService,
-        private activatedRoute: ActivatedRoute,
+        @Inject(ActivatedRoute) private activatedRoute: ActivatedRoute,
         private userService: UserService,
-        private router: Router
+        @Inject(Router) private router: Router
     ){
         this.currentPage=0;
         this.router.routeReuseStrategy.shouldReuseRoute = function() {
@@ -477,7 +518,7 @@ export class MangaComponent implements OnInit{
     ngOnInit(): void {
         this.currentPageScroll=0;
         this.toggleLoading();
-        
+ 
         this.idOfUrl=parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
         
         this.mangaService.getManga(this.idOfUrl)
@@ -486,9 +527,16 @@ export class MangaComponent implements OnInit{
 
         this.userService.getUser("5");
         this.currentDataUserSubs();
-
+        
         this.currentIsFavoriteSubs();
-
+    }
+    /**
+     * 
+     * @returns {Array} Retourne la liste des commentaires sans doublons.
+     */
+    verfifDuplicateComments(){
+        const ids=this.oldCommentsScroll.map(({id})=>id)
+        return this.oldCommentsScroll.filter(({id}, index) => !ids.includes(id, index+1))
     }
 
     /**
@@ -498,18 +546,20 @@ export class MangaComponent implements OnInit{
         this.mangaService.currentDataManga.subscribe(data=>{
             this.data=data;
             if(this.oldCommentsScroll && this.currentPageScroll > 0 ){
+                
                 this.oldCommentsScroll=[...this.oldCommentsScroll, ...this.data?.comments.content!]
             }else{
                 this.oldCommentsScroll=[...this.data?.comments.content!]
             }
-            console.log("this.oldCommentsScroll : ", this.oldCommentsScroll);
-            this.comments=this.oldCommentsScroll;
+            
+            this.comments=this.verfifDuplicateComments();
 
             this.pages=this.convertNumberToArray(this.data?.comments?.totalPages!)
             this.lastPage=this.data?.comments?.totalPages!;
             this.strToLowerCaseAndFirstLetter();
             this.searchPicturesIsPoster();
             this.nbComments();
+            
         });
     }
 
