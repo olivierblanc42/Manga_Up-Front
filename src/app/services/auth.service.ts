@@ -8,7 +8,7 @@ import { User } from '../types';
     providedIn: 'root'
 })
 export class AuthService {
-    private authUrl = '/api/user';
+    private authUrl = '/api/users';
     private authenticated: boolean = false;
 
     options = {
