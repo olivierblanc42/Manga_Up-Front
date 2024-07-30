@@ -6,6 +6,7 @@ import {ActivatedRoute, RouterLink} from "@angular/router";
 import {GenreService} from "../../services/genre.service";
 import {CardComponent} from "../../components/card/card.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-mangas',
@@ -13,7 +14,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
   imports: [
     CardComponent,
     FaIconComponent,
-    RouterLink
+    RouterLink,
+    NgClass
   ],
   template: `
 
@@ -40,6 +42,40 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 
       </div>
     </section>
+
+    <div class="pagination">
+
+      @for(page of pages; track page; let count=$index){
+        @if(count===0){
+          <li>
+            <button
+                (click)="pagePrevious()"
+                [ngClass]="currentPage <= 0 ? 'grey-desactive-btn': 'blue-active-btn'"
+                class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >Previous</button>
+          </li>
+        }
+        <li>
+
+          <button (click)="pageMangas(page)"
+                  class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-yellow-100 dark:hover:text-gray-700"
+                  [ngClass]="currentPage===page ? 'bg-yellow-100':'background-color-pagination-yellow'"
+          >
+            {{count+1}}
+          </button>
+        </li>
+        @if(count===lastPage-1){
+          <li>
+            <button
+                (click)="pageNext()"
+                [ngClass]="currentPage===lastPage-1 ? 'grey-desactive-btn': 'blue-active-btn'"
+                class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
+          </li>
+        }
+      }
+
+    </div>
+    
   `,
   styles: [`
 
@@ -50,8 +86,17 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
       flex-wrap: wrap;
       gap: 2rem 20rem;
     }
-  
-  
+
+    .pagination{
+      display: flex;
+      flex-direction: row;
+      justify-content: left;
+      gap: 1rem;
+      padding: 1rem;
+      li{
+        list-style: none;
+      }
+    }
   `]
 })
 export class MangasComponent implements OnInit{
@@ -68,7 +113,10 @@ export class MangasComponent implements OnInit{
       private mangaService: MangaService,
       private pictureService: PictureService,
 
-  ){}
+  ){
+    this.currentPage=1;
+
+  }
 
 
   ngOnInit(): void {
@@ -76,6 +124,8 @@ export class MangasComponent implements OnInit{
     this.mangaService.currentMangaPagination.subscribe(mangas =>{
       this.mangas = mangas
       console.log(this.mangas)
+      this.pages = this.convertNumberToArray(this.mangas?.totalPages!)
+      this.lastPage =this.mangas?.totalPages!;
     })
 
     this.pictureService.currentPictures.subscribe(pictures =>this.pictures = pictures)
@@ -103,7 +153,7 @@ export class MangasComponent implements OnInit{
     console.log("dans pageComments page : ", page);
     this.currentPage=page;
     console.log("dans pageComments currentPage : ", this.currentPage);
-    this.mangaService.getManga(page);
+    this.mangaService.getMangas(page);
   }
 
 

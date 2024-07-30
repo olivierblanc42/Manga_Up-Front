@@ -33,9 +33,8 @@ import {Genres} from "../../types";
       </div>
     </section>
 
-    <div class="comment-end h-20 pl-4 pt-8 background-color-black-c16a25 uppercase">
-      <div class="navigation">
-        <nav>
+      <div class="pagination">
+       
           @for(page of pages; track page; let count=$index){
             @if(count===0){
               <li>
@@ -64,9 +63,9 @@ import {Genres} from "../../types";
               </li>
             }
           }
-        </nav>
+       
       </div>
-    </div>
+   
     
     
     
@@ -88,14 +87,17 @@ import {Genres} from "../../types";
       }
     }
 
-    .navigation nav{
-      margin-left: 2rem;
-    }
-
-    .navigation {
-      display:block;
-    }
-    
+ .pagination{
+   display: flex;
+   flex-direction: row;
+   justify-content: left;
+   gap: 1rem;
+   padding: 1rem;
+   li{
+     list-style: none;
+   }
+ }
+ 
   `]
 })
 export class GenresComponent implements OnInit{

@@ -25,7 +25,9 @@ export class CategoryService {
         },
     };
 
-
+    constructor(
+        private http: HttpClient
+    ) { }
     categories=new BehaviorSubject<Category[]>([]);
     category=new BehaviorSubject<Category | null>(null);
 
@@ -40,9 +42,7 @@ export class CategoryService {
     //pagination manga dans genre
     dataCategory = new  BehaviorSubject<DataCategory | null>(null);
     currentDataCategory = this.dataCategory.asObservable()
-    constructor(
-        private http: HttpClient
-    ) { }
+
 
 
 

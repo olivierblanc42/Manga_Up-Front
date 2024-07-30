@@ -23,24 +23,31 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
       <h1>{{ dataGenre?.genre?.label }}</h1>
       <img src="{{base64G+dataGenre?.genre?.img}}">
   </div>
-      <div class="content-manga ">
-        @for (manga of dataGenre?.mangas?.content; track manga.id) {
-          <a [routerLink]="'/manga/' + manga.id">
-            <ui-card class="" size="card-manga">
+
+       @if(dataGenre?.mangas?.content?.length === 0 )  {
+         <p>pas de mangas dans ce genre pour le moment</p>
+       } @else {
+         <div class="content-manga ">
+           @for (manga of dataGenre?.mangas?.content; track manga.id) {
+             <a [routerLink]="'/manga/' + manga.id">
+               <ui-card class="" size="card-manga">
 
 
-              @for (picture of manga.pictures ; track picture.id) {
-                <img src="{{base64G+picture.img}}">
+                 @for (picture of manga.pictures ; track picture.id) {
+                   <img src="{{base64G+picture.img}}">
 
-              }
+                 }
 
 
-              <p>{{ manga.title }}</p>
-            </ui-card>
-          </a>
-        }
+                 <p>{{ manga.title }}</p>
+               </ui-card>
+             </a>
+           }
 
-      </div>
+         </div>
+       }
+      
+   
     </section>
 
   `,

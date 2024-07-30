@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Author, DataAuthor} from "../../../types";
+import {Author, Authors, DataAuthor} from "../../../types";
 import {AuthorService} from "../../../services/author.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 
@@ -13,7 +13,7 @@ import {ActivatedRoute, RouterLink} from "@angular/router";
 
     <h2>Auteurs</h2>
     <div class="flex flex-col gap-2 mt-4 admin-container">
-      
+
       <table>
         <thead>
         <tr>
@@ -23,13 +23,13 @@ import {ActivatedRoute, RouterLink} from "@angular/router";
         </tr>
         </thead>
         <tbody>
-          @for (author of authors; track author.id) {
+          @for (author of authors?.content; track author.id) {
             <tr class="border">
-              <td>{{author.lastname +" "+ author.firstname}}</td>
-              <td>{{author.description}}</td>
+              <td>{{ author.lastname + " " + author.firstname }}</td>
+              <td>{{ author.description }}</td>
               <td>
                 <a [routerLink]="'/admin/author/' + author.id">🔎</a>
-                <button >🗑️</button>
+                <button>🗑️</button>
               </td>
             </tr>
           }
@@ -62,7 +62,7 @@ export class AuthorsAdminComponent implements OnInit {
   ){
 
   }
-  authors!: Author[]|null;
+  authors!: Authors|null;
   base64G:string="data:image/webp;base64,";
 
 

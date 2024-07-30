@@ -31,9 +31,8 @@ import {NgClass} from "@angular/common";
           </div>
       </section>
 
-      <div class="comment-end h-20 pl-4 pt-8 background-color-black-c16a25 uppercase">
-          <div class="navigation">
-              <nav>
+          <div class="pagination">
+             
                   @for(page of pages; track page; let count=$index){
                       @if(count===0){
                           <li>
@@ -62,9 +61,9 @@ import {NgClass} from "@angular/common";
                           </li>
                       }
                   }
-              </nav>
+              
           </div>
-      </div>
+      
 
 
   `,
@@ -85,18 +84,21 @@ import {NgClass} from "@angular/common";
       }
     }
 
-    .navigation nav{
-      margin-left: 2rem;
-    }
-
-    .navigation {
-      display:block;
+    .pagination{
+      display: flex;
+      flex-direction: row;
+      justify-content: left;
+      gap: 1rem;
+      padding: 1rem;
+      li{
+        list-style: none;
+      }
     }
     
   `]
 })
 export class CategoriesComponent implements OnInit {
-   categories!: Categories|null;
+    categories!: Categories|null;
     pages!: number[]; // Nombre de page
     lastPage!: number;
     currentPage!: number;
@@ -112,6 +114,8 @@ export class CategoriesComponent implements OnInit {
     this.categoryService.getCategories()
     this.categoryService.currentCategoryPagination.subscribe(categories =>{
       this.categories =categories;
+        this.pages = this.convertNumberToArray(this.categories?.totalPages!)
+        this.lastPage =this.categories?.totalPages!;
     })
   }
 

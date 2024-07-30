@@ -356,7 +356,7 @@ import { filter } from "rxjs";
             height: 7rem;
         }
 
-        .commentaries-box-ul{
+      .commentaries-box-ul{
             padding: 0 3rem;
         }
 

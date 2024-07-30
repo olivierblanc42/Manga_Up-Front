@@ -8,11 +8,10 @@ import {ActivatedRoute} from "@angular/router";
   standalone: true,
   imports: [],
   template: `
-    
+
     <section class="user">
-      <h1>Information sur  {{ data?.author?.firstname +" " + data?.author?.lastname }}  </h1>
-     
-    
+      <h1>Information sur  {{ data?.author?.firstname! }} </h1>
+
 
       <div>
         <p></p>
@@ -21,7 +20,7 @@ import {ActivatedRoute} from "@angular/router";
         <p></p>
         <p></p>
         <div>
-          <p>   </p>
+          <p></p>
           <ul>
             <li></li>
             <li></li>
@@ -33,7 +32,7 @@ import {ActivatedRoute} from "@angular/router";
         </div>
       </div>
     </section>
-    
+
   `,
   styles:  [`
   .user{

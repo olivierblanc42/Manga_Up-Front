@@ -5,9 +5,15 @@ export type Author = {
     lastname: string;
     firstname: string;
     description: string;
+    img: string;
     createdAt: Date;
 };
-
+export type Authors = {
+    content: Author[];
+    size: number;
+    totalElements: number;
+    totalPages: number;
+}
 export type Cart = {
     id: number;
     createdAt: Date;

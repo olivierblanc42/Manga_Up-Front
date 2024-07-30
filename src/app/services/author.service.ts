@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {Author, DataAuthor, DataGenre, Genre} from '../types';
+import {Author, Authors, DataAuthor, DataGenre, DataManga, Genre} from '../types';
 import {BehaviorSubject} from "rxjs";
 
 @Injectable({
@@ -23,9 +23,10 @@ export class AuthorService {
         },
     };
 
-    authors = new BehaviorSubject<Author[]>([]);
+    authors = new BehaviorSubject<Authors| null>(null);
     currentAuthors = this.authors.asObservable();
     dataAuthor  = new BehaviorSubject<DataAuthor | null>(null);
+
     currentDataAuthor = this.dataAuthor.asObservable();
 
     constructor(
@@ -36,8 +37,8 @@ export class AuthorService {
      * Récupère toute les autheur
      *
      */
-    getAuthors(){
-        this.http.get<Author[]>(this.url)
+    getAuthors(page: number=0){
+        this.http.get<Authors>(`${this.url}?page=${page}`)
             .pipe()
             .toPromise()
             .then((r) =>{
