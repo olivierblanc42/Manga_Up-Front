@@ -176,12 +176,8 @@ export class MangaService {
      * @param idUser
      */
     addUserInFavorite(idManga: number, idUser: number | undefined){
-        const data= {
-            "id":idUser
-        }
-        console.log(`Dans adduserfavorite : ${this.url}/${idManga}`);
-        
-        this.http.post<boolean>(`${this.url}/${idManga}`, data, {headers: this.options.headers})
+        this.options.body.id=String(idUser);
+        this.http.post<boolean>(`${this.url}/${idManga}`, this.options.body, this.options)
         .subscribe((r) => {
             this.isFavorite.next(true);
         });
@@ -194,7 +190,6 @@ export class MangaService {
      */
     deleteUserAsFavorite(idManga: number, idUser: number | undefined){
         this.options.body.id=String(idUser);
-        console.log(`Dans deleteUserAsFavorite : ${this.url}/${idManga}`);
         this.http.delete<boolean>(`${this.url}/${idManga}`, this.options)
         .subscribe((r) => {
             this.isFavorite.next(false);
