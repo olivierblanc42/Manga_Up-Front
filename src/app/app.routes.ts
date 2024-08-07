@@ -50,8 +50,8 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     {
         path: 'admin',
-        component: AdminLayoutComponent,
-       canActivate: [AuthGuard],
+       component: AdminLayoutComponent,
+      // canActivate: [AuthGuard],
         children: [
             {path: 'users', component: UsersComponent },
             {path: 'users/:id', component: UserComponent },

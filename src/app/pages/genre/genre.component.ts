@@ -7,6 +7,7 @@ import {GenreService} from "../../services/genre.service";
 import {CardComponent} from "../../components/card/card.component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgClass} from "@angular/common";
+import {faHouse} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-genre',
@@ -21,14 +22,16 @@ import {NgClass} from "@angular/common";
 
     
     <section class="container mx-auto px-5 md:px-10  my-5\t">
-      
-      
-      
-  <div class="card_single">
-      <h1 class="title" >{{ dataGenre?.genre?.label }}</h1>
+
+      <div class="path block -ml-20 mb-20 text-sx"><a href="/"><span><fa-icon [icon]="faHouse" size="1x"></fa-icon></span></a ><span><a [routerLink]="'/genres/'"  >/Genre</a></span><span>/{{dataGenre?.genre?.label}}</span></div>
+
+
+      <div class="card_single">
+      <h1  >{{ dataGenre?.genre?.label }}</h1>
       <img src="{{base64G+dataGenre?.genre?.img}}">
   </div>
 
+      
       <div class="div-content">
         
           <h2 class="title">Mangas du genre</h2>
@@ -104,7 +107,7 @@ import {NgClass} from "@angular/common";
       flex-direction: row;
       justify-content: space-around;
       flex-wrap: wrap;
-      gap: 2rem 20rem;
+      gap: 2rem 10rem;
       padding: 0.8rem;
     }
 
@@ -194,4 +197,5 @@ export class GenreComponent implements OnInit {
   }
 
 
+  protected readonly faHouse = faHouse;
 }
