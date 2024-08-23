@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Author, DataAuthor} from "../../../types";
+import {Author, AuthorDto, DataAuthor} from "../../../types";
 import {AuthorService} from "../../../services/author.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
@@ -141,11 +141,11 @@ export class AuthorAdminComponent implements OnInit {
   handleSubmit(e: Event) {
 
 
-    const updatedAuthor: Author = {
+    const updatedAuthor: AuthorDto = {
       id: this.idOfUrl,
-      firstname: this.firstname,
-      lastname: this.lastname,
+      firstName: this.firstname,
       description: this.description,
+      lastName: this.lastname,
       img: this.img,
       createdAt: this.date
     };

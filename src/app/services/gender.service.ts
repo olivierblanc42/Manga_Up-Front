@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import {DataManga, Gender, Genre} from "../types";
+import {BehaviorSubject, firstValueFrom} from 'rxjs';
+import {Category, DataManga, Gender, Genre} from "../types";
 
 @Injectable({
     providedIn: 'root'
@@ -33,7 +33,7 @@ export class GenderService{
 
 
     /**
-     * Récupère les Genres des utilisateur
+     * Récupère les Genres des utilisateurs
      *
      */
     getGenders(){
@@ -59,5 +59,17 @@ export class GenderService{
                 this.gender.next(r);
             })
     }
+
+    addGender(gender: Omit<Gender,"id">){
+        firstValueFrom(this.http.post<Genre>(this.url,gender,{
+            headers: this.options.headers
+        }))
+            .then((r)=>{
+                if(!r) return;
+                console.log(r)
+                this.gender.next(r)
+            })
+    }
+
 
 }

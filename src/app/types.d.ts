@@ -77,7 +77,7 @@ export type Genres ={
 export type Manga = {
     id: number;
     title: string;
-    releaseDate: Date;
+    releaseDate: Date ;
     summary: string;
     createdAt: Date;
     price: number;
@@ -161,4 +161,43 @@ export type Address = {
     line2: string;
     line3: string;
     postal_code: string;
+}
+
+//DTO
+
+export type AuthorDto = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    description?: string;
+    createdAt?: Date;
+    img?: string;
+}
+
+export type MangaDto ={
+    id?: number;
+    title:string;
+    summary:string;
+    createdAt:Date;
+    releaseDate:Date;
+    price:BigDecimal;
+    pointFidelity:number;
+    categoryId:number;
+    authorIds: number[];
+    genreIds: number[];
+}
+
+export type CategoryDto ={
+    id?: number;
+    name:string;
+    description:string;
+    createdAt:Date;
+}
+
+export type GenreDto = {
+    id: number;
+    createdDate: Date;
+    label: string;
+    img?: string;
+    mangaId:number[];
 }

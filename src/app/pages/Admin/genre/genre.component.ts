@@ -10,29 +10,19 @@ import {ActivatedRoute} from "@angular/router";
   template: `
     <section class="admin-container">
       <h1>Information sur le Genre {{ data?.genre?.label }}  </h1>
-      <ul>
-  
-      </ul>
-
+      <p><span>date de creation: </span>{{data?.genre?.createdDate}}</p>
+     
       <div>
-   
-        <div>
-          
-        </div>
+       <h2> liste des mangas</h2>
+      <ul>
+        @for (manga of data?.mangas?.content  ; track manga.id) {
+          <li>{{manga.title}}</li>
+        }
+      </ul>
       </div>
     </section>
   `,
   styles:  [`
-  .admin-container{
-    width: 80%;
-    margin-right: auto;
-    margin-left: auto;
-    border-radius: 10px;
-    background-color: rgb(37,37,37,50%) ;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-  }
   
   `]
 })

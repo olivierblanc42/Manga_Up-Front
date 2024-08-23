@@ -111,7 +111,7 @@ export class AuthorsComponent implements OnInit {
 }
   authors!: Authors | null;
   base64G:string="data:image/webp;base64,";
-  pages!: number[]; // Nombre de page
+  pages!: number[]; // Nombre de pages
   lastPage!: number;
   currentPage!: number;
 

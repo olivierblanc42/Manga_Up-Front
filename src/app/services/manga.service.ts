@@ -1,7 +1,7 @@
-import {DataManga, Manga, Mangas} from './../types.d';
+import {AuthorDto, Category, DataManga, Genre, Manga, MangaDto, Mangas} from './../types.d';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {BehaviorSubject, firstValueFrom} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 export class MangaService {
     url="/api/mangas";
     urlLike=`${this.url}/like`;
-    urlTenManga = "/api/mangas/ten";
+    urlAction="/api/mangas/manga";
     urlNineManga = "/api/mangas/nine";
     urlOneManga = "/api/mangas/oderOne";
     urlOrderDate  = "/api/mangas/oderDate" ;
@@ -21,7 +21,8 @@ export class MangaService {
           "Content-Type": "application/json",
           "Accept":"application/json",
           "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE",
-          "Access-Control-Allow-Origin": '*'
+         // "Access-Control-Allow-Origin": '*'
+
         }),
         body: {
           id: '',
@@ -35,7 +36,7 @@ export class MangaService {
     // Récupère la requête sql de neuf mangas.
     nineMangas =new BehaviorSubject<Manga[]>([]);
     currentTenMangas = this.nineMangas.asObservable()
-    //   Récupère la requête de neuf mangas par ordre de creation du plus recente au plus ancien.
+    //   Récupère la requête de neuf mangas par ordre de creation du plus recent au plus ancien.
     orderDateManga =new BehaviorSubject<Manga[]>([]);
     currentOrderDateManga = this.orderDateManga.asObservable();
     // Récupère un seul Manga
@@ -55,9 +56,12 @@ export class MangaService {
     //currentPageComments=this.pageComments.asObservable();
 
     // utilisation de la pagination
-
     mangaPagination  = new BehaviorSubject<Mangas | null>(null);
     currentMangaPagination = this.mangaPagination.asObservable()
+   // Dto
+    mangaDto = new BehaviorSubject<MangaDto[]>([])
+
+
 
     constructor(
         private http: HttpClient, 
@@ -195,4 +199,42 @@ export class MangaService {
             this.isFavorite.next(false);
         })
     }
+
+    /**
+     * Ajoute un manga.
+     *
+     *
+     */
+    addMangaTest(mangaDto: Omit<MangaDto, "img"| "id"  >) {
+        console.log('Adding manga:', mangaDto); // Vérifiez les données envoyées ici
+        this.http.post<MangaDto>(`${this.urlAction}`, mangaDto, {
+            headers: this.options.headers
+        }).subscribe({
+            next: (r) => {
+                console.log('manga added successfully:', r);
+                this.mangaDto.next([...this.mangaDto.getValue(), r]);
+            },
+            error: (err) => {
+                console.error('Error adding manga:', err);
+            }
+        });
+    }
+
+
+
+
+    removeManga(id: number){
+        firstValueFrom(this.http.delete<void>(`${this.urlAction}/${id}`, {
+                headers: this.options.headers
+            })
+        )    .then(() => {
+            console.log(`Category with ID ${id} has been deleted.`);
+
+        })
+            .catch((error) => {
+                console.error('Error deleting category:', error);
+            });
+
+    }
+
 }

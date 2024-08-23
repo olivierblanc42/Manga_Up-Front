@@ -2,16 +2,68 @@ import {Component, OnInit} from '@angular/core';
 import {Categories} from "../../../types";
 import {CategoryService} from "../../../services/category.service";
 import {RouterLink} from "@angular/router";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-categories',
   standalone: true,
   imports: [
-    RouterLink
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule
   ],
   template: `
+    
     <h2>Catégories</h2>
+
+   
+    
+    
     <div class="flex flex-col gap-2 mt-4 admin-container">
+
+
+
+      <div class="div-form">
+        <form class="form-admin"     (submit)="handleSubmit($event)" >
+          <h2>Ajout d'une catégorie</h2>
+          <div class="form-contain">
+            <input
+                id="name"
+                type="text"
+                [(ngModel)]="name"
+                name="name"
+                placeholder="nom de la catégorie"
+            >
+          </div>
+          <div class="form-contain text_area">
+             <textarea
+                 id="description"
+                 type="text"
+                 [(ngModel)]="description"
+                 name="description"
+                 placeholder="Description "
+
+             >
+          </textarea>
+          </div>
+          <div class="form-contain">
+
+            @if (error) {
+              <p class="text-red-500">{{error}}</p>
+            }
+
+          </div>
+          <div class="">
+            <button
+                type="submit"
+                class="bg-slate-600 text-white rounded px-4 py-2"
+            >Submit</button>
+          </div>
+        </form>
+      </div>
+      
+      
+      
       <table>
         <thead>
         <tr>
@@ -27,13 +79,18 @@ import {RouterLink} from "@angular/router";
               <td>{{ category.description }}</td>
               <td>
                 <a [routerLink]="'/admin/category/' + category.id">🔎</a>
-                <button>🗑️</button>
+                <button (click)="handleRemove(category.id)">🗑️</button>
               </td>
             </tr>
           }
         </tbody>
       </table>
     </div>
+
+
+
+
+
   `,
   styles:  [`
     .admin-container{
@@ -51,14 +108,27 @@ import {RouterLink} from "@angular/router";
         }
       }
     }
+    textarea{
+      color:black;
+    }
+
+    input{
+      color:black;
+      width: 100%;
+    }
+    
 `]
 })
 export class CategoriesAdminComponent implements OnInit {
   categories!: Categories|null;
-  pages!: number[]; // Nombre de page
+  pages!: number[]; // Nombre de pages
   lastPage!: number;
   currentPage!: number;
   base64G:string="data:image/webp;base64,";
+  name:string="";
+  description:string="";
+  error:string="";
+  currentTime = new Date();
 
   constructor(
       private categoryService : CategoryService
@@ -87,7 +157,7 @@ export class CategoriesAdminComponent implements OnInit {
   }
 
   /**
-   * Récupère la page des commentaires souhaité.
+   * Récupère la page des commentaires souhaités.
    * @param {string} page
    */
   pageCategory(page: number){
@@ -110,4 +180,59 @@ export class CategoriesAdminComponent implements OnInit {
       this.pageCategory(this.currentPage+1);
     }
   }
+
+  /**
+   * handleSubmit est utilisé ici pour envoyé de nouvel donné en base
+   *
+   * */
+  handleSubmit(e: SubmitEvent) {
+    // Vérifie si le champ 'firstname' est vide
+    if (!this.name) {
+      // Définit un message d'erreur si 'firstname' est vide
+      this.error = "Firstname is required";
+      return;
+    }
+    // Vérifie si le champ 'description' est vide
+    if (!this.description) {
+      // Définit un message d'erreur si 'description' est vide
+      this.error = "description is required";
+      return;
+    }
+    // Appelle le service pour ajouter un nouvel auteur avec les données fournies
+
+    this.categoryService.addCategoryTest({
+      name: this.name,
+      description: this.description,
+      createdAt : this.currentTime
+
+    });
+
+    this.reloadPage()
+
+    this.name ="";
+    this.description="";
+    this.error="";
+
+  }
+
+  /**
+   * handleRemove est utilisé ici supprimé des données en base
+   *
+   * */
+  handleRemove(id: number){
+    if(confirm("Are you sure to delete" )) {
+     this.categoryService.removeCategory(id)
+      this.reloadPage()
+
+    }
+  }
+
+
+  // Recharge la page pour refléter les nouvelles données
+  reloadPage() {
+    window.location.reload()
+  }
+
+
+
 }

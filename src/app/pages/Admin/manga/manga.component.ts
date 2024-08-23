@@ -26,9 +26,16 @@ import {UserService} from "../../../services/user.service";
         <p><span>price:</span> {{ data?.manga?.price }}</p>
         <p><span>Catégorie:</span> {{ data?.manga?.category?.name }}</p>
         <ul>
-          <li><span>Genre:</span></li>
+          <li><span>Genres:</span></li>
           @for(genre of data?.manga?.genres ; track genre.id ){
             <li><a [routerLink]="'/admin/genre/' + genre.id">{{ genre.label }}</a>,</li>
+
+          }
+        </ul>
+        <ul>
+          <li><span>autheurs:</span></li>
+          @for(author of data?.manga?.authors ; track author.id ){
+            <li><a [routerLink]="'/admin/genre/' + author.id">{{ author.firstname }},{{author.lastname}} </a>,</li>
 
           }
         </ul>
@@ -36,20 +43,7 @@ import {UserService} from "../../../services/user.service";
     </section>
   `,
   styles:  [`
-  .admin-container{
-    width: 80%;
-    margin-right: auto;
-    margin-left: auto;
-    border-radius: 10px;
-    background-color: rgb(37,37,37,50%) ;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    span{
-      font-weight: bolder;
-      text-transform: uppercase;
-    }
-  }
+
   
   `]
 })
@@ -70,6 +64,7 @@ export class MangaAdminComponent implements OnInit{
   mangasIdOfUser!: number[]; // Liste des id des mangas de l'utilisateur.
   isFavorite!:boolean | null;
   test!: boolean;
+
   pages!: number[]; // Nombre de page
   lastPage!: number;
   currentPage!: number;
@@ -100,20 +95,22 @@ export class MangaAdminComponent implements OnInit{
     this.idOfUrl=parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
 
     this.mangaService.getManga(this.idOfUrl)
+    this.mangaService.currentDataManga.subscribe(data=>{
+      this.data=data;
+    })
+   // this.currentDataMangaSubs();
 
-    this.currentDataMangaSubs();
+  //  this.userService.getUser("5");
+   // this.currentDataUserSubs();
 
-    this.userService.getUser("5");
-    this.currentDataUserSubs();
-
-    this.currentIsFavoriteSubs();
+    //this.currentIsFavoriteSubs();
 
   }
 
   /**
    * Récupération des dates traitements pour hydrater la vue.
    */
-  currentDataMangaSubs(){
+ /* currentDataMangaSubs(){
     this.mangaService.currentDataManga.subscribe(data=>{
       this.data=data;
       if(this.oldCommentsScroll && this.currentPageScroll > 0 ){
@@ -130,7 +127,7 @@ export class MangaAdminComponent implements OnInit{
       this.searchPicturesIsPoster();
       this.nbComments();
     });
-  }
+  }*/
 
   /**
    * Récupération des data du user.
@@ -147,7 +144,7 @@ export class MangaAdminComponent implements OnInit{
   /**
    * Récupération des data si on a cliqué sur favoris.
    */
-  currentIsFavoriteSubs(){
+ /* currentIsFavoriteSubs(){
     this.mangaService.currentIsFavorite.subscribe(favorite=>{
       this.isFavorite=favorite
       this.colorIconHeart=this.isFavorite ? "yellow" : "grey"
@@ -156,15 +153,15 @@ export class MangaAdminComponent implements OnInit{
         this.data=data;
       });
     })
-  }
+  }*/
 
   /**
    * Méthode qui sera appelé si on scroll au delà du dernier commentaire.
    */
-  onScroll(){
+ /* onScroll(){
     this.currentPageScroll++;
     this.appendData();
-  }
+  }*/
 
   /**
    * Récupère les 6 commentaires suivant en faisant appel au back

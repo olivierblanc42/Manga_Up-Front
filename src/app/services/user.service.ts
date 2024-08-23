@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import {DataUser, Manga, User} from '../types';
+import {BehaviorSubject, firstValueFrom} from 'rxjs';
+import {Category, DataUser, Manga, User} from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +62,19 @@ export class UserService {
                 this.users.next(r);
             })
     }
+
+
+   addUser(user: Omit<User,"id" |"address"|"gender"|"img">){
+       firstValueFrom(this.http.post<User>(this.url,user,{
+           headers: this.options.headers
+       }))
+           .then((r)=>{
+               if(!r) return;
+               console.log(r)
+               this.user.next(r);
+           })
+   }
+
 
 
 }
