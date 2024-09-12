@@ -29,6 +29,7 @@ import {GenresAdminComponent} from "./pages/Admin/genres/genres.component";
 import {GenreAdminComponent} from "./pages/Admin/genre/genre.component";
 import {GendersAdminComponent} from "./pages/Admin/genders/genders.component";
 import {GenderAdminComponent} from "./pages/Admin/gender/gender.component";
+import { RegisterComponent } from './pages/register/register.component';
 
 
 
@@ -48,8 +49,9 @@ export const routes: Routes = [
 
 
     { path: 'login', component: LoginComponent },
-    {
-        path: 'admin',
+    { path: 'register', component: RegisterComponent },
+
+    { path: 'admin',
        component: AdminLayoutComponent,
       // canActivate: [AuthGuard],
         children: [
