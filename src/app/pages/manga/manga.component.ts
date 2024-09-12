@@ -18,7 +18,9 @@ import { filter } from "rxjs";
 
 
 <div class="flex flex-col items-center justify-center mb-5 mt-5">
-<div class="path block -ml-20 mb-20 text-sx"><a href="/"><span><fa-icon [icon]="faHouse" size="1x"></fa-icon></span></a><span>/{{data?.manga?.title}}</span></div>
+<div class="path block -ml-20 mb-20 text-sx"><a href="/">
+    <span><fa-icon [icon]="faHouse" size="1x"></fa-icon></span></a><span>/{{data?.manga?.title}}</span>
+</div>
 <div class="detail-box block rounded-lg bg-secondary text-white shadow-secondary-1">
     <div class="banner-1 background-color-black-c16a25 px-6 py-3">{{data?.manga?.title}}</div>
     <div class="banner-2 background-color-black-c60a10 px-6 py-3 flex justify-between">
@@ -525,7 +527,6 @@ export class MangaComponent implements OnInit{
 
         this.currentDataMangaSubs();
 
-        this.userService.getUser("5");
         this.currentDataUserSubs();
         
         this.currentIsFavoriteSubs();
