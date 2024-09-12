@@ -21,6 +21,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "app": "file:",
     "font-awesome": "^4.7.0",
     "ngx-infinite-scroll": "^18.0.0",
     "rxjs": "~7.8.0",
