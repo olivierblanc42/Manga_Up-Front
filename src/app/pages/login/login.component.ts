@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
@@ -8,9 +8,9 @@ import { User } from '../../types';
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [FormsModule, CommonModule],
+    imports: [RouterModule, FormsModule, CommonModule],
     template: `
-        <div *ngIf="!isAuthenticated">
+        <div class="boxform" *ngIf="!isAuthenticated">
             <form (submit)="login($event)">
                 <div>
                     <label for="username">Username</label>
@@ -18,16 +18,35 @@ import { User } from '../../types';
                 </div>
                 <div>
                     <label for="password">Password</label>
-                    <input id="password" type="password" [(ngModel)]="password" name="password" required>
+                    <input id="password" type="password" [(ngModel)]="password" name="password" autocomplete="on" required>
                 </div>
                 <button type="submit">Login</button>
             </form>
+            <br>
+            <hr>
+            <div class="boxform__register">Vous n'avez pas de compte ? <a class="boxform__register--link" routerLink="/register" >Enregistrez-vous !</a></div>
         </div>
         <div *ngIf="isAuthenticated">
             <p>Vous êtes connecté maintenant!</p>
         </div>
   `,
     styles: [`
+
+    .boxform__register{
+        margin-top: 1rem;   
+    }
+
+    .boxform__register--link{
+        color: blue;
+        margin-top: 1rem;   
+    }
+
+    .boxform{
+        margin: 0 auto;
+        margin-bottom: 2rem;
+        width: 25%
+    }
+
     .login-container {
       max-width: 400px;
       margin: 0 auto;
