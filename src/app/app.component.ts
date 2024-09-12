@@ -28,7 +28,7 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
         <ul class="flex flex-row items-center gap-x-8">
           <li><a routerLink="/"><img src="assets/img/logo.png" alt=""></a></li>
           <li><a class="icon-menu"><img src="assets/svg/ri_bar-chart-horizontal-fill.svg"></a></li>
-          <li><a routerLink="/login" class="icon-user"><img src="assets/svg/bx_bx-user-check.svg"></a></li>
+          <li><a class="icon-user" routerLink="/login" ><img src="assets/svg/bx_bx-user-check.svg"></a></li>
           <li><a class="icon-panier"><img src="assets/svg/carbon_shopping-cart-plus.svg"></a></li>
         </ul>
       </nav>
@@ -72,10 +72,10 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
               </form>
             </div>
 
-            <ul class="nav-desktop-box-items flex flex-row justify-around py-1">
-              <li><a routerLink="/genres"  class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faBook"></fa-icon> Genres</a></li>
-              <li><a  routerLink="/authors"  class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faAddressCard"></fa-icon> Autheur</a></li>
-              <li><a  routerLink="/categories"    class="flex flex-row" href=""><fa-icon class="mr-1" [icon]="faTag"></fa-icon>Categories</a></li>
+            <ul class="nav-desktop-box-items flex flex-row justify-around py-1 box__nav">
+              <li><a routerLink="/genres"  class="flex flex-row box__nav--genres" href=""><fa-icon class="mr-1 faBook" [icon]="faBook"></fa-icon> Genres</a></li>
+              <li><a  routerLink="/authors"  class="flex flex-row box__nav--auteurs" href=""><fa-icon class="mr-1 faAddressCard" [icon]="faAddressCard"></fa-icon> Auteur</a></li>
+              <li><a  routerLink="/categories"    class="flex flex-row box__nav--categories" href=""><fa-icon class="mr-1 faTag" [icon]="faTag"></fa-icon>Catégories</a></li>
             </ul>
             @if(msg){
               <div class="text-center">{{msg}}</div>
@@ -169,6 +169,25 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
     .list>li>h4 {
       font-weight: bolder;
     }
+    .box__nav--genres,
+    .box__nav--auteurs,
+    .box__nav--categories{
+        color: rgb(150, 150, 0);
+        font-size: 2rem;
+        font-weight: 900;
+        -webkit-text-stroke: 1px blue;
+        margin: 0 1rem;
+
+    }
+
+    .icon-menu, .icon-user, .icon-panier, .faBook, .faAddressCard, .faTag{
+        font-size: 2rem;
+        color: #E7E08B;
+        fill: none;
+        stroke-width: 1.5rem;
+        stroke: blue; 
+    }
+
     @media (min-width: 1250px) {
       .footer-mobile {
         display: none;
@@ -192,7 +211,7 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
         background-size: cover;
       }
       .search-div {
-        width: 449px;
+        width: 100%;
         overflow: hidden;
         input {
           width: 95%;
@@ -227,6 +246,7 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
     }
   `]
 })
+
 export class AppComponent {
   title = 'app';
   protected readonly faBook = faBook;
