@@ -1,38 +1,58 @@
+import { AccountService } from './account.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { User } from '../types';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private authUrl = '/api/users';
+    private authUrl = '/api/users/login';
+    private authUrlRegister = '/api/register';
     private authenticated: boolean = false;
 
-    options = {
-        headers: new HttpHeaders({
-            "Content-Type": "application/json",
-            "Accept":"application/json",
-            "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE",
-            "Access-Control-Allow-Origin": '*'
-        })
-
-    };
-
-
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private accountService: AccountService ) {}
 
     login(username: string, password: string): Observable<User> {
-        const headers = new HttpHeaders({
-            Authorization: 'Basic ' + btoa(username + ':' + password)
-        });
+        let options = {
+            headers: new HttpHeaders({
+                "Authorization": 'Basic ' + btoa(username + ':' + password),
+                "Content-Type": "application/json",
+                "Accept":"application/json",
+                "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE",
+                "Access-Control-Allow-Origin": '*'
+            })
+        };
 
-
-        return this.http.get<User>(this.authUrl, { headers:this.options.headers, withCredentials: true }).pipe(
+        return this.http.post<User>(this.authUrl, {username, password}, { headers:options.headers, withCredentials: true }).pipe(
             tap((user: User) => {
                 this.authenticated = true;
+                this.accountService.setUser(user)
+                console.log("user auth service : ", user)
+            })
+        );
+    }
+
+    register(registerUser: object) {
+        let options = {
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept":"application/json",
+                "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE",
+                "Access-Control-Allow-Origin": '*'
+            })
+        };
+        let data=JSON.stringify(registerUser);
+        console.log("registerUser", data);
+
+        return this.http.post<any>(this.authUrlRegister, data, { headers:options.headers }).pipe(
+            tap((user: User) => {
+                this.authenticated = true;
+                this.accountService.setUser(user)
+                console.log("user auth service : ", user)
             })
         );
     }
