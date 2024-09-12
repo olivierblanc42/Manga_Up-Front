@@ -78,7 +78,7 @@ export class UserComponent implements OnInit {
 
     this.userService.currentDataUser.subscribe(dataUser =>{
       this.dataUser = dataUser;
-      console.log(this.dataUser)
+      console.log("Dans admin > user.component : ", this.dataUser)
     })
 
   }
