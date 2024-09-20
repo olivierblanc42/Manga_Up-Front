@@ -1,3 +1,5 @@
+import { AccountService } from './../../services/account.service';
+import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, RouterModule} from '@angular/router';
 import { CardComponent } from '../../components/card/card.component';
@@ -6,7 +8,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { PictureService } from '../../services/picture.service';
 import { MangaService } from '../../services/manga.service';
 import {GenreService} from "../../services/genre.service";
-import { Comment, Manga, Picture, Genre } from '../../types';
+import { Comment, Manga, Picture, Genre, User } from '../../types';
 import { PicturesPipe } from '../../pipes/pictures.pipe';
 
 
@@ -17,12 +19,11 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
     template: `
 
 
-      <section class="container mx-auto px-5 md:px-10  my-5\t">
-
-          <a routerLink="/mangas" class="flex flex-row items-center\tgap-2">
+    <section class="container mx-auto px-5 md:px-10  my-5\t">
+        <a routerLink="/mangas" class="flex flex-row items-center\tgap-2">
               <h2 class="my-5">Manga</h2>
               <fa-icon [icon]="faArrowRight"></fa-icon>
-          </a>
+        </a>
           <div class="content-manga ">
               @for (manga of nineMangas; track manga.id) {
                   <a [routerLink]="'/manga/' + manga.id">
@@ -36,10 +37,8 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
                   </ui-card>
                   </a>
               }
-                      
           </div>
       </section>
-
 
       <div class="py-3 bg-dark flex flex-row justify-center items-center gap-10	utile-desktop">
 
@@ -245,6 +244,7 @@ export class HomeComponent implements OnInit {
     dateOrderMangas! : Manga[] ;
     justeOne! : Manga | null ;
 
+
     constructor(
         private mangaService: MangaService,
         private pictureService: PictureService,
@@ -283,7 +283,6 @@ export class HomeComponent implements OnInit {
             this.genres = genres
         })
         // this.genreService.currentGenres.subscribe(genres => this.genres = genres)
-
     }
 
     searchPicturesIsPoster(){

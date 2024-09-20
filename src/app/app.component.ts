@@ -1,6 +1,8 @@
+import { AuthService } from './services/auth.service';
+import { AccountService } from './services/account.service';
 import { FormsModule } from '@angular/forms';
 import { SearchMangaService } from './services/search-manga.service';
-import { Component } from '@angular/core';
+import { Component, Output } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -13,13 +15,15 @@ import {
   faPen,
   faAddressCard, faTag
 } from '@fortawesome/free-solid-svg-icons';
-import { Manga } from './types';
+import { Manga, User } from './types';
 import { PicturesPipe } from "./pipes/pictures.pipe"
+import { FlashMessageComponent } from "./components/flash-message/flash-message.component";
+import { LoginComponent } from "./pages/login/login.component";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterModule, FontAwesomeModule, FormsModule, PicturesPipe],
+  imports: [RouterOutlet, RouterModule, FontAwesomeModule, FormsModule, PicturesPipe, FlashMessageComponent, LoginComponent],
   template: `
   <div (click)="removeDisplaySearchManga()">
     <div class="container mx-auto">
@@ -87,6 +91,7 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
           </div>
         </nav>
       </div>
+        <ui-flash-message></ui-flash-message>
     </div>
 
     <router-outlet></router-outlet>
@@ -248,36 +253,43 @@ import { PicturesPipe } from "./pipes/pictures.pipe"
 })
 
 export class AppComponent {
-  title = 'app';
-  protected readonly faBook = faBook;
-  protected readonly faShuffle = faShuffle;
-  protected readonly faCartShopping = faCartShopping;
-  protected readonly faUser = faUser;
-  protected readonly faSearch = faSearch;
-  protected readonly  faBars = faBars;
-  protected readonly faPen = faPen;
-  protected readonly faAddressCard = faAddressCard;
-  protected readonly faTag = faTag;
-  base64:string="data:image/webp;base64,";
-  mangas!: Manga[];
-  manga: string="";
-  msg: string="";
-  isClick: boolean=false;
+    title = 'app';
+    protected readonly faBook = faBook;
+    protected readonly faShuffle = faShuffle;
+    protected readonly faCartShopping = faCartShopping;
+    protected readonly faUser = faUser;
+    protected readonly faSearch = faSearch;
+    protected readonly  faBars = faBars;
+    protected readonly faPen = faPen;
+    protected readonly faAddressCard = faAddressCard;
+    protected readonly faTag = faTag;
+    base64:string="data:image/webp;base64,";
+    mangas!: Manga[];
+    manga: string="";
+    msg: string="";
+    isClick: boolean=false;
+    user!: User|null;
+    msgLogin: string="";
+    isAlreadyLogin: Boolean=false;
 
-  constructor(private searchMangaService: SearchMangaService){}
+    constructor(
+        private searchMangaService: SearchMangaService,
+        private authService: AuthService,
+        private accountService: AccountService,
+    ){}
 
-  ngOnInit(){
-    this.searchMangaService.currentSearch.subscribe(mangas=>{
-      this.mangas=mangas;
-      
-      if(mangas.length===0 && this.isClick){
-        this.msg="Le mangas n'a pas été trouvé";
-        setTimeout(() => {
-          this.msg="";
-        }, 3000);
-      }
-    })
-  }
+    ngOnInit(){
+        this.searchMangaService.currentSearch.subscribe(mangas=>{
+        this.mangas=mangas;
+        
+        if(mangas.length===0 && this.isClick){
+            this.msg="Le mangas n'a pas été trouvé";
+            setTimeout(() => {
+            this.msg="";
+            }, 3000);
+        }
+        });
+    }
 
   removeDisplaySearchManga(){
     this.isClick=false;

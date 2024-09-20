@@ -86,7 +86,7 @@ import {RouterModule} from "@angular/router";
               <tbody>
                   @for (user of users; track user.id) {
                       <tr class="border">
-                          <td>{{"lastname: " +user.lastname + " " +" "+ user.fisrtname}}</td>
+                          <td>{{"lastname: " +user.lastname + " " +" "+ user.firstname}}</td>
                           <td>{{user.email}}</td>
                           <td>
                               <a [routerLink]="'/admin/users/' + user.id">🔎</a>
@@ -158,7 +158,7 @@ export class UsersComponent  implements OnInit {
         // Appelle le service pour ajouter un nouvel auteur avec les données fournies
 
         this.userService.addUser({
-            fisrtname  : this.firstname,
+            firstname  : this.firstname,
             lastname: this.lastname,
             username:this.username,
             password : this.password,

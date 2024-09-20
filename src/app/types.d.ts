@@ -114,17 +114,23 @@ export type Picture = {
     title: string;
 }
 
+export type Role = {
+    id: number;
+    roles: string[];
+}
+
 export type User = {
     id: number;
     username: string;
     email: string;
     password: string;
-    fisrtname: string;
+    firstname: string;
     lastname: string;
     createdAt: Date;
     img: string;
     address: Address;
     gender: Gender;
+    roles: Role;
 };
 
 export type DataManga = {
@@ -154,12 +160,12 @@ export type DataCategory = {
 
 }
 
-
 export type Address = {
-    city : string;
+    id: number;
     line1: string;
     line2: string;
     line3: string;
+    city : string;
     postal_code: string;
 }
 

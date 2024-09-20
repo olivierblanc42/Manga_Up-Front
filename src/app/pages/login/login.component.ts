@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { AccountService } from './../../services/account.service';
+import { UserService } from './../../services/user.service';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router, RouterOutlet, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../types';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-login',
@@ -103,17 +106,19 @@ export class LoginComponent {
     password: string = '';
     isAuthenticated: boolean = false;
 
-    constructor(private authService: AuthService, private router: Router) {}
+    constructor(
+      private authService: AuthService, 
+      private router: Router,
+    ) {}
 
     login(event: Event) {
         event.preventDefault();
         this.authService.login(this.username, this.password).subscribe({
             next: (user: User) => {
-                console.log('User authenticated', user);
                 this.isAuthenticated = true;
                 this.router.navigate(['/']);
             },
-           // error: (err) => console.error('Authentication failed', err)
+        // error: (err) => console.error('Authentication failed', err)
         });
     }
 }

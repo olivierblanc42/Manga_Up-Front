@@ -64,7 +64,7 @@ export class UserService {
     }
 
 
-   addUser(user: Omit<User,"id" |"address"|"gender"|"img">){
+   addUser(user: Omit<User,"id" |"address"|"gender"|"img"|"roles">){
        firstValueFrom(this.http.post<User>(this.url,user,{
            headers: this.options.headers
        }))

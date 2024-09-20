@@ -1,7 +1,7 @@
 import { AccountService } from './account.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { User } from '../types';
 import { FormGroup } from '@angular/forms';
@@ -14,9 +14,14 @@ export class AuthService {
     private authUrlRegister = '/api/register';
     private authenticated: boolean = false;
 
+    user = new BehaviorSubject<User | null>(null) ;
+    currentUser = this.user.asObservable()
+
+
     constructor(private http: HttpClient, private accountService: AccountService ) {}
 
     login(username: string, password: string): Observable<User> {
+        
         let options = {
             headers: new HttpHeaders({
                 "Authorization": 'Basic ' + btoa(username + ':' + password),
@@ -27,11 +32,14 @@ export class AuthService {
             })
         };
 
+        // C'est ici qu'on récupère l'utilisateur.
         return this.http.post<User>(this.authUrl, {username, password}, { headers:options.headers, withCredentials: true }).pipe(
             tap((user: User) => {
                 this.authenticated = true;
-                this.accountService.setUser(user)
-                console.log("user auth service : ", user)
+                console.log(user);
+                
+                this.accountService.setUser(user);
+                this.user.next(user);
             })
         );
     }

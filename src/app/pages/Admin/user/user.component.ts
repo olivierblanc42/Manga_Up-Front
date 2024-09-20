@@ -11,10 +11,10 @@ import { DataUser, User,} from "../../../types";
   template: `
 
     <section class="admin-container">
-      <h1>Information sur l'utilisateur <span>{{ dataUser?.user?.fisrtname }} , {{ dataUser?.user?.lastname }}</span> </h1>
+      <h1>Information sur l'utilisateur <span>{{ dataUser?.user?.firstname }} , {{ dataUser?.user?.lastname }}</span> </h1>
       
       <div class="content-div">
-        <p><span>Firstname: </span> {{ dataUser?.user?.fisrtname }}</p>
+        <p><span>Firstname: </span> {{ dataUser?.user?.firstname }}</p>
         <p><span>Lastname: </span> {{ dataUser?.user?.lastname }}</p>
         <p><span>Username: </span> {{ dataUser?.user?.username }}</p>
         <p><span>Email: </span> {{ dataUser?.user?.email }}</p>
