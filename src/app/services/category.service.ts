@@ -1,7 +1,18 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import {Category, Categories, Genre, Genres, DataGenre, DataCategory, DataAuthor, Author,CategoryDto} from '../types';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {
+    Category,
+    Categories,
+    Genre,
+    Genres,
+    DataGenre,
+    DataCategory,
+    DataAuthor,
+    Author,
+    CategoryDto,
+    AuthorDto
+} from '../types';
 import { firstValueFrom } from 'rxjs';
 
 
@@ -28,14 +39,15 @@ export class CategoryService {
     };
 
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
+
     ) { }
     categories=new BehaviorSubject<Category[]>([]);
     category=new BehaviorSubject<Category | null>(null);
 
-    categoryDto = new BehaviorSubject<CategoryDto[]>([]);
-    currentCategoryDto = this.categoryDto.asObservable();
-
+    categoriesDto = new BehaviorSubject<CategoryDto[]>([]);
+    currentCategoryDto = this.categoriesDto.asObservable();
+    categoryDTo = new BehaviorSubject<CategoryDto| null>(null);
 
     currentCategories = this.categories.asObservable();
     currentCategory =this.category.asObservable();
@@ -46,6 +58,7 @@ export class CategoryService {
     //pagination manga dans genre
     dataCategory = new  BehaviorSubject<DataCategory | null>(null);
     currentDataCategory = this.dataCategory.asObservable()
+
 
 
 
@@ -94,7 +107,7 @@ export class CategoryService {
     }
 
 
-    addcategory(category:  Omit<Category,"id">){
+    addCategory(category:  Omit<Category,"id">){
         this.http.post<Category>(`${this.url}`,category, {
             headers: this.options.headers
         })
@@ -107,47 +120,63 @@ export class CategoryService {
             })
     }
 
-        addCategoryTest(category:  Omit<Category,"id">){
-        firstValueFrom(this.http.post<Category>(this.url,category,{
-                headers: this.options.headers
-            }))
+    addCategoryTest(category:  Omit<CategoryDto,"id">){
+        firstValueFrom(this.http.post<CategoryDto>(this.url,category,{
+            headers: this.options.headers
+        }))
             .then((r)=>{
                 if(!r) return;
                 console.log(r)
-                this.category.next(r);
+                this.categoryDTo.next(r);
             })
-        }
+    }
 
 
-        removeCategory(id: number){
-          firstValueFrom(this.http.delete<void>(`${this.url}/${id}`, {
-                  headers: this.options.headers
-              })
-          )    .then(() => {
-              console.log(`Category with ID ${id} has been deleted.`);
+    removeCategory(id: number){
+        firstValueFrom(this.http.delete<void>(`${this.url}/${id}`, {
+                headers: this.options.headers
+            })
+        )    .then(() => {
+            console.log(`Category with ID ${id} has been deleted.`);
 
-          })
-              .catch((error) => {
-                  console.error('Error deleting category:', error);
-              });
+        })
+            .catch((error) => {
+                console.error('Error deleting category:', error);
+            });
 
-        }
-
-
+    }
 
 
-        getCategoryDto(){
-           this.http.get<CategoryDto[]>(this.urlDto, {
-               headers: this.options.headers
-           })
-               .pipe()
-               .toPromise()
-               .then((r)=>{
-                   if(!r) return;
-                   console.log(r)
-                   this.categoryDto.next(r);
-               })
-        }
+
+    /**
+     * Recuperer toute les categories pour etre utiliser lors de l'afectaction des categoris pour les mangas
+     **/
+    getCategoriesDto(){
+        this.http.get<CategoryDto[]>(this.urlDto, {
+            headers: this.options.headers
+        })
+            .pipe()
+            .toPromise()
+            .then((r)=>{
+                if(!r) return;
+                console.log(r)
+                this.categoriesDto.next(r);
+            })
+    }
+
+
+
+    /**
+     * Recuperer la categoryDTO
+     **/
+
+
+
+
+    updateCategory(categoryDto: CategoryDto):Observable<CategoryDto>  {
+        return this.http.put<CategoryDto>(`${this.urlDto}/${categoryDto.id}`,categoryDto)
+    }
+
 
 
 }

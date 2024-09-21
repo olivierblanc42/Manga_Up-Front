@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, firstValueFrom} from 'rxjs';
-import {Category, DataManga, Gender, Genre} from "../types";
+import {BehaviorSubject, firstValueFrom, Observable} from 'rxjs';
+import {Category, DataManga, Gender, GenderDto, Genders, Genre} from "../types";
 
 @Injectable({
     providedIn: 'root'
@@ -9,7 +9,8 @@ import {Category, DataManga, Gender, Genre} from "../types";
 
 export class GenderService{
     url="http://localhost:8080/api/genders";
-
+    urlDto="http://localhost:8080/api/genders/dto";
+    urlPagination ="http://localhost:8080/api/genders/pagination"
     /**
      * Ajoute des options dans le header et dans le body
      */
@@ -23,13 +24,34 @@ export class GenderService{
         },
     };
     gender = new BehaviorSubject<Gender | null>(null);
+    oneCurrentGender = this.gender.asObservable();
 
     genders = new BehaviorSubject<Gender[]>([]);
     currentGender = this.genders.asObservable()
 
+
+    gendersPaginations = new BehaviorSubject<Genders | null>( null);
+    currentGendersPaginations= this.gendersPaginations.asObservable();
+
+    gendersDto = new BehaviorSubject<GenderDto[]>([])
+    currentGenderDto = this.gendersDto.asObservable();
+
     constructor(
         private http: HttpClient
     ) { }
+
+
+
+
+    getAllGendersPagination(page: number=0){
+        firstValueFrom(this.http.get<Genders>(`${this.urlPagination}?page=${page}`,
+            {  headers: this.options.headers}))
+            .then((r)=>{
+                if(!r) return;
+                console.log(r)
+                this.gendersPaginations.next(r);
+            })
+    }
 
 
     /**
@@ -72,4 +94,32 @@ export class GenderService{
     }
 
 
+    // avoir si c'est mieux de passé comme ça ou de faire comme le prof sur le projet angular
+    updateGender(genderDto: GenderDto): Observable<GenderDto> {
+        return this.http.put<GenderDto>(`${this.urlDto}/${genderDto.id}`, genderDto);
+    }
+
+
+    getGenderDto(){
+        firstValueFrom(this.http.get<GenderDto[]>(this.urlDto))
+            .then((r)=>{
+                if(!r) return;
+                console.log(r)
+                this.gendersDto.next(r)
+            })
+    }
+
+    removeGenderUser(id: number){
+        firstValueFrom(this.http.delete<void>(`${this.urlDto}/${id}`, {
+                headers: this.options.headers
+            })
+        )    .then(() => {
+            console.log(`Gender with ID ${id} has been deleted.`);
+
+        })
+            .catch((error) => {
+                console.error('Error deleting category:', error);
+            });
+
+    }
 }

@@ -1,6 +1,6 @@
 import { GenderService } from './../../services/gender.service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
@@ -151,7 +151,7 @@ import { Gender, User } from '../../types';
     }
     `]
 })
-export class RegisterComponent {
+export class RegisterComponent implements  OnInit {
     
     registerForm: FormGroup = this._formBuilder.group({
         username: ["", Validators.compose([Validators.required])],

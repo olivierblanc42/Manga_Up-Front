@@ -1,50 +1,210 @@
 import {Component, OnInit} from '@angular/core';
-import {Comment, DataManga, Picture, User} from "../../../types";
+import {AuthorDto, CategoryDto, Comment, DataManga, GenreDto, MangaDto, Picture, User} from "../../../types";
 import {MangaService} from "../../../services/manga.service";
 import {ActivatedRoute, Router, RouterLink} from "@angular/router";
 import {UserService} from "../../../services/user.service";
+import {FormsModule} from "@angular/forms";
+import {DatePipe} from "@angular/common";
+import {CategoryService} from "../../../services/category.service";
+import {GenreService} from "../../../services/genre.service";
+import {catchError, finalize, tap} from "rxjs/operators";
+import {throwError} from "rxjs";
+import {AuthorService} from "../../../services/author.service";
 
 @Component({
   selector: 'app-manga',
   standalone: true,
   imports: [
-    RouterLink
+    RouterLink,
+    FormsModule,
+    DatePipe
   ],
   template: `
     <section class="admin-container">
       <h1>Information sur le manga {{ data?.manga?.title }} </h1>
-      <div>
-        <p><span>date de creation:</span> {{ data?.manga?.createdAt }}</p>
-        <p><span>date debut de publication:</span> {{ data?.manga?.releaseDate }}</p>
-        <ul>
-         <li><span>Auteur(S): </span></li>
-          @for (author of data?.manga?.authors; track author.id) {
-            <li><a [routerLink]="'/admin/author/' + author.id">{{ author.firstname }}</a>,</li>
-          }
-        </ul>
-        <p><span>Resumé: </span> {{ data?.manga?.summary }}</p>
-        <p><span>price:</span> {{ data?.manga?.price }}</p>
-        <p><span>Catégorie:</span> {{ data?.manga?.category?.name }}</p>
-        <ul>
-          <li><span>Genres:</span></li>
-          @for(genre of data?.manga?.genres ; track genre.id ){
-            <li><a [routerLink]="'/admin/genre/' + genre.id">{{ genre.label }}</a>,</li>
+      <div class="div-form">
 
-          }
-        </ul>
-        <ul>
-          <li><span>autheurs:</span></li>
-          @for(author of data?.manga?.authors ; track author.id ){
-            <li><a [routerLink]="'/admin/genre/' + author.id">{{ author.firstname }},{{author.lastname}} </a>,</li>
+      <form class="form-admin"   (submit)="handleSubmit($event)"   >
+        <h2>Ajout d'un manga</h2>
+        <div class="form-contain" >
+          <input
+              id="title"
+              type="text"
+              [(ngModel)]="title"
+              name="title"
+              placeholder="Titre"
+          >
+      
+        </div>
 
+        <div class="form-contain" >
+          <input
+              id="price"
+              type="text"
+              [(ngModel)]="price"
+              name="price"
+              placeholder="Prix du manga"
+          >
+        </div>
+        <div class="form-contain" >
+          <input
+              id="pointFidelity"
+              type="text"
+              [(ngModel)]="pointFidelity"
+              name="price"
+              placeholder="pointFidelity"
+          >
+        </div>
+        
+        <div class="form-contain">
+          <input
+              id="oldCategory"
+              type="text"
+              [(ngModel)]="category"
+
+              name="oldCategory"
+              placeholder="Ancienne categorie"
+              readonly
+          >
+        </div>
+        <div class="form-contain" >
+       
+          <p>Nouvelle catégorie</p>
+          <select id="author-select" name="author"  [(ngModel)]="selectedCategory" >
+            <option value="" disabled selected>choisir une catégorie</option>
+            @for ( category of categories ; track category.id){
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+        </div>
+
+        <fieldset>
+          <legend>Gérer les genres</legend>
+          @for(genre of genres; track genre.id){
+            <div>
+              <input
+                  type="checkbox"
+                  [value]="genre.id"
+                  (change)="toggleGenreSelection(genre.id, $event)"
+                  [checked]="isGenreSelected(genre.id)">
+              <label for="{{genre.id}}">{{genre.label}} </label>
+            </div>
           }
-        </ul>
+          </fieldset>
+        <fieldset>
+          <legend>Gérer les auteurs</legend>
+          @for(author of authors; track author.id){
+            <div>
+              <input
+                  type="checkbox"
+                  [value]="author.id"
+                  (change)="toggleAuthorSelection(author.id, $event)"
+                  [checked]="isAuthorSelected(author.id)">
+              <label for="{{author.id}}">{{author.firstName}} </label>
+            </div>
+          }
+        </fieldset>
+        <div class="form-contain text_area">
+          <textarea
+              id="description"
+              type="text"
+              [(ngModel)]="summary"
+              name="description"
+              placeholder="Résumé"
+          >
+             
+          
+            </textarea>
+
+          @if (error) {
+            <p class="text-red-500">{{error}}</p>
+          }
+
+        </div>
+      
+        <div class="">
+          <button
+              type="submit"
+              class="bg-slate-600 text-white rounded px-4 py-2"
+          >Submit</button>
+        </div>
+      </form>
       </div>
+
+    <div>
+      <div class="form-contain" >
+        <p><span>Points de Fidélités:</span><br> {{ data?.manga?.pointFidelity}}</p>
+      </div>
+
+      <div class="form-contain" >
+        <p><span>date de creation:</span><br> {{ data?.manga?.createdAt | date: 'dd-MM-yyyy' }}</p>
+
+      </div>
+      <div class="form-contain" >
+        <p><span>date debut de publication:</span><br>{{ data?.manga?.releaseDate | date: 'dd-MM-yyyy' }}</p>
+      </div>
+    </div>
+      
+      
+      
+      <div>
+        <h2> Liste des Auteurs</h2>
+          <div class="flex flex-col gap-2 mt-4 admin-container">
+            <table>
+              <thead>
+              <th>Nom et Prénom</th>
+              <th>voir en détail</th>
+              </thead>
+              <tbody >
+                @for (author of data?.manga?.authors ; track author.id) {
+                  <tr class="border">
+                    <td>{{ author.firstname}} {{author.lastname}}</td>
+                    <td> <a [routerLink]="'/admin/author/' + author.id">🔎</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+        <div>
+          <h2> Liste des Genres</h2>
+          <div class="flex flex-col gap-2 mt-4 admin-container">
+            <table>
+              <thead>
+              <th>Nom du genre</th>
+              <th>voir en détail</th>
+              </thead>
+              <tbody >
+                @for (genre of data?.manga?.genres ; track genre.id) {
+                  <tr class="border">
+                    <td>{{ genre?.label }} </td>
+                    <td> <a [routerLink]="'/admin/genre/' + genre.id">🔎</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+
+
+
+        </div>
+
+
+
+      </div>
+    
     </section>
   `,
   styles:  [`
 
-  
+  td{
+    text-align: center;
+  }
+  .div-form .form-admin {
+    width: 100%;
+  }
+
   `]
 })
 export class MangaAdminComponent implements OnInit{
@@ -73,16 +233,35 @@ export class MangaAdminComponent implements OnInit{
   oldCommentsScroll!:Comment[];
   oldIdOfUrl!:number;
 
+  // update
+  title!:string | undefined;
+  createdAt!: Date;
+  releaseDate!:Date;
+  summary!:string | undefined;
+  price!:number | undefined;
+  error!:string;
+  pointFidelity!: number | undefined;
+  selectedAuthors :number[] = [];
+  selectedGenres: number[] = [];
+  genres!: GenreDto[];
+  authors!: AuthorDto[];
 
-
+  selectedCategory!:number| undefined;
+  categories!: CategoryDto[];
+  category!: string | undefined;
 
   constructor(
       private mangaService: MangaService,
       private activatedRoute: ActivatedRoute,
       private userService: UserService,
-      private router: Router
-){
+      private router: Router,
+      private categoryService: CategoryService,
+      private genreService: GenreService,
+      private authorService: AuthorService
+
+  ){
     this.currentPage=0;
+
     this.router.routeReuseStrategy.shouldReuseRoute = function() {
       return false;
     };
@@ -97,37 +276,86 @@ export class MangaAdminComponent implements OnInit{
     this.mangaService.getManga(this.idOfUrl)
     this.mangaService.currentDataManga.subscribe(data=>{
       this.data=data;
+      this.title = data?.manga.title;
+      console.log( data?.manga.title)
+      this.price = data?.manga.price;
+      this.summary = data?.manga.summary;
+      this.category=data?.manga.category.name;
+      this.pointFidelity = data?.manga.pointFidelity;
+      // Initialiser selectedGenres avec les genres déjà associés au manga
+      if (this.data?.manga?.genres) {
+        this.selectedGenres = this.data.manga.genres.map(g => g.id);
+        console.log(this.selectedGenres)
+      }
+      if (this.data?.manga?.authors) {
+        this.selectedAuthors = this.data.manga.authors.map(g => g.id);
+        console.log(this.selectedAuthors)
+      }
     })
-   // this.currentDataMangaSubs();
 
-  //  this.userService.getUser("5");
-   // this.currentDataUserSubs();
 
-    //this.currentIsFavoriteSubs();
+
+    this.categoryService.getCategoriesDto()
+    this.categoryService.currentCategoryDto.subscribe(category =>{
+      this.categories = category;
+    })
+
+    this.genreService.getGenreDto()
+
+    this.genreService.currentGenreDto.subscribe(genres =>{
+      this.genres = genres;
+    })
+
+    this.authorService.getAuhtorDto();
+
+    this.authorService.currentAuthorDTO.subscribe(authors =>{
+      this.authors = authors
+    })
 
   }
 
-  /**
-   * Récupération des dates traitements pour hydrater la vue.
-   */
- /* currentDataMangaSubs(){
-    this.mangaService.currentDataManga.subscribe(data=>{
-      this.data=data;
-      if(this.oldCommentsScroll && this.currentPageScroll > 0 ){
-        this.oldCommentsScroll=[...this.oldCommentsScroll, ...this.data?.comments.content!]
-      }else{
-        this.oldCommentsScroll=[...this.data?.comments.content!]
-      }
-      console.log("this.oldCommentsScroll : ", this.oldCommentsScroll);
-      this.comments=this.oldCommentsScroll;
 
-      this.pages=this.convertNumberToArray(this.data?.comments?.totalPages!)
-      this.lastPage=this.data?.comments?.totalPages!;
-      this.strToLowerCaseAndFirstLetter();
-      this.searchPicturesIsPoster();
-      this.nbComments();
-    });
-  }*/
+  toggleGenreSelection(genreId: number, event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      if (!this.selectedGenres.includes(genreId)) {
+        this.selectedGenres.push(genreId);
+        console.log(genreId)
+      }
+    } else {
+      this.selectedGenres = this.selectedGenres.filter(id => id !== genreId);
+    }
+    console.log(this.selectedGenres);
+  }
+
+
+
+  isGenreSelected(genreId: number): boolean {
+    return this.selectedGenres.includes(genreId);
+  }
+
+
+  toggleAuthorSelection(authorId: number, event: Event) {
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      if (!this.selectedAuthors.includes(authorId)) {
+        // Ajouter l'ID uniquement s'il n'est pas déjà présent
+        this.selectedAuthors.push(authorId);
+
+      }
+      console.log(this.selectedAuthors)
+    } else {
+      // Supprimer l'ID si la checkbox est décochée
+      this.selectedAuthors = this.selectedAuthors.filter(id => id !== authorId);
+    }
+
+  }
+
+
+  isAuthorSelected(authorId: number): boolean {
+    return this.selectedAuthors.includes(authorId);
+  }
+
 
   /**
    * Récupération des data du user.
@@ -141,27 +369,7 @@ export class MangaAdminComponent implements OnInit{
     })
   }
 
-  /**
-   * Récupération des data si on a cliqué sur favoris.
-   */
- /* currentIsFavoriteSubs(){
-    this.mangaService.currentIsFavorite.subscribe(favorite=>{
-      this.isFavorite=favorite
-      this.colorIconHeart=this.isFavorite ? "yellow" : "grey"
-      this.mangaService.getManga(this.idOfUrl)
-      this.mangaService.currentDataManga.subscribe(data=>{
-        this.data=data;
-      });
-    })
-  }*/
 
-  /**
-   * Méthode qui sera appelé si on scroll au delà du dernier commentaire.
-   */
- /* onScroll(){
-    this.currentPageScroll++;
-    this.appendData();
-  }*/
 
   /**
    * Récupère les 6 commentaires suivant en faisant appel au back
@@ -336,4 +544,46 @@ export class MangaAdminComponent implements OnInit{
   log(val: Object, msg: string=""){
     console.log(msg, val);
   }
+
+
+  handleSubmit(e: Event) {
+
+
+    const updatedManga: Omit<MangaDto, "img"| 'createdAt'  > ={
+      id: this.idOfUrl,
+      summary:this.summary || "",
+      price:this.price,
+      title:this.title || "",
+      releaseDate:this.releaseDate,
+      pointFidelity: this.pointFidelity || 1,
+      categoryId: this.selectedCategory || 1,
+      genreIds: this.selectedGenres,
+      authorIds:this.selectedAuthors
+    }
+
+    this.mangaService.updateManga(updatedManga)
+        .pipe(
+            tap(response =>{
+              console.log('category update')
+              //    this.router.navigate(['/admin/categories']);
+            }),
+            catchError(error => {
+              // Gérez l'erreur ici (par exemple, afficher un message d'erreur)
+              console.error('Error updating category', error);
+              this.error = 'Erreur lors de la mise à jour de la category';
+              return throwError(error); // Relancez l'erreur pour un traitement supplémentaire si nécessaire
+            }),
+            finalize(() => {
+              // Actions finales à réaliser, qu'il y ait une erreur ou non
+            })
+        )
+        .subscribe(); // Nécessaire pour déclencher l'exécution du pipeline
+
+
+
+  }
+
+
+
+
 }

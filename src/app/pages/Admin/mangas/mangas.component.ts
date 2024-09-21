@@ -4,7 +4,7 @@ import {MangaService} from "../../../services/manga.service";
 import {PictureService} from "../../../services/picture.service";
 import {RouterLink} from "@angular/router";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NgClass} from "@angular/common";
+import {DatePipe, NgClass} from "@angular/common";
 import {AuthorService} from "../../../services/author.service";
 import {CategoryService} from "../../../services/category.service";
 import {GenreService} from "../../../services/genre.service";
@@ -16,15 +16,17 @@ import {GenreService} from "../../../services/genre.service";
     RouterLink,
     FormsModule,
     ReactiveFormsModule,
-    NgClass
+    NgClass,
+    DatePipe
   ],
   template: `
-    
-    
+
+
     <h2>Mangas</h2>
- 
+
 
     <div class="div-form">
+
       <form class="form-admin"   (submit)="handleSubmit($event)" >
         <h2>Ajout d'un manga</h2>
         <div class="form-contain" >
@@ -56,8 +58,8 @@ import {GenreService} from "../../../services/genre.service";
             <legend>Ajouter les auteurs</legend>
             @for(author of authors; track author.id){
               <div>
-              <input type="checkbox" id="{{author.id}}" name="{{author.id}}"  (change)="toggleAuthorSelection(author.id,$event)"  />
-              <label for="{{author.id}}">{{author.firstName}} {{author.lastName}}</label>
+                <input type="checkbox" id="{{author.id}}" name="{{author.id}}"  (change)="toggleAuthorSelection(author.id,$event)"  />
+                <label for="{{author.id}}">{{author.firstName}} {{author.lastName}}</label>
               </div>
             }
           </fieldset>
@@ -68,13 +70,14 @@ import {GenreService} from "../../../services/genre.service";
             <legend>Ajouter des genres</legend>
             @for(genre of genres; track genre.id){
               <div>
-              <input type="checkbox" id="{{genre.id}}" name="{{genre.id}}" (change)="toggleGenreSelection(genre.id,$event) "  />
-              <label for="{{genre.id}}">{{genre.label}} </label>
-                </div>
+                <input type="checkbox" id="{{genre.id}}" name="{{genre.id}}" (change)="toggleGenreSelection(genre.id,$event) "  />
+                <label for="{{genre.id}}">{{genre.label}} </label>
+
+              </div>
             }
           </fieldset>
         </div>
-        
+
         <div class="form-contain text_area">
           <textarea
               id="description"
@@ -86,7 +89,7 @@ import {GenreService} from "../../../services/genre.service";
              
           
             </textarea>
-         
+
           @if (error) {
             <p class="text-red-500">{{error}}</p>
           }
@@ -100,79 +103,79 @@ import {GenreService} from "../../../services/genre.service";
         </div>
       </form>
     </div>
-  
-  
-      <div class="flex flex-col gap-2 mt-4 admin-container">
-        <table>
-          <thead>
-          <tr>
-            <th>Title</th>
-            <th>Résumé</th>
-            <th>Price</th>
-            <th>Points de fidélité</th>
-            <th>category</th>
-            <th>releaseDate</th>
-            <th>Date de création</th>
-            <th>Action</th>
-          </tr>
-          </thead>
-          <tbody>
-            @for (manga of mangas?.content; track manga.id) {
-              <tr class="border">
-                <td>{{ manga.title}}</td>
-                <td>{{manga.summary}}</td>
-                <td>{{manga.price}}</td>
-                <td>{{manga.pointFidelity}}</td>
-                <td>{{manga.category.name}}</td>
-                <td>{{manga.releaseDate}}</td>
-                <td>{{manga.createdAt}}</td>
-  
-                <td>
-                  <a [routerLink]="'/admin/manga/' + manga.id">🔎</a>
-                  <button   (click)="handleRemove(manga.id)">🗑️</button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-  
-      <div class="pagination">
-  
-        @for(page of pages; track page; let count=$index){
-          @if(count===0){
-            <li>
-              <button
-                  (click)="pagePrevious()"
-                  [ngClass]="currentPage <= 0 ? 'grey-desactive-btn': 'blue-active-btn'"
-                  class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-              >Previous</button>
-            </li>
+
+
+    <div class="flex flex-col gap-2 mt-4 admin-container">
+      <table>
+        <thead>
+        <tr>
+          <th>Title</th>
+          <th>Résumé</th>
+          <th>Price</th>
+          <th>Points de fidélité</th>
+          <th>category</th>
+          <th>releaseDate</th>
+          <th>Date de création</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (manga of mangas?.content; track manga.id) {
+            <tr class="border">
+              <td>{{ manga.title}}</td>
+              <td>{{manga.summary}}</td>
+              <td>{{manga.price}}</td>
+              <td>{{manga.pointFidelity}}</td>
+              <td>{{manga.category.name}}</td>
+              <td>{{manga.releaseDate| date: 'dd-MM-yyyy'}}</td>
+              <td>{{manga.createdAt | date: 'dd-MM-yyyy'}}</td>
+
+              <td>
+                <a [routerLink]="'/admin/manga/' + manga.id">🔎</a>
+                <button   (click)="handleRemove(manga.id)">🗑️</button>
+              </td>
+            </tr>
           }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+
+      @for(page of pages; track page; let count=$index){
+        @if(count===0){
           <li>
-  
-            <button (click)="pageMangas(page)"
-                    class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-yellow-100 dark:hover:text-gray-700"
-                    [ngClass]="currentPage===page ? 'bg-yellow-100':'background-color-pagination-yellow'"
-            >
-              {{count+1}}
-            </button>
+            <button
+                (click)="pagePrevious()"
+                [ngClass]="currentPage <= 0 ? 'grey-desactive-btn': 'blue-active-btn'"
+                class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >Previous</button>
           </li>
-          @if(count===lastPage-1){
-            <li>
-              <button
-                  (click)="pageNext()"
-                  [ngClass]="currentPage===lastPage-1 ? 'grey-desactive-btn': 'blue-active-btn'"
-                  class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
-            </li>
-          }
         }
-  
-      </div>
-  
-  
-  
-`,
+        <li>
+
+          <button (click)="pageMangas(page)"
+                  class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-yellow-100 dark:hover:text-gray-700"
+                  [ngClass]="currentPage===page ? 'bg-yellow-100':'background-color-pagination-yellow'"
+          >
+            {{count+1}}
+          </button>
+        </li>
+        @if(count===lastPage-1){
+          <li>
+            <button
+                (click)="pageNext()"
+                [ngClass]="currentPage===lastPage-1 ? 'grey-desactive-btn': 'blue-active-btn'"
+                class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
+          </li>
+        }
+      }
+
+    </div>
+
+
+
+  `,
   styles: [`
     .admin-container{
       width: 80%;
@@ -184,7 +187,7 @@ import {GenreService} from "../../../services/genre.service";
       table{
         tbody{
           tr{
-      // border: none;
+            // border: none;
           }
         }
       }
@@ -203,8 +206,8 @@ import {GenreService} from "../../../services/genre.service";
     option,select{
       color: black;
     }
-    
-`]
+
+  `]
 })
 export class MangasAdminComponent implements OnInit {
 
@@ -266,7 +269,7 @@ export class MangasAdminComponent implements OnInit {
       this.genres = genres;
     })
 
-    this.categoryService.getCategoryDto()
+    this.categoryService.getCategoriesDto()
     this.categoryService.currentCategoryDto.subscribe(category =>{
       this.categories = category;
     })
@@ -321,9 +324,9 @@ export class MangasAdminComponent implements OnInit {
 
 
   handleRemove(id: number){
+    if(confirm("Are you sure to delete" )){
       this.mangaService.removeManga(id);
-      this.reloadPage()
-
+    }
   }
 
   toggleAuthorSelection(authorId: number, event: Event) {
@@ -341,6 +344,7 @@ export class MangasAdminComponent implements OnInit {
     }
 
   }
+
   toggleGenreSelection(genreId: number, event: Event) {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
@@ -378,7 +382,7 @@ export class MangasAdminComponent implements OnInit {
       this.error = "price is required";
       return;
     }
-    if (this.price!==0 ) {
+    if (this.price == 0 ) {
       // Définit un message d'erreur si 'price' = 0
       this.error = "le prix ne peux pas etre de zero";
       return;
@@ -387,15 +391,15 @@ export class MangasAdminComponent implements OnInit {
     // Appelle le service pour ajouter un nouvel auteur avec les données fournies
 
     this.mangaService.addMangaTest({
-        title: this.title,
-        summary:this.summary,
-        price:this.price,
-        releaseDate:this.publicationDate,
-        pointFidelity: this.price/2,
-        createdAt:this.currentTime,
-        categoryId : this.selectedCategory,
-        authorIds : this.selectedAuthors,
-        genreIds: this.selectedGenres
+      title: this.title,
+      summary:this.summary,
+      price:this.price,
+      releaseDate:this.publicationDate,
+      pointFidelity: this.price/2,
+      createdAt:this.currentTime,
+      categoryId : this.selectedCategory,
+      authorIds : this.selectedAuthors,
+      genreIds: this.selectedGenres
 
     });
 
@@ -413,5 +417,7 @@ export class MangasAdminComponent implements OnInit {
     window.location.reload()
   }
 
-
+  getDateFormatFrDMY(date: Date): string {
+    return date.toISOString().split('T')[0].split('-').reverse().join('-');
+  }
 }

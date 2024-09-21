@@ -1,10 +1,10 @@
-import {AuthorDto, Category, DataManga, Genre, Manga, MangaDto, Mangas} from './../types.d';
+import {AuthorDto, Category, DataManga, Genre, Manga, MangaDto, Mangas, UpdateMangaDto} from './../types.d';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, firstValueFrom} from 'rxjs';
+import {BehaviorSubject, firstValueFrom, Observable} from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class MangaService {
     url="/api/mangas";
@@ -18,14 +18,14 @@ export class MangaService {
      */
     options = {
         headers: new HttpHeaders({
-          "Content-Type": "application/json",
-          "Accept":"application/json",
-          "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE",
-         // "Access-Control-Allow-Origin": '*'
+            "Content-Type": "application/json",
+            "Accept":"application/json",
+            "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE",
+            // "Access-Control-Allow-Origin": '*'
 
         }),
         body: {
-          id: '',
+            id: '',
         },
     };
 
@@ -58,13 +58,13 @@ export class MangaService {
     // utilisation de la pagination
     mangaPagination  = new BehaviorSubject<Mangas | null>(null);
     currentMangaPagination = this.mangaPagination.asObservable()
-   // Dto
+    // Dto
     mangaDto = new BehaviorSubject<MangaDto[]>([])
 
 
 
     constructor(
-        private http: HttpClient, 
+        private http: HttpClient,
     ) {
 
     }
@@ -111,9 +111,9 @@ export class MangaService {
 
 
     /**
-    * recuprere   un seul Manga
-    *
-    */
+     * recuprere   un seul Manga
+     *
+     */
     getOneManga(){
         this.http.get<Manga>(this.urlOneManga, {
             headers: {'Access-Control-Allow-Origin': '*'}
@@ -130,15 +130,15 @@ export class MangaService {
      * Récupère 9 mangas
      *
      */
-   getTenManga(){
-       this.http.get<Manga[]>(this.urlOrderDate)
-           .pipe()
-           .toPromise()
-           .then((r) => {
-               if (!r) return;
-               console.log(r)
-               this.orderDateManga.next(r);
-           })
+    getTenManga(){
+        this.http.get<Manga[]>(this.urlOrderDate)
+            .pipe()
+            .toPromise()
+            .then((r) => {
+                if (!r) return;
+                console.log(r)
+                this.orderDateManga.next(r);
+            })
 
     }
 
@@ -160,18 +160,18 @@ export class MangaService {
 
     /**
      * Récupère un manga.
-     * @param id 
+     * @param id
      */
     getManga(id: number, page: number=0){
         this.http.get<DataManga>(`${this.url}/${id}?page=${page}`, {
             headers: this.options.headers
-         })
-        .pipe()
-        .toPromise()
-        .then((r)=>{
-            if(!r) return;
-            this.dataManga.next(r);
         })
+            .pipe()
+            .toPromise()
+            .then((r)=>{
+                if(!r) return;
+                this.dataManga.next(r);
+            })
     }
 
     /**
@@ -182,10 +182,10 @@ export class MangaService {
     addUserInFavorite(idManga: number, idUser: number | undefined){
         this.options.body.id=String(idUser);
         this.http.post<boolean>(`${this.url}/${idManga}`, this.options.body, this.options)
-        .subscribe((r) => {
-            this.isFavorite.next(true);
-        });
-     }
+            .subscribe((r) => {
+                this.isFavorite.next(true);
+            });
+    }
 
     /**
      * Supprime le manga en favoris pour l'utilisateur.
@@ -195,9 +195,9 @@ export class MangaService {
     deleteUserAsFavorite(idManga: number, idUser: number | undefined){
         this.options.body.id=String(idUser);
         this.http.delete<boolean>(`${this.url}/${idManga}`, this.options)
-        .subscribe((r) => {
-            this.isFavorite.next(false);
-        })
+            .subscribe((r) => {
+                this.isFavorite.next(false);
+            })
     }
 
     /**
@@ -236,5 +236,11 @@ export class MangaService {
             });
 
     }
+
+    updateManga(mangaDto: UpdateMangaDto): Observable<UpdateMangaDto> {
+        const url = `${this.urlAction}/${mangaDto.id}`;
+        return this.http.put<MangaDto>(url, mangaDto);
+    }
+
 
 }

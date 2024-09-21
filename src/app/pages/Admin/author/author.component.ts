@@ -3,6 +3,8 @@ import {Author, AuthorDto, DataAuthor} from "../../../types";
 import {AuthorService} from "../../../services/author.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormsModule} from "@angular/forms";
+import {catchError, finalize, tap} from "rxjs/operators";
+import {throwError} from "rxjs";
 
 @Component({
   selector: 'app-author',
@@ -12,92 +14,79 @@ import {FormsModule} from "@angular/forms";
   ],
   template: `
 
-    <section class="user">
-      <h1>Information sur  {{ data?.author?.firstname! }} </h1>
+    <section class="admin-container">
+      <h1>Information sur l'auteur: {{ data?.author?.firstname! }} </h1>
 
+      <div class="div-form">
+        <form class="form-admin"   #authorForm="ngForm"  (submit)="handleSubmit($event)" >
 
-      <div>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <p></p>
-        <div>
-          <p></p>
-          <ul>
-            <li></li>
-            <li></li>
-            <li></li>
-            <li></li>
+          <div class="form-contain" >
+            <input
+                id="firstname"
+                type="text"
+                [(ngModel)]="firstname"
+                name="firstname"
+                placeholder="Nom"
+            >
+          </div>
+          <div class="form-contain">
+            <input
+                id="lastname"
+                type="text"
+                [(ngModel)]="lastname"
+                name="lastname"
+                placeholder="Prénom"
+            >
+          </div>
+          <div class="form-contain text_area">
+          <textarea
+              id="description"
+              type="text"
+              [(ngModel)]="description"
+              name="description"
+              placeholder="Description "
 
-          </ul>
-
-        </div>
-      </div>
-    </section>
-    
-    <form #authorForm="ngForm"  (submit)="handleSubmit($event)" >
-      <div class="flex flex-col gap-1">
-        <label class="text-sm" for="lastname">lastname </label>
-        <input
-            id="lastname"
-            type="text"
-            [(ngModel)]="lastname"
-            name="lastname"
-            
-        >
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-sm" for="firstname">firstname </label>
-
-        <input
-            id="firstname"
-            type="text"
-            [(ngModel)]="firstname"
-            name="firstname"
-        >
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-sm" for="description">Déscription </label>
-
-        <textarea
-            id="description"
-            type="text"
-            [(ngModel)]="description"
-            name="description">
-        
+          >
           </textarea>
-      
-        <div class="flex justify-center">
-          <button
-              type="submit"
-              class="bg-slate-600 text-white rounded px-4 py-2"
-          >Submit</button>
-        </div>
+            @if (error) {
+              <p class="text-red-500">{{error}}</p>
+            }
+
+          </div>
+          <div class="">
+            <button
+                type="submit"
+                class="bg-slate-600 text-white rounded px-4 py-2"
+            >Submit</button>
+          </div>
+        </form>
       </div>
-    </form>
-    
+
+    </section>
+
+
 
   `,
   styles:  [`
-  .user{
-    width: 80%;
-    margin-right: auto;
-    margin-left: auto;
-    border-radius: 10px;
-    background-color: rgb(37,37,37,50%) ;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    
-  }
-  input{
-    color:black;
-  }
-  textarea{
-    color:black;
-  }
-  
+
+    input{
+      color:black;
+    }
+    textarea{
+      color:black;
+    }
+
+
+    .form-contain{
+      input{
+        width: 100%;
+      }
+    }
+
+    .div-form .form-admin{
+      width: 100%;
+    }
+
   `]
 })
 export class AuthorAdminComponent implements OnInit {
@@ -150,18 +139,24 @@ export class AuthorAdminComponent implements OnInit {
       createdAt: this.date
     };
 
-    this.authorService.updateAuthor(updatedAuthor).subscribe(
-        response => {
-          // Gérez la réponse positive ici (par exemple, afficher un message de succès)
-          console.log('Author updated successfully', response);
-          this.router.navigate(['/admin/authors']); // Redirigez vers la liste des auteurs ou une autre page
-        },
-        error => {
-          // Gérez l'erreur ici (par exemple, afficher un message d'erreur)
-          console.error('Error updating author', error);
-          this.error = 'Erreur lors de la mise à jour de l\'auteur';
-        }
-    );
+    this.authorService.updateAuthor(updatedAuthor)
+        .pipe(
+            tap(response => {
+              // Gérez la réponse positive ici
+              console.log('Author updated successfully', response);
+              this.router.navigate(['/admin/authors']); // Redirigez vers la liste des auteurs
+            }),
+            catchError(error => {
+              // Gérez l'erreur ici
+              console.error('Error updating author', error);
+              this.error = 'Erreur lors de la mise à jour de l\'auteur';
+              return throwError(error); // Relancez l'erreur pour un traitement supplémentaire si nécessaire
+            }),
+            finalize(() => {
+              // Actions finales à réaliser, qu'il y ait une erreur ou non
+            })
+        )
+        .subscribe(); // Nécessaire pour déclencher l'exécution du pipeline
   }
 
 

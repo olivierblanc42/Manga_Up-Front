@@ -3,6 +3,7 @@ import {Categories} from "../../../types";
 import {CategoryService} from "../../../services/category.service";
 import {RouterLink} from "@angular/router";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-categories',
@@ -10,15 +11,16 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
   imports: [
     RouterLink,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgClass
   ],
   template: `
-    
+
     <h2>Catégories</h2>
 
-   
-    
-    
+
+
+
     <div class="flex flex-col gap-2 mt-4 admin-container">
 
 
@@ -61,9 +63,9 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
           </div>
         </form>
       </div>
-      
-      
-      
+
+
+
       <table>
         <thead>
         <tr>
@@ -88,7 +90,38 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
     </div>
 
 
+    <div class="pagination">
 
+      @for(page of pages; track page; let count=$index){
+        @if(count===0){
+          <li>
+            <button
+                (click)="pagePrevious()"
+                [ngClass]="currentPage <= 0 ? 'grey-desactive-btn': 'blue-active-btn'"
+                class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >Previous</button>
+          </li>
+        }
+        <li>
+
+          <button (click)="pageCategory(page)"
+                  class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-yellow-100 dark:hover:text-gray-700"
+                  [ngClass]="currentPage===page ? 'bg-yellow-100':'background-color-pagination-yellow'"
+          >
+            {{count+1}}
+          </button>
+        </li>
+        @if(count===lastPage-1){
+          <li>
+            <button
+                (click)="pageNext()"
+                [ngClass]="currentPage===lastPage-1 ? 'grey-desactive-btn': 'blue-active-btn'"
+                class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
+          </li>
+        }
+      }
+
+    </div>
 
 
   `,
@@ -103,7 +136,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
       table{
         tbody{
           tr{
-      // border: none;
+            // border: none;
           }
         }
       }
@@ -116,8 +149,8 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
       color:black;
       width: 100%;
     }
-    
-`]
+
+  `]
 })
 export class CategoriesAdminComponent implements OnInit {
   categories!: Categories|null;
@@ -140,6 +173,8 @@ export class CategoriesAdminComponent implements OnInit {
     this.categoryService.getCategories()
     this.categoryService.currentCategoryPagination.subscribe(categories =>{
       this.categories =categories;
+      this.pages = this.convertNumberToArray(this.categories?.totalPages!)
+      this.lastPage =this.categories?.totalPages!;
     })
   }
 
@@ -206,13 +241,9 @@ export class CategoriesAdminComponent implements OnInit {
       createdAt : this.currentTime
 
     });
-
-    this.reloadPage()
-
     this.name ="";
     this.description="";
     this.error="";
-
   }
 
   /**
@@ -221,8 +252,7 @@ export class CategoriesAdminComponent implements OnInit {
    * */
   handleRemove(id: number){
     if(confirm("Are you sure to delete" )) {
-     this.categoryService.removeCategory(id)
-      this.reloadPage()
+      this.categoryService.removeCategory(id)
 
     }
   }

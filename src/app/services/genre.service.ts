@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, firstValueFrom} from 'rxjs';
-import {Genre, Genres, DataGenre, Manga,GenreDto} from '../types';
+import {BehaviorSubject, firstValueFrom, Observable} from 'rxjs';
+import {Genre, Genres, DataGenre, Manga, GenreDto, CategoryDto, UpdateGenreDto, MangaDto} from '../types';
 
 
 
@@ -36,11 +36,12 @@ export class GenreService {
 
     currentGenres = this.genres.asObservable();
     currentGenre =this.genre.asObservable();
-   //dto
 
-    genreDto = new BehaviorSubject<GenreDto[]>([])
-    currentGenreDto = this.genreDto.asObservable();
+    //dto
+    genresDto = new BehaviorSubject<GenreDto[]>([])
+    currentGenreDto = this.genresDto.asObservable();
 
+    genreDto = new BehaviorSubject<GenreDto|null>(null)
 
     // utilisation de la pagination
     genrePagination = new  BehaviorSubject<Genres | null>(null);
@@ -48,6 +49,11 @@ export class GenreService {
     //pagination manga dans genre
     dataGenre = new  BehaviorSubject<DataGenre | null>(null);
     currentDataGenre = this.dataGenre.asObservable()
+
+    // Pour update
+
+    updateGenreDto = new BehaviorSubject<UpdateGenreDto | null>(null)
+    currentUpdateGenreDto = this.updateGenreDto.asObservable();
     constructor(
         private http: HttpClient
     ) { }
@@ -110,15 +116,15 @@ export class GenreService {
             })
     }
 
-    addGenre(genre: Omit<Genre, "id"|"img">){
-        firstValueFrom(this.http.post<Genre>(this.url,genre,{
+    addGenre(genreDto: Omit<GenreDto, "img"| "id" |"mangaId" >){
+        firstValueFrom(this.http.post<GenreDto>(this.url,genreDto,{
             headers: this.options.headers
         }))
             .then((r)=>{
-               if(!r) return;
-               console.log(r)
-                this.genre.next(r);
-    })
+                if(!r) return;
+                console.log(r)
+                this.genreDto.next(r);
+            })
 
     }
 
@@ -128,10 +134,26 @@ export class GenreService {
             headers: this.options.headers
         }))        .then((r)=>{
             if(!r) return;
-            this.genreDto.next(r);
+            this.genresDto.next(r);
         })
     }
 
+    updateGenre(updateGenre: UpdateGenreDto):Observable<UpdateGenreDto> {
+        return this.http.put<GenreDto>(`${this.urlDto}/${updateGenre.id}`,updateGenre)
 
+    }
+
+    removeGenre(id: number){
+        firstValueFrom(this.http.delete<void>(`${this.url}/${id}`, {
+                headers: this.options.headers
+            })
+        )    .then(() => {
+            console.log(`Genre manga with ID ${id} has been deleted.`);
+
+        })
+            .catch((error) => {
+                console.error('Error deleting genre:', error);
+            });
+    }
 
 }

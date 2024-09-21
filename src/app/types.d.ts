@@ -57,6 +57,13 @@ export type Gender = {
     label: string;
 };
 
+export type Genders = {
+    content: Gender[];
+    size: number;
+    totalElements: number;
+    totalPages: number;
+};
+
 
 export type Genre = {
     id: number;
@@ -169,6 +176,16 @@ export type Address = {
     postal_code: string;
 }
 
+
+export type Addresses = {
+    content: Address[];
+    size: number;
+    totalElements: number;
+    totalPages: number;
+}
+
+
+
 //DTO
 
 export type AuthorDto = {
@@ -182,28 +199,61 @@ export type AuthorDto = {
 
 export type MangaDto ={
     id?: number;
-    title:string;
-    summary:string;
+    title:string ;
+    summary:string ;
     createdAt:Date;
     releaseDate:Date;
     price:BigDecimal;
-    pointFidelity:number;
-    categoryId:number;
+    pointFidelity:number ;
+    categoryId:number ;
     authorIds: number[];
     genreIds: number[];
 }
 
 export type CategoryDto ={
     id?: number;
-    name:string;
-    description:string;
+    name:string| undefined;
+    description:string | undefined;
     createdAt:Date;
 }
 
 export type GenreDto = {
     id: number;
     createdDate: Date;
-    label: string;
+    label: string | undefined;
     img?: string;
     mangaId:number[];
 }
+
+export  type GenderDto = {
+    id: number;
+    label: string;
+}
+
+export type UserDto = {
+    id: number;
+    userName: string;
+    email: string;
+    fisrtname: string;
+    createdAt: Date;
+    lastname:string;
+    password: string;
+    addressId:number;
+    genderId:number;
+}
+
+export type AddressDto = {
+    id: number;
+    city : string;
+    line1: string;
+    line2: string;
+    line3: string;
+    postalCode: string;
+
+}
+
+//DTO For update
+
+export type UpdateGenreDto = Omit<GenreDto, 'createdDate'| "mangaId">;
+
+export type UpdateMangaDto = Omit<MangaDto, "img" | "createdAt" | "authorIds">;
