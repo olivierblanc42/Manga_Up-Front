@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../types';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,14 +22,6 @@ export class AccountService {
      * @returns {string | null} 
      */
     getUser(): User | null{
-        return JSON.parse(localStorage.getItem("user") ?? "{}" ) 
-    }
-
-    isLogged(){
-        return this.getUser() ? true : false;
-    }
-
-    logout(){
-        localStorage.removeItem("user");
+        return JSON.parse(localStorage.getItem("user")!);
     }
 }
