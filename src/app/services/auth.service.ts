@@ -15,8 +15,13 @@ export class AuthService {
     private authenticated: boolean = false;
 
     user = new BehaviorSubject<User | null>(null) ;
-    currentUser = this.user.asObservable()
+    currentUser = this.user.asObservable();
 
+    _isLogged = new BehaviorSubject<Boolean>(false);
+    current_isLogged=this._isLogged.asObservable();
+
+    isAlreadyLogout = new BehaviorSubject<Boolean>(true);
+    current_isAlreadyLogout=this.isAlreadyLogout.asObservable();
 
     constructor(private http: HttpClient, private accountService: AccountService ) {}
 
@@ -35,10 +40,13 @@ export class AuthService {
         // C'est ici qu'on récupère l'utilisateur.
         return this.http.post<User>(this.authUrl, {username, password}, { headers:options.headers, withCredentials: true }).pipe(
             tap((user: User) => {
+                console.log("auth.service http post user", user);
                 this.authenticated = true;
-                console.log(user);
-                
                 this.accountService.setUser(user);
+                localStorage.setItem("isLogout", "false");
+                localStorage.setItem("isLogged", "true");
+                localStorage.setItem("isAlreadyLogin", "false");
+                localStorage.setItem("isAlreadyLogout", "false");
                 this.user.next(user);
             })
         );
@@ -60,7 +68,11 @@ export class AuthService {
             tap((user: User) => {
                 this.authenticated = true;
                 this.accountService.setUser(user)
-                console.log("user auth service : ", user)
+                localStorage.setItem("isLogout", "false");
+                localStorage.setItem("isLogged", "true");
+                localStorage.setItem("isAlreadyLogin", "false");
+                localStorage.setItem("isAlreadyLogout", "true");
+                this.user.next(user);
             })
         );
     }
@@ -69,7 +81,34 @@ export class AuthService {
         return this.authenticated;
     }
 
+    /**
+     * Déconnexion de l'utilisateur en supprimant celui-ci du local storage.
+     */
     logout(): void {
+        console.log("L83 autho service logout");
+        
         this.authenticated = false;
+        localStorage.setItem("isLogout", "true");
+        localStorage.setItem("isLogged", "false");
+        localStorage.setItem("isAlreadyLogout", "false");
+        this.isAlreadyLogout.next(true)
+        localStorage.removeItem("user");
+    }
+
+
+    /**
+     * Permet de savoir si on est connecté.
+     * @returns {Boolean}
+     */
+    isLogged(){
+        return JSON.parse(localStorage.getItem('isLogged')!)
+    }
+
+    /**
+     * Permet de savoir si on est déconnecté.
+     * @returns {Boolean}
+     */
+    isLogout(){
+        return JSON.parse(localStorage.getItem('isLogout')!);
     }
 }
