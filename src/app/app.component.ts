@@ -2,13 +2,14 @@ import { AuthService } from './services/auth.service';
 import { AccountService } from './services/account.service';
 import { FormsModule } from '@angular/forms';
 import { SearchMangaService } from './services/search-manga.service';
-import { Component, Output } from '@angular/core';
+import { Component, ElementRef, HostListener, Output } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faBook,
   faSearch,
   faUser,
+  faUserLargeSlash,
   faCartShopping,
   faShuffle,
   faBars,
@@ -24,16 +25,23 @@ import { LoginComponent } from "./pages/login/login.component";
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, RouterModule, FontAwesomeModule, FormsModule, PicturesPipe, FlashMessageComponent, LoginComponent],
+  host: {'(document:click)':'closeMenu($event)'},
   template: `
-  <div (click)="removeDisplaySearchManga()">
+
+<div (click)="removeDisplaySearchManga()" id="global-page">
     <div class="container mx-auto">
       <!-- nav mobile -->
       <nav class="flex py-3 justify-evenly nav-mobile">
         <ul class="flex flex-row items-center gap-x-8">
-          <li><a routerLink="/"><img src="assets/img/logo.png" alt=""></a></li>
-          <li><a class="icon-menu"><img src="assets/svg/ri_bar-chart-horizontal-fill.svg"></a></li>
-          <li><a class="icon-user" routerLink="/login" ><img src="assets/svg/bx_bx-user-check.svg"></a></li>
-          <li><a class="icon-panier"><img src="assets/svg/carbon_shopping-cart-plus.svg"></a></li>
+            <li><a routerLink="/"><img src="assets/img/logo.png" alt=""></a></li>
+            <li><a class="icon-menu"><img src="assets/svg/ri_bar-chart-horizontal-fill.svg"></a></li>
+            <li><a class="icon-panier"><img src="assets/svg/carbon_shopping-cart-plus.svg"></a></li>
+
+            @if(isLogged()){
+              <li><a class="icon-user" routerLink=""><fa-icon [icon]="faUser"></fa-icon></a></li>
+            }@else {
+              <li><a class="icon-user" routerLink="/login"><fa-icon [icon]="faUserLargeSlash"></fa-icon></a></li>
+            }
         </ul>
       </nav>
     </div>
@@ -77,22 +85,77 @@ import { LoginComponent } from "./pages/login/login.component";
             </div>
 
             <ul class="nav-desktop-box-items flex flex-row justify-around py-1 box__nav">
-              <li><a routerLink="/genres"  class="flex flex-row box__nav--genres" href=""><fa-icon class="mr-1 faBook" [icon]="faBook"></fa-icon> Genres</a></li>
-              <li><a  routerLink="/authors"  class="flex flex-row box__nav--auteurs" href=""><fa-icon class="mr-1 faAddressCard" [icon]="faAddressCard"></fa-icon> Auteur</a></li>
-              <li><a  routerLink="/categories"    class="flex flex-row box__nav--categories" href=""><fa-icon class="mr-1 faTag" [icon]="faTag"></fa-icon>Catégories</a></li>
+              <li><a routerLink="/genres" class="flex flex-row box__nav--genres" href=""><fa-icon class="mr-1 faBook" [icon]="faBook"></fa-icon> Genres</a></li>
+              <li><a routerLink="/authors" class="flex flex-row box__nav--auteurs" href=""><fa-icon class="mr-1 faAddressCard" [icon]="faAddressCard"></fa-icon> Auteur</a></li>
+              <li><a routerLink="/categories" class="flex flex-row box__nav--categories" href=""><fa-icon class="mr-1 faTag" [icon]="faTag"></fa-icon>Catégories</a></li>
             </ul>
             @if(msg){
               <div class="text-center">{{msg}}</div>
             }
           </div>
           <div class="flex flex-row gap-10">
-            <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
-            <a routerLink="/login" class="icon-user"><fa-icon [icon]="faUser"></fa-icon></a>
+                <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
+            @if(isLogged()){
+                <div type="button" (click)="userProfile($event)" class="icon-user" routerLink=""><fa-icon [icon]="faUser"></fa-icon></div>
+                <div id="user-info" class="bg-white overflow-hidden shadow rounded-lg border">
+                    <div class="px-4 py-5 sm:px-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            User Profile
+                        </h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            This is some information about the user.
+                        </p>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                        <dl class="sm:divide-y sm:divide-gray-200">
+                            <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    Full name
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    John Doe
+                                </dd>
+                            </div>
+                            <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    Email address
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    johndoe&#64;gmail.com
+                                </dd>
+                            </div>
+                            <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    Phone number
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    (123) 456-7890
+                                </dd>
+                            </div>
+                            <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                <dt class="text-sm font-medium text-gray-500">
+                                    Address
+                                </dt>
+                                <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                    123 Main St<br>
+                                    Anytown, USA 12345
+                                </dd>
+                            </div>
+                            <div class="py-3 grid gap-4 px-6 text-center">
+                                <a class="user-info-logout" routerLink="/login" (click)="logout()">Déconnexion</a>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            }@else {
+                <a class="icon-user" routerLink="/login"><fa-icon [icon]="faUserLargeSlash"></fa-icon></a>
+            }
           </div>
         </nav>
-      </div>
+        </div>
         <ui-flash-message></ui-flash-message>
     </div>
+
 
     <router-outlet></router-outlet>
 
@@ -141,9 +204,26 @@ import { LoginComponent } from "./pages/login/login.component";
         <br>Contact, Mention legale - All rights reserved
       </p>
     </footer>
-    </div>
+</div>
   `,
   styles: [`
+
+    .icon-user{
+        cursor:pointer;
+    }
+
+    #global-page{
+        position:relative;
+        z-index:0;
+    }
+
+    #user-info{
+        //display:none;
+        visibility: hidden;
+        position:absolute;
+        top: 4rem;
+        right: 6.5rem;
+    }
 
     .bannierre{
       position:relative;
@@ -151,7 +231,6 @@ import { LoginComponent } from "./pages/login/login.component";
 
     .nav-desktop-box-mangas-find{
       position:absolute;
-      position: absolute;
       margin: 6rem 10rem;
       z-index: 9999;
     }
@@ -258,6 +337,7 @@ export class AppComponent {
     protected readonly faShuffle = faShuffle;
     protected readonly faCartShopping = faCartShopping;
     protected readonly faUser = faUser;
+    protected readonly faUserLargeSlash = faUserLargeSlash;
     protected readonly faSearch = faSearch;
     protected readonly  faBars = faBars;
     protected readonly faPen = faPen;
@@ -270,45 +350,80 @@ export class AppComponent {
     isClick: boolean=false;
     user!: User|null;
     msgLogin: string="";
-    isAlreadyLogin: Boolean=false;
+    _isLogged: Boolean=false;
+    _isLogout: Boolean=false;
+    
 
     constructor(
         private searchMangaService: SearchMangaService,
         private authService: AuthService,
         private accountService: AccountService,
+        private elementRef:ElementRef,
     ){}
 
     ngOnInit(){
         this.searchMangaService.currentSearch.subscribe(mangas=>{
-        this.mangas=mangas;
-        
-        if(mangas.length===0 && this.isClick){
-            this.msg="Le mangas n'a pas été trouvé";
-            setTimeout(() => {
-            this.msg="";
-            }, 3000);
-        }
+            this.mangas=mangas;
+            if(mangas.length===0 && this.isClick){
+                this.msg="Le mangas n'a pas été trouvé";
+                setTimeout(() => {
+                this.msg="";
+                }, 3000);
+            }
         });
     }
 
-  removeDisplaySearchManga(){
-    this.isClick=false;
-    this.mangas=[];
-  }
+    closeMenu(event: Event) {
+        event.stopPropagation();
+        const userInfo=document.querySelector("#user-info") as HTMLElement;
+        if(userInfo){
+            userInfo.style.visibility="hidden"
+        }
+	}
 
-  searchManga(event: Event){
-
-    this.isClick=true;
-
-    if(!this.manga){
-      return;
+    userProfile(event: Event){
+        event.stopPropagation();
+        const userInfo=this.elementRef.nativeElement.querySelector("#user-info");
+        userInfo.style.visibility=userInfo.style.visibility==="visible" ? "hidden" : "visible";
+        document.body.addEventListener('click', this.closeMenu)
     }
 
-    event.preventDefault();
-    this.searchMangaService.searchManga(this.manga);
-    this.manga="";
-  }
+    isLogout(){
+        return this.authService.isLogout();
+    }
 
+    isLogged(){
+        return this.authService.isLogged();
+    }
+
+    logout(){
+        if( ! JSON.parse(localStorage.getItem("isAlreadyLogout")!)){
+            this.authService.logout();
+        }
+    }
+
+    removeDisplaySearchManga(){
+        this.isClick=false;
+        this.mangas=[];
+    }
+
+    searchManga(event: Event){
+
+        this.isClick=true;
+
+        if(!this.manga){
+        return;
+        }
+
+        event.preventDefault();
+        this.searchMangaService.searchManga(this.manga);
+        this.manga="";
+    }
+
+    log(obj: Object, msg: string=""){
+        console.log(msg, obj);
+    }
 
 
 }
+
