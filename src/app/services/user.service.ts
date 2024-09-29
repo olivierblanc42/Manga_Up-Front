@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, firstValueFrom} from 'rxjs';
-import {Category, DataUser, Manga, User} from '../types';
+import {Category, DataUser, Manga, User, UserDto} from '../types';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,10 @@ export class UserService {
 
     dataUser=new BehaviorSubject<DataUser | null>(null)
     currentDataUser=this.dataUser.asObservable();
+
+    // role
+
+
 
     constructor(private http: HttpClient ) { }
 
@@ -64,7 +68,7 @@ export class UserService {
     }
 
 
-   addUser(user: Omit<User,"id" |"address"|"gender"|"img"|"roles">){
+   addUser(user: Omit<User,"id" |"img"|"roles">){
        firstValueFrom(this.http.post<User>(this.url,user,{
            headers: this.options.headers
        }))
@@ -74,6 +78,25 @@ export class UserService {
                this.user.next(r);
            })
    }
+
+addUserDto(userDto: Omit<UserDto,"id" |"img"|"roles">){
+    firstValueFrom(this.http.post<User>(this.url,userDto,{
+        headers: this.options.headers
+    }))
+        .then((r)=>{
+            if(!r) return;
+            console.log(r)
+            this.user.next(r);
+        })
+}
+
+
+// role
+
+    getRole(){
+    
+    }
+
 
 
 

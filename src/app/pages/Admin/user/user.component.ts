@@ -25,7 +25,7 @@ import { DataUser, User,} from "../../../types";
             <li>{{ dataUser?.user?.address?.line1}}</li>
             <li>{{ dataUser?.user?.address?.line2}}</li>
             <li>{{ dataUser?.user?.address?.line3}}</li>
-            <li>{{ dataUser?.user?.address?.postal_code}}</li>
+            <li>{{ dataUser?.user?.address?.postalCode}}</li>
           </ul>
           
         </div>

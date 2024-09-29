@@ -1,9 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {User} from "../../../types";
+import {AddressDto, GenderDto, User} from "../../../types";
 import {UserService} from "../../../services/user.service";
 import {FormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {RouterModule} from "@angular/router";
+import {GenderService} from "../../../services/gender.service";
+import {AddressService} from "../../../services/address.service";
 
 @Component({
   selector: 'app-users',
@@ -13,11 +15,11 @@ import {RouterModule} from "@angular/router";
 
       <h2>Compte utilisateur</h2>
 
-      <div class="flex flex-col gap-2 mt-4 admin-container">
+      <div class="div-form admin-container">
 
-          <form #authorForm="ngForm"  (submit)="handleSubmit($event)" >
+          <form class="form-admin"   #authorForm="ngForm"  (submit)="handleSubmit($event)" >
               <h2>Ajout d'un auteur</h2>
-              <div class="flex flex-col gap-1">
+              <div class="form-contain">
                   <label class="text-sm" for="firstname">firstname </label>
 
                   <input
@@ -27,7 +29,7 @@ import {RouterModule} from "@angular/router";
                           name="firstname"
                   >
               </div>
-              <div class="flex flex-col gap-1">
+              <div class="form-contain">
                   <label class="text-sm" for="lastname">lastname </label>
                   <input
                           id="lastname"
@@ -36,7 +38,7 @@ import {RouterModule} from "@angular/router";
                           name="lastname"
                   >
               </div>
-              <div class="flex flex-col gap-1">
+              <div class="form-contain">
                   <label class="text-sm" for="username">username </label>
                   <input
                           id="username"
@@ -45,7 +47,7 @@ import {RouterModule} from "@angular/router";
                           name="username"
                   >
               </div>
-              <div class="flex flex-col gap-1">
+              <div class="form-contain">
                   <label class="text-sm" for="Email">Email </label>
                   <input
                           id="Email"
@@ -54,7 +56,7 @@ import {RouterModule} from "@angular/router";
                           name="Email"
                   >
               </div>
-              <div class="flex flex-col gap-1">
+              <div class="form-contain">
                   <label class="text-sm" for="password">Mot de passe </label>
                   <input
                           id="password"
@@ -63,6 +65,27 @@ import {RouterModule} from "@angular/router";
                           name="password"
                   >
               </div>
+
+              <div class="form-contain" >
+                  <select id="gender-select" name="gender"  [(ngModel)]="selectedGender"  >
+                      <option value="" disabled selected>choisir une catégorie</option>
+                      @for(gender of genderDto ;track gender.id){
+                          <option [value]="gender.id"  >{{gender.label}}</option>
+                      }
+                  </select>
+                  
+              </div>
+
+              <div class="form-contain" >
+                  <select id="address-select" name="address"  [(ngModel)]="selectedAddress"  >
+                      <option value="" disabled selected>choisir une adresse</option>
+                      @for(address of addressDto ;track address.id){
+                          <option [value]="address.id"  >{{address.line1}}, {{address.line2}}, {{address.line3}},{{address.city}},{{address.postalCode}}</option>
+                      }
+                  </select>
+
+              </div>
+              
               <div class="flex flex-col gap-1">
                   @if (error) {
                       <p class="text-red-500">{{error}}</p>
@@ -75,29 +98,32 @@ import {RouterModule} from "@angular/router";
                   </div>
               </div>
           </form>
-          <table>
-              <thead>
-              <tr>
-                  <th>Utilisateur</th>
-                  <th>Email</th>
-                  <th>Action</th>
-              </tr>
-              </thead>
-              <tbody>
-                  @for (user of users; track user.id) {
-                      <tr class="border">
-                          <td>{{"lastname: " +user.lastname + " " +" "+ user.firstname}}</td>
-                          <td>{{user.email}}</td>
-                          <td>
-                              <a [routerLink]="'/admin/users/' + user.id">🔎</a>
-                              <button >🗑️</button>
-                          </td>
-                      </tr>
-                  }
-              </tbody>
-          </table>
+         
       </div>
-      
+      <div class="flex flex-col gap-2 mt-4 admin-container">
+
+      <table>
+          <thead>
+          <tr>
+              <th>Utilisateur</th>
+              <th>Email</th>
+              <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+              @for (user of users; track user.id) {
+                  <tr class="border">
+                      <td>{{"lastname: " +user.lastname + " " +" "+ user.firstname}}</td>
+                      <td>{{user.email}}</td>
+                      <td>
+                          <a [routerLink]="'/admin/users/' + user.id">🔎</a>
+                          <button >🗑️</button>
+                      </td>
+                  </tr>
+              }
+          </tbody>
+      </table>
+      </div>
   `,
   styles: [`
     .admin-container{
@@ -119,6 +145,8 @@ import {RouterModule} from "@angular/router";
 })
 export class UsersComponent  implements OnInit {
     users! : User[];
+    genderDto!: GenderDto[];
+    addressDto!: AddressDto[];
     firstname: string ="";
     lastname: string ="";
     password: string="";
@@ -126,7 +154,14 @@ export class UsersComponent  implements OnInit {
     currentTime = new Date();
     email:string="";
     error: string="";
-  constructor(private userService: UserService) {}
+    selectedGender!:number;
+    selectedAddress!:number;
+
+    constructor(
+      private userService: UserService,
+      private genderService: GenderService,
+      private addressService: AddressService
+  ) {}
 
 
   ngOnInit(): void {
@@ -134,6 +169,16 @@ export class UsersComponent  implements OnInit {
      this.userService.currentUsers.subscribe( users => {
        this.users = users
      })
+
+      this.genderService.getGenderDto();
+     this.genderService.currentGenderDto.subscribe(gender =>{
+        this.genderDto = gender;
+     })
+
+      this.addressService.getAddressesDto()
+      this.addressService.currentAddressesDto.subscribe(address =>{
+          this.addressDto =address;
+      })
   }
 
     handleSubmit(e: SubmitEvent) {
@@ -157,17 +202,18 @@ export class UsersComponent  implements OnInit {
         }
         // Appelle le service pour ajouter un nouvel auteur avec les données fournies
 
-        this.userService.addUser({
-            firstname  : this.firstname,
+        this.userService.addUserDto({
+            fisrtname : this.firstname,
             lastname: this.lastname,
-            username:this.username,
+            userName:this.username,
             password : this.password,
             email:this.email,
-            createdAt:this.currentTime
-
+            createdAt:this.currentTime,
+            addressId:this.selectedAddress,
+            genderId:this.selectedGender
         });
 
-        this.reloadPage()
+
 
             this.firstname ="";
             this.lastname ="";
@@ -178,8 +224,4 @@ export class UsersComponent  implements OnInit {
 
     }
 
-    // Recharge la page pour refléter les nouvelles données
-    reloadPage() {
-        window.location.reload()
-    }
 }

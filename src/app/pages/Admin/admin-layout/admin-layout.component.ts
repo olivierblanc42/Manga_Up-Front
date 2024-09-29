@@ -14,7 +14,7 @@ import {RouterOutlet, RouterModule, RouterLink} from '@angular/router';
     <a class="btn-admin" [routerLink]="'/admin/genres'"> genres</a>
     <a class="btn-admin" [routerLink]="'/admin/mangas'"> mangas</a>
       <a class="btn-admin" [routerLink]="'/admin/genders'"> Genre utilisateur</a>
-
+      <a class="btn-admin" [routerLink]="'/admin/addresses'"> Adresses</a>
     </div>
     <router-outlet></router-outlet>
  

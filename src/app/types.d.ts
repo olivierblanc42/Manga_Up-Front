@@ -173,7 +173,7 @@ export type Address = {
     line2: string;
     line3: string;
     city : string;
-    postal_code: string;
+    postalCode: string;
 }
 
 
