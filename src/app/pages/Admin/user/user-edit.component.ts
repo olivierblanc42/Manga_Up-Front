@@ -213,7 +213,7 @@ export class UserEditComponent {
             this.line3=this.user?.address.line3!;
             this.city=this.user?.address.city!;
             this.department=this.user?.address.department!;
-            this.postalCode=this.user?.address.postal_code!;
+            this.postalCode=this.user?.address.postalCode!;
         });
 
         this.genderService.getGenders();
@@ -258,7 +258,7 @@ export class UserEditComponent {
             line3:this.line3,
             city:this.city,
             department:this.department,
-            postal_code:this.postalCode,
+            postalCode:this.postalCode,
         }
 
         let registerUser = {

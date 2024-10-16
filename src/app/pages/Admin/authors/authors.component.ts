@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Author, Authors, DataAuthor,AuthorDto} from "../../../types";
 import {AuthorService} from "../../../services/author.service";
 import {ActivatedRoute, Router, RouterLink, RouterModule} from "@angular/router";
-import {FormsModule} from "@angular/forms";
+import {Form, FormBuilder, FormGroup, FormsModule, Validators} from "@angular/forms";
 import {DatePipe, NgClass} from "@angular/common";
 
 @Component({
@@ -147,9 +147,16 @@ import {DatePipe, NgClass} from "@angular/common";
     `]
 })
 export class AuthorsAdminComponent implements OnInit {
+
+
+
+
+
     constructor(
         private authorService :AuthorService,
-        private router: Router  )
+        private router: Router ,
+        private _formBuilder: FormBuilder
+    )
     {
         this.currentPage=0;
     }

@@ -261,7 +261,7 @@ export class UsersComponent  implements OnInit {
             line3: this.line3,
             city: this.city,
             department: this.department,
-            postal_code: this.postalCode,
+            postalCode: this.postalCode,
         }
 
         let registerUser = {
@@ -310,8 +310,4 @@ export class UsersComponent  implements OnInit {
         this.postalCode="";
         }
 
-    // Recharge la page pour refléter les nouvelles données
-    reloadPage() {
-        window.location.reload()
-    }
 }

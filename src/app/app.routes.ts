@@ -31,7 +31,8 @@ import {GendersAdminComponent} from "./pages/Admin/genders/genders.component";
 import {GenderAdminComponent} from "./pages/Admin/gender/gender.component";
 import { RegisterComponent } from './pages/register/register.component';
 import { UserEditComponent } from './pages/Admin/user/user-edit.component';
-
+import {AddressComponent} from "./pages/Admin/address/address.component";
+import {AddressesComponent} from "./pages/Admin/addresses/addresses.component";
 
 
 export const routes: Routes = [
@@ -69,7 +70,8 @@ export const routes: Routes = [
             {path: 'genres', component: GenresAdminComponent },
             {path: 'genders', component: GendersAdminComponent },
             {path: 'gender/:id', component: GenderAdminComponent },
-
+            {path: 'addresses', component: AddressesComponent },
+            {path: 'address/:id', component: AddressComponent },
         ]
     },
     { path: 'error/:code', component: ErrorComponent },
