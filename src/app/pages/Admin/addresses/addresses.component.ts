@@ -183,7 +183,7 @@ export class AddressesComponent implements OnInit{
   error:string="";
 
   constructor(
-      private addressService :AddressService,
+      private addressService: AddressService,
       private router: Router  )
   {
     this.currentPage=0;
@@ -272,7 +272,7 @@ export class AddressesComponent implements OnInit{
       this.error = "PostalCode is required";
       return;
     }
-    // Appelle le service pour ajouter un nouvel genre avec les données fournies
+    // Appelle le service pour ajouter un nouveau genre avec les données fournies
     this.addressService.addAddress({
       city:this.city,
       line1:this.line1,
@@ -282,16 +282,17 @@ export class AddressesComponent implements OnInit{
     })
 
 
-        this.city ="";
-        this.line1 ="";
-        this.line2 ="";
-        this.line3 ="";
-        this.postalCode ="";
+    this.city ="";
+    this.line1 ="";
+    this.line2 ="";
+    this.line3 ="";
+    this.postalCode ="";
 
   }
+
   handleRemove(id: number){
     if(confirm("Are you sure to delete" )){
-      this.addressService.removeAddresses(id);
+        this.addressService.removeAddresses(id);
     }
   }
 

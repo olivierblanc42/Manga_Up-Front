@@ -3,7 +3,8 @@ import {UserService} from "../../../services/user.service";
 import {FormsModule} from "@angular/forms";
 import {CommonModule} from "@angular/common";
 import {ActivatedRoute, RouterModule} from "@angular/router";
-import { DataUser, User,} from "../../../types";
+import {DataUser, User} from "../../../types";
+
 @Component({
   selector: 'app-user',
   standalone: true,
@@ -14,18 +15,20 @@ import { DataUser, User,} from "../../../types";
       <h1>Information sur l'utilisateur <span>{{ dataUser?.user?.firstname }} , {{ dataUser?.user?.lastname }}</span> </h1>
       
       <div class="content-div">
-        <p><span>Firstname: </span> {{ dataUser?.user?.firstname }}</p>
-        <p><span>Lastname: </span> {{ dataUser?.user?.lastname }}</p>
-        <p><span>Username: </span> {{ dataUser?.user?.username }}</p>
-        <p><span>Email: </span> {{ dataUser?.user?.email }}</p>
-        <p><span>Genre:</span> {{ dataUser?.user?.gender?.label}}</p>
+        <p><span>Prénom : </span> {{ dataUser?.user?.firstname }}</p>
+        <p><span>Nom : </span> {{ dataUser?.user?.lastname }}</p>
+        <p><span>Pseudonyme : </span> {{ dataUser?.user?.username }}</p>
+        <p><span>Email : </span> {{ dataUser?.user?.email }}</p>
+        <p><span>Genre :</span> {{ dataUser?.user?.gender?.id}}</p>
         <div class="adresse">
-          <p><span>Adresse:</span>  </p>
+          <p><span>Adresse :</span>  </p>
           <ul>
             <li>{{ dataUser?.user?.address?.line1}}</li>
             <li>{{ dataUser?.user?.address?.line2}}</li>
             <li>{{ dataUser?.user?.address?.line3}}</li>
             <li>{{ dataUser?.user?.address?.postal_code}}</li>
+            <li>{{ dataUser?.user?.address?.department}}</li>
+            <li>{{ dataUser?.user?.address?.country}}</li>
           </ul>
           
         </div>
@@ -69,7 +72,6 @@ export class UserComponent implements OnInit {
   constructor(
       private userService: UserService,
       private activatedRoute: ActivatedRoute,
-
 ) {}
 
   ngOnInit(): void {
@@ -78,7 +80,6 @@ export class UserComponent implements OnInit {
 
     this.userService.currentDataUser.subscribe(dataUser =>{
       this.dataUser = dataUser;
-      console.log("Dans admin > user.component : ", this.dataUser)
     })
 
   }

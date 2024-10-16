@@ -30,6 +30,7 @@ import {GenreAdminComponent} from "./pages/Admin/genre/genre.component";
 import {GendersAdminComponent} from "./pages/Admin/genders/genders.component";
 import {GenderAdminComponent} from "./pages/Admin/gender/gender.component";
 import { RegisterComponent } from './pages/register/register.component';
+import { UserEditComponent } from './pages/Admin/user/user-edit.component';
 
 
 
@@ -57,6 +58,7 @@ export const routes: Routes = [
         children: [
             {path: 'users', component: UsersComponent },
             {path: 'users/:id', component: UserComponent },
+            {path: 'users/edit/:id', component: UserEditComponent },
             {path: "categories", component: CategoriesAdminComponent},
             {path: "category/:id", component: CategoryAdminComponent},
             {path: "authors", component: AuthorsAdminComponent},

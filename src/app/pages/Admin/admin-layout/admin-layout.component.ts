@@ -2,26 +2,27 @@ import { Component } from '@angular/core';
 import {RouterOutlet, RouterModule, RouterLink} from '@angular/router';
 
 @Component({
-  selector: 'app-admin-layout',
-  standalone: true,
-  imports: [RouterOutlet, RouterLink],
-  template: `
-    <p>ADMIN</p>
-    <div>
-    <a class="btn-admin"  [routerLink]="'/admin/users'"> users</a>
-    <a class="btn-admin" [routerLink]="'/admin/categories'"> catégories</a>
-    <a class="btn-admin" [routerLink]="'/admin/authors'"> Auteurs</a>
-    <a class="btn-admin" [routerLink]="'/admin/genres'"> genres</a>
-    <a class="btn-admin" [routerLink]="'/admin/mangas'"> mangas</a>
-      <a class="btn-admin" [routerLink]="'/admin/genders'"> Genre utilisateur</a>
+    selector: 'app-admin-layout',
+    standalone: true,
+    imports: [RouterOutlet, RouterLink],
+    template: `
 
+    <div class="text-center">
+        <a class="btn-admin" [routerLink]="'/admin/users'"> users</a>
+        <a class="btn-admin" [routerLink]="'/admin/categories'"> catégories</a>
+        <a class="btn-admin" [routerLink]="'/admin/authors'"> Auteurs</a>
+        <a class="btn-admin" [routerLink]="'/admin/genres'"> genres</a>
+        <a class="btn-admin" [routerLink]="'/admin/mangas'"> mangas</a>
+        <a class="btn-admin" [routerLink]="'/admin/genders'"> Genre utilisateur</a>
     </div>
+
     <router-outlet></router-outlet>
  
   `,
   styles: [`
   .btn-admin{
     display: inline-block;
+    margin-right: 1rem;
     margin-bottom: 0;
     font-weight: 400;
     text-align: center;

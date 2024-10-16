@@ -70,8 +70,8 @@ export class AuthService {
                 this.accountService.setUser(user)
                 localStorage.setItem("isLogout", "false");
                 localStorage.setItem("isLogged", "true");
-                localStorage.setItem("isAlreadyLogin", "false");
-                localStorage.setItem("isAlreadyLogout", "true");
+                localStorage.setItem("isAlreadyLogin", "true"); // false
+                localStorage.setItem("isAlreadyLogout", "false"); // true
                 this.user.next(user);
             })
         );
@@ -93,6 +93,7 @@ export class AuthService {
         localStorage.setItem("isAlreadyLogout", "false");
         this.isAlreadyLogout.next(true)
         localStorage.removeItem("user");
+        this.user.next(null);
     }
 
 

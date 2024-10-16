@@ -38,15 +38,10 @@ export class UserService {
         .toPromise()
         .then(r=>{
             if(!r) return;
-           // console.log("user.service getUser : ", r);
+            console.log("r : ", r);
             this.dataUser.next(r);
         })
     }
-
-
-
-
-
 
     /**
      * Récupère tout les utlisateur
@@ -58,21 +53,21 @@ export class UserService {
             .toPromise()
             .then(r=>{
                 if(!r) return;
-                console.log("user.service getUser : ", r);
+                //console.log("user.service getUser : ", r);
                 this.users.next(r);
             })
     }
 
 
-   addUser(user: Omit<User,"id" |"address"|"gender"|"img"|"roles">){
-       firstValueFrom(this.http.post<User>(this.url,user,{
-           headers: this.options.headers
-       }))
-           .then((r)=>{
-               if(!r) return;
-               console.log(r)
-               this.user.next(r);
-           })
+   addUser(_user: Omit<User,"id"|"img"|"roles">){
+        this.http.post<User>(this.url, _user,{ headers: this.options.headers})
+       .pipe()
+       .toPromise()
+       .then((r)=>{
+            if(!r) return;
+            console.log(r)
+            this.user.next(r);
+        })
    }
 
 

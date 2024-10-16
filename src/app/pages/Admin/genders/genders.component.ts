@@ -231,7 +231,7 @@ export class GendersAdminComponent implements  OnInit{
    * handleRemove est utilisé ici supprimé des données en base
    *
    * */
-  handleRemove(id: number){
+  handleRemove(id: string){
     if(confirm("Are you sure to delete" )) {
       this.genderService.removeGenderUser(id)
 

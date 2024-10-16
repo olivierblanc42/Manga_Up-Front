@@ -10,7 +10,7 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [],
   template: `
-    <div class="banner">
+    <div class="banner mt-5">
         <p class="txt">
         @if(msg !== ""){
             <div id="msg">{{ msg }}</div>

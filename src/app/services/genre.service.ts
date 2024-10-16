@@ -51,18 +51,13 @@ export class GenreService {
     currentDataGenre = this.dataGenre.asObservable()
 
     // Pour update
-
     updateGenreDto = new BehaviorSubject<UpdateGenreDto | null>(null)
     currentUpdateGenreDto = this.updateGenreDto.asObservable();
     constructor(
         private http: HttpClient
     ) { }
 
-
-
-
-
-
+    
     /**
      * Récupère 6 genres
      *

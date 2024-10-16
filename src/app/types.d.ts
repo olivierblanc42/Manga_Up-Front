@@ -53,7 +53,7 @@ export type Comments = {
 }
 
 export type Gender = {
-    id: number;
+    id: string;
     label: string;
 };
 
@@ -123,7 +123,7 @@ export type Picture = {
 
 export type Role = {
     id: number;
-    roles: string[];
+    role: string;
 }
 
 export type User = {
@@ -136,8 +136,8 @@ export type User = {
     createdAt: Date;
     img: string;
     address: Address;
-    gender: Gender;
-    roles: Role;
+    gender: Gender; //On récupère l'id du genre.
+    roles: Role[];
 };
 
 export type DataManga = {
@@ -168,11 +168,13 @@ export type DataCategory = {
 }
 
 export type Address = {
-    id: number;
+    id?: number;
+    country: string;
     line1: string;
     line2: string;
     line3: string;
     city : string;
+    department: string;
     postal_code: string;
 }
 

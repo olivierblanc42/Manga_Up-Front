@@ -57,8 +57,8 @@ import { Gender, User } from '../../types';
                     <label for="gender">Choose a gender :</label>
                     <select id="gender" formControlName="gender">
                         <option value="" disabled>Choose a gender</option>
-                        <option class="boxform__form--genders-option" *ngFor="let genre of genders" [ngValue]="genre" required>
-                            {{genre.label}}
+                        <option class="boxform__form--genders-option" *ngFor="let gender of genders" [ngValue]="gender" required>
+                            {{gender.label}}
                         </option>
                     </select>
                 </div>
@@ -181,35 +181,35 @@ export class RegisterComponent implements  OnInit {
     }
 
 
-    onSubmit(event: Event){
-        event.preventDefault();
+    onSubmit(e: Event){
+        e.preventDefault();
+
         let address = {
+            country:this.registerForm.value.country,
             line1: this.registerForm.value.line1,
             line2: this.registerForm.value.line2,
             line3: this.registerForm.value.line3,
             city: this.registerForm.value.city,
+            department: this.registerForm.value.department,
             postalCode: this.registerForm.value.postalCode,
         };
 
         let registerUser = {
-            username: this.registerForm.value.username,
-            email: this.registerForm.value.email,
             firstname: this.registerForm.value.firstname,
             lastname: this.registerForm.value.lastname,
+            username: this.registerForm.value.username,
             password: this.registerForm.value.password,
+            email: this.registerForm.value.email,
             address: address,
             gender: this.registerForm.value.gender,
         }
         
         this.authService.register(registerUser).subscribe({
             next: (user: User) => {
-                console.log('User authenticated', user);
                 this.isAuthenticated = true;
                 this.router.navigate(['/']);
             },
            // error: (err) => console.error('Authentication failed', err)
         });
-        //console.log("slaut");
-        
     }
 }

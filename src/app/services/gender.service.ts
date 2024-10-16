@@ -41,8 +41,6 @@ export class GenderService{
     ) { }
 
 
-
-
     getAllGendersPagination(page: number=0){
         firstValueFrom(this.http.get<Genders>(`${this.urlPagination}?page=${page}`,
             {  headers: this.options.headers}))
@@ -59,14 +57,14 @@ export class GenderService{
      *
      */
     getGenders(){
-        this.http.get<Genre[]>(this.url)
-            .pipe()
-            .toPromise()
-            .then((r) =>{
-                if(!r) return;
-                console.log(r)
-                this.genders.next(r);
-            })
+        this.http.get<Gender[]>(this.url)
+        .pipe()
+        .toPromise()
+        .then((r) =>{
+            if(!r) return;
+            console.log(r)
+            this.genders.next(r);
+        })
     }
 
 
@@ -83,7 +81,7 @@ export class GenderService{
     }
 
     addGender(gender: Omit<Gender,"id">){
-        firstValueFrom(this.http.post<Genre>(this.url,gender,{
+        firstValueFrom(this.http.post<Gender>(this.url,gender,{
             headers: this.options.headers
         }))
             .then((r)=>{
@@ -109,12 +107,12 @@ export class GenderService{
             })
     }
 
-    removeGenderUser(id: number){
+    removeGenderUser(id: string){
         firstValueFrom(this.http.delete<void>(`${this.urlDto}/${id}`, {
                 headers: this.options.headers
             })
         )    .then(() => {
-            console.log(`Gender with ID ${id} has been deleted.`);
+                console.log(`Gender with ID ${id} has been deleted.`);
 
         })
             .catch((error) => {

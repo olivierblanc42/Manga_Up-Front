@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
     imports: [NgClass],
     template: `
         <div 
-            class="card"
+            class="card mb-6 text-center"
             [ngClass]="{
             'card-manga':size === 'card-manga',
             'card-genre' :size  === 'card-genre',
@@ -32,8 +32,8 @@ import { ActivatedRoute } from '@angular/router';
         }
     
         .card-genre {
-            width: 240px;
-            height: 146px;
+            height: 240px;
+            width: 146px;
         }
 
         .card-gender-desktop {
