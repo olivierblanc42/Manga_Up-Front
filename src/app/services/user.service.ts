@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {BehaviorSubject, firstValueFrom} from 'rxjs';
+import {BehaviorSubject, firstValueFrom, tap} from 'rxjs';
 import {Category, DataUser, Manga, User, UserDto} from '../types';
 
 @Injectable({
@@ -10,6 +10,7 @@ export class UserService {
 
     url="/api/users";
     urlAdmin = "/api/users/admin"
+    urlAdminEdit="/api/users/admin/edit"
 
     options = {
         headers: new HttpHeaders({
@@ -31,10 +32,28 @@ export class UserService {
     currentDataUser=this.dataUser.asObservable();
 
     // role
+    constructor(
+        private http: HttpClient
+    ){}
 
+    editUser(registerUser: object) {
+        let options = {
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept":"application/json",
+                "Access-Control-Allow-Methods":"GET,POST,PUT,DELETE",
+                "Access-Control-Allow-Origin": '*'
+            })
+        };
+        let data=JSON.stringify(registerUser);
+        console.log("editUser", data);
 
-
-    constructor(private http: HttpClient ) { }
+        return this.http.post<any>(this.urlAdminEdit, data, { headers:options.headers }).pipe(
+            tap((user: User) => {
+                
+            })
+        );
+    }
 
     getUser(id: string | null){
         this.http.get<DataUser>(`${this.url}/${id}`, {headers: this.options.headers})
@@ -61,7 +80,6 @@ export class UserService {
                 this.users.next(r);
             })
     }
-
 
    addUser(_user: Omit<User,"id"|"img"|"roles">){
         this.http.post<User>(this.url, _user,{ headers: this.options.headers})

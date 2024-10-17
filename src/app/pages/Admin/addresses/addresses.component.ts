@@ -106,7 +106,7 @@ import {FormsModule} from "@angular/forms";
             <td>{{address.city}}</td>
             <td>
               <a [routerLink]="'/admin/address/' + address.id">🔎</a>
-              <button  (click)="handleRemove(address.id)">🗑️</button>
+              <button  (click)="handleRemove(address.id!)">🗑️</button>
             </td>
           </tr>
         }

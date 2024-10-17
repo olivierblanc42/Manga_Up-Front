@@ -66,7 +66,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
                                 [(ngModel)]='gender.label' 
                                 name="gender"
                                 class="border p-2 rounded w-full font-normal dark:placeholder-gray-400 dark:text-gray-500">
-                                <option class="dark:placeholder-gray-400 dark:text-gray-500" value="" selected disabled>Choisir un genre *</option>
+                                <option class="dark:placeholder-gray-400 dark:text-gray-500" value="gender" selected disabled>Choisir un genre *</option>
                                 <option class="dark:placeholder-gray-400 dark:text-gray-500" *ngFor="let gender_ of genders" [value]="gender_.label">{{ gender_.label }}</option>
                             </select>   
                         </div> 	
@@ -163,12 +163,15 @@ export class UserEditComponent {
     user! : User;
     genders!: Gender[];
 
+    id: number=-1;
     firstname: string|null ="";
     lastname: string ="";
     password: string="";
     username: string="";
     email: string="";
     gender!: Gender;
+
+    idAddress: number=-1;
     country: string="";
     line1: string="";
     line2: string="";
@@ -198,6 +201,7 @@ export class UserEditComponent {
         this.userService.currentDataUser.subscribe( dataUser => {
             this.user = dataUser?.user!
             
+            this.id=this.user?.id!;
             this.firstname=this.user?.firstname!;
             this.lastname=this.user?.lastname!;
             this.password=this.user?.password!;
@@ -206,7 +210,7 @@ export class UserEditComponent {
             this.gender=this.user?.gender!;
             console.log("genderUser : ", this.gender);
             
-            
+            this.idAddress=this.user?.address.id!;
             this.country=this.user?.address.country!;
             this.line1=this.user?.address.line1!;
             this.line2=this.user?.address.line2!;
@@ -252,6 +256,7 @@ export class UserEditComponent {
         // Appelle le service pour ajouter un nouvel auteur avec les données fournies
 
         this.address={
+            id:this.idAddress,
             country:this.country,
             line1:this.line1,
             line2:this.line2,
@@ -261,10 +266,11 @@ export class UserEditComponent {
             postalCode:this.postalCode,
         }
 
-        let registerUser = {
+        let editUser = {
+            id: this.id,
             firstname: this.firstname,
             lastname: this.lastname,
-            username:this.username,
+            userName:this.username,
             password : this.password,
             email:this.email,
             address: this.address,
@@ -272,7 +278,7 @@ export class UserEditComponent {
             createdAt:this.currentTime
         }
 
-        this.authService.register(registerUser).subscribe({
+        this.userService.editUser(editUser).subscribe({
             next: (user: User) => {
                 //Mettre flashmessage.
             },

@@ -133,7 +133,7 @@ import { LoginComponent } from "./pages/login/login.component";
                                         </dt>
                                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                             {{user?.address?.line1}}<br>
-                                            {{user?.address?.postal_code}} {{user?.address?.city}}, {{user?.address?.country}}
+                                            {{user?.address?.postalCode}} {{user?.address?.city}}, {{user?.address?.country}}
                                         </dd>
                                     </div>
                                     <div class="py-3 grid gap-4 px-6 text-center">
