@@ -16,30 +16,31 @@ import {DatePipe, NgClass} from "@angular/common";
         DatePipe
     ],
     template: `
+        <div class="admin-container"  >
+            <h2 >Auteurs</h2>
+            <div class="div-form">
+                <form class="form-admin"   #authorForm="ngForm"  (submit)="handleSubmit($event)" >
+                    <h2>Ajout d'un auteur</h2>
+                    <div class="form-contain two-input" >
+                        <input
+                                id="firstname"
+                                type="text"
+                                [(ngModel)]="firstname"
+                                name="firstname"
+                                placeholder="Nom"
+                                class="name"
+                        >
+                        <input
+                                id="lastname"
+                                type="text"
+                                [(ngModel)]="lastname"
+                                name="lastname"
+                                placeholder="Prénom"
+                                class="name"
+                        >
+                    </div>
 
-        <h2 >Auteurs</h2>
-        <div class="div-form">
-            <form class="form-admin"   #authorForm="ngForm"  (submit)="handleSubmit($event)" >
-                <h2>Ajout d'un auteur</h2>
-                <div class="form-contain" >
-                    <input
-                            id="firstname"
-                            type="text"
-                            [(ngModel)]="firstname"
-                            name="firstname"
-                            placeholder="Nom"
-
-                    >
-                    <input
-                            id="lastname"
-                            type="text"
-                            [(ngModel)]="lastname"
-                            name="lastname"
-                            placeholder="Prénom"
-                    >
-                </div>
-
-                <div class="form-contain text_area">
+                    <div class="form-contain text_area">
           <textarea
                   id="description"
                   type="text"
@@ -49,48 +50,48 @@ import {DatePipe, NgClass} from "@angular/common";
 
           >
           </textarea>
-                    @if (error) {
-                        <p class="text-red-500">{{error}}</p>
-                    }
+                        @if (error) {
+                            <p class="text-red-500">{{error}}</p>
+                        }
 
-                </div>
-                <div class="">
-                    <button
-                            type="submit"
-                            class="bg-slate-600 text-white rounded px-4 py-2"
-                    >Submit</button>
-                </div>
-            </form>
+                    </div>
+                    <div class="">
+                        <button
+                                type="submit"
+                                class="bg-slate-600 text-white rounded px-4 py-2"
+                        >Submit</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="">
+
+                <table class="table-admin">
+                    <thead>
+                    <tr>
+                        <th>Author</th>
+                        <th>Description</th>
+                        <th>Date de création</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @for (author of authors?.content; track author.id) {
+                            <tr>
+                                <td>{{ author.lastname + " " + author.firstname }}</td>
+                                <td>{{ author.description }}</td>
+                                <td>{{author.createdAt |  date: 'dd-MM-yyyy'}}</td>
+                                <td>
+                                    <a [routerLink]="'/admin/author/' + author.id">🔎</a>
+                                    <button (click)="handleRemove(author.id)">🗑️</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
         </div>
-
-        <div class="flex flex-col gap-2 mt-4 admin-container">
-
-            <table>
-                <thead>
-                <tr>
-                    <th>Author</th>
-                    <th>Description</th>
-                    <th>Date de création</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-                    @for (author of authors?.content; track author.id) {
-                        <tr class="border">
-                            <td>{{ author.lastname + " " + author.firstname }}</td>
-                            <td>{{ author.description }}</td>
-                            <td>{{author.createdAt |  date: 'dd-MM-yyyy'}}</td>
-                            <td>
-                                <a [routerLink]="'/admin/author/' + author.id">🔎</a>
-                                <button (click)="handleRemove(author.id)">🗑️</button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-
         <div class="pagination">
 
             @for(page of pages; track page; let count=$index){
@@ -127,22 +128,6 @@ import {DatePipe, NgClass} from "@angular/common";
 
     `,
     styles:  [`
-      .admin-container{
-        width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: center;
-        background-color: rgb(37,37,37,50%) ;
-        border-radius: 10px;
-        table{
-          tbody{
-            tr{
-              // border: none;
-            }
-          }
-        }
-      }
-
 
     `]
 })

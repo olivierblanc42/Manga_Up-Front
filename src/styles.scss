@@ -10,11 +10,11 @@
 body {
   background-color: rgba(29, 29, 29, 1);;
   color: white;
-h1{
+  h1{
     margin: 1rem 0;
     font-size: 36px;
     text-align: center;
-}
+  }
   h2{
     margin: 1rem 0;
     font-size: 24px;
@@ -22,14 +22,14 @@ h1{
   }
 
   p{
-  font-family: "Roboto", sans-serif;
-  font-weight: 400;
-  font-style: normal;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
   }
   span{
-  font-family: "Roboto", sans-serif;
-  font-weight: 700;
-  font-style: normal;
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: normal;
   }
 }
 
@@ -140,64 +140,91 @@ h1{
 
 
 .div-form{
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-  background-color: rgb(37,37,37,50%) ;
+  background-color: rgb(31, 41, 55) ;
   border-radius: 10px;
   margin-bottom: 10px;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-.form-admin{
-  width: 50%;
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  gap: 10px;
-  background-color: rgb(37,37,37,50%) ;
-  border-radius: 10px;
   padding: 1rem;
-  border: 2px solid white;
-
-  .form-contain{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-    margin-right: auto;
+  .form-admin{
     margin-left: auto;
-
-
-  fieldset{
+    margin-right: auto;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
     gap: 10px;
+    background-color: rgb(55, 65, 81);
+    border-radius: 10px;
+    padding: 1rem;
+
+    .form-contain{
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      margin-right: auto;
+      margin-left: auto;
+
+      fieldset{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+    }
+
+    .form-grid{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 10px;
+      grid-auto-rows: minmax(100px, auto);
+      text-align: start;
+    }
+
+
+    textarea{
+      color: black;
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 10px;
+    }
+    input,select{
+      color: black;
+      padding: 0.5rem;
+      border-radius: 10px;
+    }
+    select{
+      width: 100%;
+    }
   }
+}
+
+.name{
+  width: 50%;
+}
+
+.table-admin{
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  thead{
+    tr{
+      background-color: rgb(44, 52, 65);
+    }
   }
 
-  textarea{
-    color: black;
-    width: 100%;
-    padding: 0.5rem;
-    border-radius: 10px;
+  tbody{
+    tr:nth-child(odd){
+      background-color: rgb(25, 33, 44);
+    }
+    tr:nth-child(even){
+      background-color: rgb(44, 52, 65);
+    }
   }
-  input,select{
-    color: black;
-    padding: 0.5rem;
-    border-radius: 10px;
-  }
- select{
-   width: 100%;
- }
-}
-}
 
+
+}
 
 
 input::placeholder,textarea::placeholder{
@@ -224,4 +251,8 @@ input{
 }
 option,select{
   color: black;
+}
+
+.input-admin{
+  width: 100%;
 }

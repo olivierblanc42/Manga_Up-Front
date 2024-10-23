@@ -16,11 +16,9 @@ import {NgClass} from "@angular/common";
     NgClass
   ],
   template: `
+    <div class="admin-container"  >
 
-    <h2>Genre utilisateur</h2>
-
-    <div class="flex flex-col gap-2 mt-4 admin-container">
-
+      <h2>Genre utilisateur</h2>
 
       <div class="div-form">
         <form class="form-admin" (submit)="handleSubmit($event)">
@@ -52,16 +50,16 @@ import {NgClass} from "@angular/common";
       </div>
 
 
-      <table>
+      <table class="table-admin">
         <thead>
         <tr>
           <th>Label</th>
-
+          <th>Action</th>
         </tr>
         </thead>
         <tbody>
           @for (gender of genders?.content; track gender.id) {
-            <tr class="border">
+            <tr >
               <td>{{ gender.label }}</td>
               <td>
                 <a [routerLink]="'/admin/gender/' + gender.id">🔎</a>
@@ -115,20 +113,7 @@ import {NgClass} from "@angular/common";
 
   `,
   styles: [`
-    .admin-container{
-      width: 80%;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-      background-color: rgb(37,37,37,50%) ;
-      border-radius: 10px;
-      table{
-        tbody{
-          tr{
-          }
-        }
-      }
-    }
+
   `]
 })
 

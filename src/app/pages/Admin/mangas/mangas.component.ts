@@ -22,9 +22,9 @@ import {GenreService} from "../../../services/genre.service";
   template: `
 
 
-    <h2>Mangas</h2>
-
-
+    
+    <div class="admin-container"  >
+      <h2>Mangas</h2>
     <div class="div-form">
 
       <form class="form-admin"   (submit)="handleSubmit($event)" >
@@ -56,18 +56,21 @@ import {GenreService} from "../../../services/genre.service";
         <div class="form-contain">
           <fieldset>
             <legend>Ajouter les auteurs</legend>
+            <div class="form-grid">
             @for(author of authors; track author.id){
               <div>
                 <input type="checkbox" id="{{author.id}}" name="{{author.id}}"  (change)="toggleAuthorSelection(author.id,$event)"  />
                 <label for="{{author.id}}">{{author.firstName}} {{author.lastName}}</label>
               </div>
             }
+              </div>
           </fieldset>
         </div>
 
         <div class="form-contain">
           <fieldset>
             <legend>Ajouter des genres</legend>
+            <div class="form-grid">
             @for(genre of genres; track genre.id){
               <div>
                 <input type="checkbox" id="{{genre.id}}" name="{{genre.id}}" (change)="toggleGenreSelection(genre.id,$event) "  />
@@ -75,6 +78,7 @@ import {GenreService} from "../../../services/genre.service";
 
               </div>
             }
+            </div>
           </fieldset>
         </div>
 
@@ -105,8 +109,8 @@ import {GenreService} from "../../../services/genre.service";
     </div>
 
 
-    <div class="flex flex-col gap-2 mt-4 admin-container">
-      <table>
+    <div >
+      <table class="table-admin">
         <thead>
         <tr>
           <th>Title</th>
@@ -121,7 +125,7 @@ import {GenreService} from "../../../services/genre.service";
         </thead>
         <tbody>
           @for (manga of mangas?.content; track manga.id) {
-            <tr class="border">
+            <tr >
               <td>{{ manga.title}}</td>
               <td>{{manga.summary}}</td>
               <td>{{manga.price}}</td>
@@ -139,7 +143,7 @@ import {GenreService} from "../../../services/genre.service";
         </tbody>
       </table>
     </div>
-
+    </div>
     <div class="pagination">
 
       @for(page of pages; track page; let count=$index){
@@ -177,22 +181,12 @@ import {GenreService} from "../../../services/genre.service";
 
   `,
   styles: [`
-    .admin-container{
-      width: 80%;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-      background-color: rgb(37,37,37,50%) ;
-      border-radius: 10px;
-      table{
-        tbody{
-          tr{
-            // border: none;
-          }
-        }
+   
+      legend{
+        text-transform: capitalize;
+        margin-bottom: 50px;
+        font-weight: bold;
       }
-    }
-
     .pagination{
       display: flex;
       flex-direction: row;

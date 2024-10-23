@@ -32,6 +32,7 @@ import {NgClass} from "@angular/common";
                                 [(ngModel)]="label"
                                 name="name"
                                 placeholder="Label"
+                                class="input-admin"
                         >
                     </div>
                     <div class="form-contain">
@@ -52,16 +53,16 @@ import {NgClass} from "@angular/common";
 
 
 
-            <table>
+            <table  class="table-admin">
                 <thead>
                 <tr>
                     <th>Label</th>
-
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>
                     @for (genre of genres?.content; track genre.id) {
-                        <tr class="border">
+                        <tr>
                             <td>{{ genre.label  }}</td>
 
                             <td>

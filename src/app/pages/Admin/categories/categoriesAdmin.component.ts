@@ -22,9 +22,6 @@ import {NgClass} from "@angular/common";
 
 
     <div class="flex flex-col gap-2 mt-4 admin-container">
-
-
-
       <div class="div-form">
         <form class="form-admin"     (submit)="handleSubmit($event)" >
           <h2>Ajout d'une catégorie</h2>
@@ -35,6 +32,7 @@ import {NgClass} from "@angular/common";
                 [(ngModel)]="name"
                 name="name"
                 placeholder="nom de la catégorie"
+                class="name"
             >
           </div>
           <div class="form-contain text_area">
@@ -66,7 +64,7 @@ import {NgClass} from "@angular/common";
 
 
 
-      <table>
+      <table class="table-admin">
         <thead>
         <tr>
           <th>Nom</th>
@@ -76,7 +74,7 @@ import {NgClass} from "@angular/common";
         </thead>
         <tbody>
           @for (category of categories?.content; track category.id) {
-            <tr class="border">
+            <tr >
               <td>{{ category.name  }}</td>
               <td>{{ category.description }}</td>
               <td>
@@ -126,27 +124,7 @@ import {NgClass} from "@angular/common";
 
   `,
   styles:  [`
-    .admin-container{
-      width: 80%;
-      margin-left: auto;
-      margin-right: auto;
-      text-align: center;
-      background-color: rgb(37,37,37,50%) ;
-      border-radius: 10px;
-      table{
-        tbody{
-          tr{
-            // border: none;
-          }
-        }
-      }
-    }
-    textarea{
-      color:black;
-    }
-
-    input{
-      color:black;
+    .name{
       width: 100%;
     }
 
