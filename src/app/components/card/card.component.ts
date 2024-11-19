@@ -22,26 +22,32 @@ import { ActivatedRoute } from '@angular/router';
         </div>
     `,
     styles: [`
-        .card-manga {
-            width: 167px;
-            height: 300px;
+      .card-manga {
+        width: 167px;
+        height: 300px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 15px;
+        &:hover {
+          transform: scale(1.1); 
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
         }
-        .card-manga-desktop {
-            width: 265px;
-            height: 431px;
-        }
-    
-        .card-genre {
-            height: 240px;
-            width: 146px;
-        }
+      
+      }
 
-        .card-gender-desktop {
-            width: 380px;
-            height: 268px;
+     
+        
+        .card-genre {
+          width: 310px;
+          height: 268px;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          border-radius: 15px;
+          &:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+          }
         }
     `]
 })
 export class CardComponent {
-  @Input() size: "desktop-manga" |  "card-genre" | "desktop-gender" | "card-manga" = "card-manga";
+  @Input() size: "card-genre" | "card-manga" = "card-manga";
 }
