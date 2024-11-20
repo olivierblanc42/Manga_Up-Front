@@ -114,7 +114,7 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
 
 
       <section class="mx-auto ">
-          <a  [routerLink]="'/manga/' + justeOne?.id">
+         
           <div class="card_single_home">
               <div class="card_single_home__img">
                   
@@ -132,102 +132,132 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
                   <li>{{genre.label}}, </li>
               }
               </ul>
-              
-              <p> <span>Résume: </span>{{ justeOne?.summary}}</p>
-                  <button >Voir le manga</button>
+              <ul>
+                  <li> <span>Auteur :</span></li>
+                  @for(author of justeOne?.authors; track author.id){
+                      <li>{{author.firstname}} {{author.lastname}}</li>
+                  }
+              </ul>
+                  <p><span>Catégorie : </span>  {{justeOne?.category?.name}}</p>   
+              <p> <span>Résume : </span>{{ justeOne?.summary}}</p>
+                  <a class="btn"  [routerLink]="'/manga/' + justeOne?.id">Voir le manga</a>   
               </div>
           </div>
-          </a>
+         
       </section>
 
   `,
     styles: [`
-.bg-dark{
-background-color: #101010;
-}
+      .bg-dark {
+        background-color: #101010;
+      }
 
 
-a{
-h2{
-  color:#E7E08B;
-  text-transform: uppercase
-}
-}
-.line-none{
-display:none;
-}
-.stars-none{
-display:none;
-}
+      a {
+        h2 {
+          color: #E7E08B;
+          text-transform: uppercase
+        }
+      }
 
-.card_single_home{
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  margin-left: auto;
-  margin-right: auto;
-  width: 80%;
-  padding: 5px;
-  border-radius: 10px;
-  background-color: rgb(60,60,60,10%) ;
-   img{
-     border-radius: 10px;
-   }
-  h3{
-     text-transform: uppercase;
-      text-align: center;
-    font-weight:bold;
-   }
-  ul{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    column-gap: 10px;
-  }
-}
-@media (min-width: 1250px) {
+      .line-none {
+        display: none;
+      }
 
-.stars-none{
-display:flex;
-}
-.line-none{
-display:flex;
-}
-  .card_single_home{
-    width: 40%;
-    margin: auto;
-    background-color: rgb(60,60,60,10%) ;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    .card_single_home__img{
-      width: 50%;
-    }
-    
-  }
-}
+      .stars-none {
+        display: none;
+      }
 
-.content-manga,.content-genre{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  gap: 2rem 20rem;}
+      .card_single_home {
+        margin: 1rem auto;
+        width: 80%;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: rgb(60, 60, 60, 10%);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-.card{
-  img{
-    border-radius: 10px;
-    height:100%;
-    width:100%;
-  }
-  
+        &:hover {
+          transform: scale(1.1);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
 
-  
-}
+        img {
+          border-radius: 10px;
+          width: 70%;
+        }
+
+        .card_single_home__infos {
+          background-color: #161616;
+          width: 50%;
+          padding: 15px;
+          border-radius: 10px;
+
+          h3 {
+            text-transform: uppercase;
+            text-align: center;
+            font-weight: bold;
+          }
+
+          p {
+            padding-top: 10px;
+            padding-bottom: 10px;
+          }
+
+          ul {
+            padding-top: 10px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            column-gap: 10px;
+          }
+        }
+      }
+
+      @media (min-width: 1250px) {
+
+        .stars-none {
+          display: flex;
+        }
+        .line-none {
+          display: flex;
+        }
+        .card_single_home {
+          width: 40%;
+          background-color: rgb(60, 60, 60, 10%);
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-around;
+          margin: 50px auto;
+
+          .card_single_home__img {
+            width: 50%;
+          }
+
+        }
+      }
+
+      .content-manga, .content-genre {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 2rem 20rem;
+      }
+
+      .card {
+        img {
+          border-radius: 10px;
+          height: 100%;
+          width: 100%;
+        }
+
+
+      }
 
 
 
-`]
+    `]
 })
 export class HomeComponent implements OnInit {
 
