@@ -1,8 +1,10 @@
+import { AccountService } from './../../services/account.service';
+import { CartService } from './../../services/cart.service';
 import { UserService} from "../../services/user.service";
 import { NgClass, CommonModule } from '@angular/common';
 import { MangaService} from "../../services/manga.service";
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { Comment, DataManga, Picture, User } from '../../types';
+import { BasketLine, Comment, DataManga, Picture, User } from '../../types';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { faBookBookmark, faMessage, faHeart, faStar, faHouse, faHome, faCartShopping} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -32,7 +34,7 @@ import { filter } from "rxjs";
             <div class="opinions-star-one-vote"><span>{{calculAverageVote()}}</span></div>
         </div>
         <div class="faMessage flex align-center flex-col"><fa-icon [icon]="faMessage" size="2x"></fa-icon>
-            <div class="faMessage-comments mt-4"><span>{{nbComments()}}</span></div>
+            <div class="faMessage-comments mt-4"><span>{{nbComments(data)}}</span></div>
         </div>
         <div class="faHeart faHeart-{{colorIconHeart}} flex align-center flex-col cursor-pointer" (click)="addToMyFavorites()">
             <fa-icon [icon]="faHeart" size="2x"></fa-icon>
@@ -46,12 +48,12 @@ import { filter } from "rxjs";
         </div>
         <div class="ml-4 content-center">
             <div>{{calculAverageVote()}}/5</div>
-            <div class="text-xs">{{nbComments()}} vote</div>
+            <div class="text-xs">{{nbComments(data)}} vote</div>
         </div>
     </div>
     <div class="manga_box background-color-black-c16a50">
         <div class="manga_box-image flex justify-center mt-4 mb-5 h-30">
-            <img class="poster" src="{{poster}}" alt="">
+            <img class="poster" src="{{poster}}" alt="{{data?.manga?.title}}">
         </div>
         <div class="manga_box-info px-5 pb-44 mb-5  rounded-e-3xl  background-color-black">
             <p>Titre original : <span>{{data?.manga?.title}}</span></p>
@@ -69,7 +71,11 @@ import { filter } from "rxjs";
                     <span class="ml-4">{{author?.lastname}}</span>
                 }
             </p>
-            <p>Prix : <span>{{data?.manga?.price}} €</span></p>
+            <p class="d-flex mb-4">Prix : <span class="font-normal">{{ priceUnity(data?.manga?.price) }}</span> <span class="font-normal"><sup class="-top-1">{{ priceDecimal(data?.manga?.price) }} €</sup></span></p>
+            <div class="manga__box--btn">
+                <div (click)="addBasket()" class="manga__box--btn-addBasket">Ajouter au panier</div>
+                <div (click)="buyArticle()" class="manga__box--btn-buyArticle">Acheter cet article</div>
+            </div>
         </div>
     </div>
     <div class="opinions mb-4 h-56 background-color-black-c37a50 rounded-b-lg">
@@ -80,10 +86,12 @@ import { filter } from "rxjs";
         <div class="info-box">
             <div class="flex justify-around mt-4">
                 <div class="faHeart faHeart-{{colorIconHeart}} cursor-pointer" (click)="addToMyFavorites()"><fa-icon [icon]="faHeart" size="2x"></fa-icon><span class="nbOpinions">{{calculNbLikes()}}</span></div>
-                <div class="faMessage"><fa-icon [icon]="faMessage" size="2x"></fa-icon><span class="nbOpinions">{{nbComments()}}</span></div>
+                <div class="faMessage"><fa-icon [icon]="faMessage" size="2x"></fa-icon><span class="nbOpinions">{{nbComments(data)}}</span></div>
             </div>
             <div class="faBookBookmark flex justify-center"><fa-icon [icon]="faBookBookmark" size="2x"></fa-icon></div>
-            <div class="faCartShopping flex justify-center"><fa-icon [icon]="faCartShopping" size="2x"></fa-icon></div>
+            <div class="faCartShopping flex justify-center">
+                <fa-icon [icon]="faCartShopping" size="2x"></fa-icon>
+            </div>
         </div>
     </div>
     
@@ -94,8 +102,8 @@ import { filter } from "rxjs";
 
     <div class="commentaries mb-28 ">
         <div class="commentaries-box">
-            <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES ({{nbComments()}})</p></div>
-            <ul class="commentaries-box-ul mb-12" [ngClass]="{'noScroll': comments.length === 0, 'scroll': comments.length > 0}" 
+            <div class="mb-12"><p class="comments-title h-20  pl-4 pt-8 background-color-black-c16a25">COMMENTAIRES ({{nbComments(data)}})</p></div>
+            <ul class="commentaries-box-ul mb-12" [ngClass]="{'noScroll': comments?.length === 0, 'scroll': comments?.length! > 0}" 
                 infiniteScroll 
                 [infiniteScrollDistance]="2"
                 [infiniteScrollThrottle]="500"
@@ -114,7 +122,7 @@ import { filter } from "rxjs";
                     </li>
                 }
                 
-                @if(isLoading && comments.length > 0){
+                @if(isLoading && comments?.length! > 0){
                     <div class="lds-circle"><div></div></div>
                 }
             </ul>
@@ -160,6 +168,31 @@ import { filter } from "rxjs";
   `,
   styles: [`
 
+    .manga__box--btn{
+        margin: auto;
+    }
+
+    .manga__box--btn-addBasket,
+    .manga__box--btn-buyArticle{
+        width: 13rem;
+        border-radius: 1rem;
+        height: 2rem;
+        text-align: center;
+        margin: 0 auto 1rem auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .manga__box--btn-addBasket{
+        background-color: rgb(144, 120, 0);
+    }
+
+    .manga__box--btn-buyArticle{
+        background-color: rgb(187, 112, 0);
+    }
+    
     .lds-circle {
         display: inline-block;
         transform: translateZ(1px);
@@ -493,7 +526,8 @@ export class MangaComponent implements OnInit{
     currentPageScroll!:number;
     oldCommentsScroll!:Comment[];
     oldIdOfUrl!:number;
-
+    basketLines!: BasketLine[];
+    nbArticles: number=0;
 
     //Icon list
     faStar=faStar;
@@ -506,10 +540,12 @@ export class MangaComponent implements OnInit{
    
     
     constructor(
-        private mangaService: MangaService,
         @Inject(ActivatedRoute) private activatedRoute: ActivatedRoute,
+        @Inject(Router) private router: Router,
+        private mangaService: MangaService,
         private userService: UserService,
-        @Inject(Router) private router: Router
+        private cartService: CartService,
+        private accountService: AccountService,
     ){
         this.currentPage=0;
         this.router.routeReuseStrategy.shouldReuseRoute = function() {
@@ -531,6 +567,16 @@ export class MangaComponent implements OnInit{
         
         this.currentIsFavoriteSubs();
     }
+
+    addBasket(){
+        let idUser=this.accountService.getUser()?.id;
+        this.cartService.nbArticlesIntoBasket(idUser!, this.data?.manga.id!);
+    }
+
+    buyArticle(){
+
+    }
+
     /**
      * 
      * @returns {Array} Retourne la liste des commentaires sans doublons.
@@ -557,11 +603,31 @@ export class MangaComponent implements OnInit{
 
             this.pages=this.convertNumberToArray(this.data?.comments?.totalPages!)
             this.lastPage=this.data?.comments?.totalPages!;
-            this.strToLowerCaseAndFirstLetter();
-            this.searchPicturesIsPoster();
-            this.nbComments();
+            this.strToLowerCaseAndFirstLetter(this.data);
+            this.searchPicturesIsPoster(this.data);
+            this.nbComments(this.data);
             
         });
+    }
+
+    /**
+     * Renvoi les unités.
+     * @param price number 
+     * @returns 
+     */
+    priceUnity(price: number | undefined){
+        let _price=JSON.stringify(price);
+        return _price.split(".").shift();
+    }
+
+    /**
+     * Renvoi les décimales 2 après la virgule.
+     * @param price number
+     * @returns 
+     */
+    priceDecimal(price: number | undefined){
+        let _price=(Math.round(price! * 100) / 100).toFixed(2)
+        return _price.split(".").pop()
     }
 
     /**
@@ -570,6 +636,8 @@ export class MangaComponent implements OnInit{
     currentDataUserSubs(){
         this.userService.currentDataUser.subscribe(dataUser => {
             this.user=dataUser?.user!
+            console.log("currentDataUserSubs user :", this.user);
+            
             this.mangasIdOfUser=dataUser?.mangasId!;
             this.isFavorite=this.searchIfMangaIsFavorite(this.mangasIdOfUser);
             this.colorIconHeart=this.isFavorite ? "yellow" : "grey"
@@ -659,10 +727,10 @@ export class MangaComponent implements OnInit{
      * @returns {boolean} true si en favoris sinon false
      */
     searchIfMangaIsFavorite(mangasIdUser: number[]){
-         const tab=mangasIdUser.filter((mangaIdUser)=>{
+         const tab=mangasIdUser?.filter((mangaIdUser)=>{
             return mangaIdUser===this.idOfUrl
         })
-        if(tab.length === 0) return false;
+        if(tab?.length === 0) return false;
         return true;
     }
 
@@ -696,7 +764,7 @@ export class MangaComponent implements OnInit{
         if(this.data){
             //const sum=this.data?.comments?.content.reduce((a, b)=>a+b?.rating, 0);
             const sum=this.data?.ratingAll.reduce((a, b)=>a+b, 0);
-            const total=sum/this.nbComments()!
+            const total=sum/this.nbComments(this.data)!
             return Math.floor(total*100)/100;
         }
         return 0;
@@ -714,8 +782,8 @@ export class MangaComponent implements OnInit{
      * Calcul le nombre de commentaire
      * @returns {number} 
      */
-    nbComments(){
-        return this.data?.comments?.totalElements;
+    nbComments(data: DataManga|null){
+        return data?.comments?.totalElements;
     }
 
     /**
@@ -724,25 +792,27 @@ export class MangaComponent implements OnInit{
      * @returns {string} Retourne la date.
      */
     truncatDate(date: Date){
-        return date.toString().substring(0, date.toString().indexOf('T'))
+        return date?.toString().substring(0, date?.toString().indexOf('T'))
     }
 
     dateFormatFrDMY(date: Date){
         let frDate=this.truncatDate(date)
-        return frDate.split('-').reverse().join('-');
+        return frDate?.split('-').reverse().join('-');
     }
 
     /**
-     * Met un mot un minuscule sauf la première lettre
+     * Met un mot en minuscule sauf la première lettre
      */
-    strToLowerCaseAndFirstLetter(){
-        if(this.data){
-            this.data?.manga?.genres.sort((a, b)=>{
-                return a.label.localeCompare(b.label);
-            });
-            for (let genre of this.data?.manga?.genres) {
-                let tmp=genre.label.toLocaleLowerCase();
-                genre.label=tmp.charAt(0).toUpperCase()+tmp.slice(1);
+    strToLowerCaseAndFirstLetter(data: DataManga|null){
+        if(data){
+            if(data.manga.genres){
+                data.manga.genres.sort((a, b)=>{
+                    return a.label.localeCompare(b.label);
+                });
+                for (let genre of data.manga.genres) {
+                    let tmp=genre.label.toLocaleLowerCase();
+                    genre.label=tmp.charAt(0).toUpperCase()+tmp.slice(1);
+                }
             }
         }
     }
@@ -750,9 +820,9 @@ export class MangaComponent implements OnInit{
     /**
      * Cherche le poster du manga
      */
-    searchPicturesIsPoster(){
-        if(this.data){
-            for (const picture of this.data.manga.pictures) {
+    searchPicturesIsPoster(data: DataManga|null){
+        if(data){
+            for (const picture of data.manga.pictures) {
                 if(picture.isPoster) {
                     this.picture=picture;
                     break;
@@ -768,7 +838,7 @@ export class MangaComponent implements OnInit{
      * @param val l'objet à afficher
      * @param msg le message à afficher avec l'objet
      */
-    log(val: Object, msg: string=""){
+    log(val: any, msg: string=""){
         console.log(msg, val);
     }
 }

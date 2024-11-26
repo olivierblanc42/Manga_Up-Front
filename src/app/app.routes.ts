@@ -33,6 +33,8 @@ import { RegisterComponent } from './pages/register/register.component';
 import { UserEditComponent } from './pages/Admin/user/user-edit.component';
 import {AddressComponent} from "./pages/Admin/address/address.component";
 import {AddressesComponent} from "./pages/Admin/addresses/addresses.component";
+import { CartComponent } from './pages/cart/cart.component';
+import { PaymentComponent } from './pages/payment/payment.component';
 
 
 export const routes: Routes = [
@@ -48,6 +50,8 @@ export const routes: Routes = [
     { path: 'genres', component: GenresComponent },
     { path: "category/:id", component: CategoryComponent },
     { path: "categories", component: CategoriesComponent },
+    { path: "cart", component: CartComponent },
+    { path: "payment", component: PaymentComponent },
 
 
     { path: 'login', component: LoginComponent },

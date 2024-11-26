@@ -10,12 +10,13 @@ import { MangaService } from '../../services/manga.service';
 import {GenreService} from "../../services/genre.service";
 import { Comment, Manga, Picture, Genre, User } from '../../types';
 import { PicturesPipe } from '../../pipes/pictures.pipe';
+import { NgClass } from '@angular/common';
 
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [RouterModule, CardComponent, FontAwesomeModule, PicturesPipe],
+    imports: [RouterModule, CardComponent, FontAwesomeModule, PicturesPipe, NgClass],
     template: `
 
 
@@ -26,16 +27,23 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
         </a>
           <div class="content-manga ">
               @for (manga of nineMangas; track manga.id) {
-                  <a [routerLink]="'/manga/' + manga.id">
-                  <ui-card class="" size="card-manga">
-                      
-                    <img class="h-64 w-40" src="{{base64+ (manga | pictures)}}" alt="{{manga | pictures: false}}" />
-                    <!--@for (picture of manga.pictures; track picture.id) {
-                        <img alt="{{picture.title}}" src="{{base64+picture.img}}">
-                    }-->
-                    <p>{{ manga.title }}</p>
-                  </ui-card>
-                  </a>
+                <div class="content-manga__link">
+                    <a [routerLink]="'/manga/' + manga.id">
+                    <ui-card class="" size="card-manga">
+                        <img class="h-64 w-40 rounded-xl" src="{{base64+ (manga | pictures)}}" alt="{{manga | pictures: false}}" />
+                        <!--@for (picture of manga.pictures; track picture.id) {
+                            <img alt="{{picture.title}}" src="{{base64+picture.img}}">
+                        }-->
+                        <p class="content-manga__title">{{ manga.title }}</p>
+                        <div>
+                            <p class="d-flex inline" [ngClass]="manga.discountPercentage ? 'content-manga__discount' : ''"><span class="font-normal">{{ priceUnity(manga.price, null) }}</span> <sup class="-top-1">{{ priceDecimal(manga.price, null) }} €</sup></p>
+                            @if(manga.discountPercentage){
+                                <p class="d-flex inline"><span class="font-normal">&emsp;&emsp;{{ priceUnity(manga.price, manga.discountPercentage) }}</span> <sup class="-top-1">{{ priceDecimal(manga.price, manga.discountPercentage) }} €</sup></p>                            
+                            }
+                        </div>
+                    </ui-card>
+                    </a>
+                </div>
               }
           </div>
       </section>
@@ -56,7 +64,7 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
 
           <div class="stars-none flex flex-col	 justify-center ">
               <img class="mx-auto " src="assets/img/stars.png" alt="">
-              <p>Score <span>4.1 </span>| <span>1500 avis</span></p>
+              <p>Score <span>4.1 </span> | <span>1500 avis</span></p>
           </div>
 
       </div>
@@ -68,16 +76,21 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
           </a>
           <div class="content-manga ">
               @for (manga of dateOrderMangas; track manga.id) {
-                  <a [routerLink]="'/manga/' + manga.id">
-                  <ui-card class="" size="card-manga">
-                    
-                    <img class="h-64 w-40" src="{{base64+ (manga | pictures)}}" alt="{{manga | pictures: false}}" />
-                    <!--@for (picture of manga.pictures; track picture.id) {
-                        <img alt="{{picture.title}}" src="{{base64+picture.img}}">
-                    }-->
-                    <p>{{ manga.title }}</p>
-                  </ui-card>
-                  </a>
+                <div class="content-manga__link">
+                    <a [routerLink]="'/manga/' + manga.id">
+                    <ui-card class="" size="card-manga">
+                        <img class="h-64 w-40 rounded-xl" src="{{base64+ (manga | pictures)}}" alt="{{manga | pictures: false}}" />
+                        <!--@for (picture of manga.pictures; track picture.id) {
+                            <img alt="{{picture.title}}" src="{{base64+picture.img}}">
+                        }-->
+                        <p class="content-manga__title">{{ manga.title }}</p>
+                        <p class="d-flex inline" [ngClass]="manga.discountPercentage ? 'content-manga__discount' : ''"><span class="font-normal">{{ priceUnity(manga.price, null) }}</span> <sup class="-top-1">{{ priceDecimal(manga.price, null) }} €</sup></p>
+                            @if(manga.discountPercentage){
+                                <p class="d-flex inline"><span class="font-normal">&emsp;&emsp;{{ priceUnity(manga.price, manga.discountPercentage) }}</span> <sup class="-top-1">{{ priceDecimal(manga.price, manga.discountPercentage) }} €</sup></p>                            
+                            }
+                    </ui-card>
+                    </a>
+                </div>
               }
           </div>
       </section>
@@ -96,15 +109,17 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
               <fa-icon [icon]="faArrowRight"></fa-icon>
           </a>
           <div class="content-genre">
-              @for (genre of genres; track genre.id) {
-                  <a [routerLink]="'/genre/' + genre.id">
-                  <ui-card class="card" size="card-genre">
-                      <img src="{{base64G+genre.img}}">
+            @for (genre of genres; track genre.id) {
+                <div class="content-manga__link">                
+                    <a [routerLink]="'/genre/' + genre.id">
+                    <ui-card class="card" size="card-genre">
+                        <img src="{{base64G+genre.img}}">
 
-                      <p>{{ genre.label }}</p>
-                  </ui-card>
-                      </a>
-              }
+                        <p>{{ genre.label }}</p>
+                    </ui-card>
+                    </a>
+                </div>
+            }
           </div>
       </section>
 
@@ -115,7 +130,7 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
 
       <section class="mx-auto ">
           <a  [routerLink]="'/manga/' + justeOne?.id">
-          <div class="card_single_home">
+          <div class="card_single__home">
               <div class="card_single_home__img">
                   
               <img class="mx-auto" src="{{base64+ (justeOne! | pictures)}}" alt="{{justeOne! | pictures: false}}" />
@@ -142,6 +157,20 @@ import { PicturesPipe } from '../../pipes/pictures.pipe';
 
   `,
     styles: [`
+
+.content-manga__discount{
+    text-decoration-line: line-through;
+    color: rgb(113 113 122);
+}
+
+.content-manga__title{
+    width: max-content;
+}
+
+.content-manga__link{
+    width: 15.625rem;
+}
+        
 .bg-dark{
 background-color: #101010;
 }
@@ -160,7 +189,7 @@ display:none;
 display:none;
 }
 
-.card_single_home{
+.card_single__home{
   margin-top: 1rem;
   margin-bottom: 1rem;
   margin-left: auto;
@@ -183,6 +212,9 @@ display:none;
     flex-wrap: wrap;
     column-gap: 10px;
   }
+  .card_single_home__infos{
+        text-align: justify;
+    }
 }
 @media (min-width: 1250px) {
 
@@ -192,8 +224,11 @@ display:flex;
 .line-none{
 display:flex;
 }
-  .card_single_home{
-    width: 40%;
+  .card_single_home__infos{
+
+  }
+  .card_single__home{
+    width: 50%;
     margin: auto;
     background-color: rgb(60,60,60,10%) ;
     display: flex;
@@ -201,9 +236,12 @@ display:flex;
     align-items: center;
     justify-content: space-around;
     .card_single_home__img{
-      width: 50%;
+        width: 47rem;
+        margin-right: 1rem;
     }
-    
+    .card_single_home__infos{
+        text-align: justify;
+    }
   }
 }
 
@@ -212,7 +250,8 @@ display:flex;
   flex-direction: row;
   justify-content: space-around;
   flex-wrap: wrap;
-  gap: 2rem 20rem;}
+  gap: 2rem 4rem;
+}
 
 .card{
   img{
@@ -285,6 +324,22 @@ export class HomeComponent implements OnInit {
         // this.genreService.currentGenres.subscribe(genres => this.genres = genres)
     }
 
+    priceUnity(price: number, discountPercentage: number | null){
+        if(discountPercentage){
+            price=price-price*discountPercentage;
+        }
+        let _price=JSON.stringify(price);
+        return _price.split(".").shift();
+    }
+
+    priceDecimal(price: number, discountPercentage: number | null){
+        if(discountPercentage){
+            price=price-price*discountPercentage;
+        }
+        let _price=(Math.round(price * 100) / 100).toFixed(2)
+        return _price.split(".").pop()
+    }
+
     searchPicturesIsPoster(){
         if(this.mangas){
             for (const manga of this.mangas) {
@@ -303,7 +358,11 @@ export class HomeComponent implements OnInit {
         val.splice(1,1)
     }
 
-    log(val: Object[]){
+    log(val: any[]){
         console.log(val);
+    }
+
+    logNumber(val: number, msg: string){
+        console.log(msg, val);
     }
 }

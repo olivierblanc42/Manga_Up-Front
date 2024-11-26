@@ -8,7 +8,7 @@ import { Manga } from '../types';
 
 export class PicturesPipe implements PipeTransform {
 
-    transform(manga: Manga, searcheImg: boolean=true): String {
+    transform(manga: Manga|null, searcheImg: boolean=true): String {
         if(!manga || !manga.pictures){
             return '';
         }

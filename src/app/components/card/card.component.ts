@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
     imports: [NgClass],
     template: `
         <div 
-            class="card mb-6 text-center"
+            class="card mb-6"
             [ngClass]="{
             'card-manga':size === 'card-manga',
             'card-genre' :size  === 'card-genre',

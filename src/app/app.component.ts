@@ -20,6 +20,8 @@ import { Manga, User } from './types';
 import { PicturesPipe } from "./pipes/pictures.pipe"
 import { FlashMessageComponent } from "./components/flash-message/flash-message.component";
 import { LoginComponent } from "./pages/login/login.component";
+import { CartService } from './services/cart.service';
+
 
 @Component({
   selector: 'app-root',
@@ -72,7 +74,8 @@ import { LoginComponent } from "./pages/login/login.component";
             </div>
             }
             
-            <!-- nav desktop -->
+            <!-- NAV DESKTOP -->
+            <div class="nav-desktop__box-search" (scroll)="scrollFunction()">
             <nav class="py-3 flex justify-between nav-desktop">
                 <ul class="nav-desktop-box-items flex flex-row py-1 nav__box">
                     <li><a routerLink="/"><img class="nav__box--logo" src="assets/img/manga-up.png" alt=""></a></li>
@@ -89,7 +92,12 @@ import { LoginComponent } from "./pages/login/login.component";
                     @if(isRoleAdmin()){
                         <a routerLink="/admin" class="nav__box--admin"> Administrateur</a>
                     }
-                    <a class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
+
+                    <div>
+                        <a routerLink="/cart" class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
+                        <span>{{ nbArticles }}</span>
+                    </div>
+
                     @if(isLogged()){
                     <div type="button" (click)="userProfile($event)" class="icon-user"><fa-icon [icon]="faUser"></fa-icon></div>
                         <div id="user-info" class="bg-white overflow-hidden shadow rounded-lg border">
@@ -146,8 +154,9 @@ import { LoginComponent } from "./pages/login/login.component";
                         <a class="icon-user" routerLink="/login"><fa-icon [icon]="faUserLargeSlash"></fa-icon></a>
                     }
                 </div>
-
             </nav>
+
+
             <div class="search-div">
                 <form (submit)="searchManga($event)">
                 <div class="flex flex-row">
@@ -155,6 +164,7 @@ import { LoginComponent } from "./pages/login/login.component";
                     <button type="submit" class="ml-1 search-btn"><fa-icon [icon]="faSearch"></fa-icon></button>
                 </div>
                 </form>
+            </div>
             </div>
             <ui-flash-message></ui-flash-message>
         </div>
@@ -209,6 +219,17 @@ import { LoginComponent } from "./pages/login/login.component";
   `,
   styles: [`
 
+    #panier-info{
+        visibility: hidden;
+        position:absolute;
+        top: 4rem;
+        right: 9.5rem;
+    }
+
+    .icon-panier{
+        cursor:pointer;
+    }
+
     .icon-user{
         cursor:pointer;
     }
@@ -225,18 +246,23 @@ import { LoginComponent } from "./pages/login/login.component";
         right: 6.5rem;
     }
 
-    .banner{
-      position:relative;
-    }
-
     .nav-desktop-box-mangas-find{
       position:absolute;
       margin: 6rem 10rem;
       z-index: 9999;
     }
 
+    .nav-desktop__box-search{
+        transition: 0.4s; /* Adds a transition effect when the padding is decreased */
+        position: fixed; /* Sticky/fixed navbar */
+        padding: 0 0 2rem 0;
+        width: 100%;
+        top: 0; /* At the top */
+        z-index: 99;
+    }
+
     .nav-desktop {
-      display: none;
+        display: none;
     }
     .footer-desktop {
       display: none;
@@ -275,7 +301,7 @@ import { LoginComponent } from "./pages/login/login.component";
     .icon__box{
         gap: 1.5rem;
         a{
-            font-size: 1.5rem;
+            font-size: 2rem;
         }
     }
     .icon-menu, .icon-user, .icon-panier, .faBook, .faAddressCard, .faTag{
@@ -295,6 +321,7 @@ import { LoginComponent } from "./pages/login/login.component";
       }
       .nav-desktop {
         display: flex;
+        margin: 0 5rem;
       }
       .footer-desktop {
         display: flex;
@@ -302,11 +329,13 @@ import { LoginComponent } from "./pages/login/login.component";
       
       // faire les media pour le background
       .banner {
+        position:relative;
         background-image: url("/assets/img/banner_mangas_mono.webp");
         color: #E7E08B;
         height: 593px;
         background-repeat: no-repeat;
         background-size: cover;
+        overflow: hidden;
       }
       .search-div {
         width: 50%;
@@ -347,6 +376,7 @@ import { LoginComponent } from "./pages/login/login.component";
 })
 
 export class AppComponent {
+
     title = 'app';
     protected readonly faBook = faBook;
     protected readonly faShuffle = faShuffle;
@@ -367,13 +397,14 @@ export class AppComponent {
     msgLogin: string="";
     _isLogged: Boolean=false;
     _isLogout: Boolean=false;
-    
+    nbArticles!:number;
 
     constructor(
         private searchMangaService: SearchMangaService,
         private authService: AuthService,
         private accountService: AccountService,
         private elementRef:ElementRef,
+        private cartService: CartService
     ){}
 
     ngOnInit(){
@@ -386,6 +417,21 @@ export class AppComponent {
                 }, 3000);
             }
         });
+
+        this.cartService.currentNbArticles.subscribe( nbArticles => {
+            this.nbArticles = nbArticles
+        });
+        
+        this.nbArticles=this.cartService.getNbArticles();
+    }
+    
+    @HostListener('window:scroll', ['$event'])
+    scrollFunction() {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            this.elementRef.nativeElement.querySelector(".nav-desktop__box-search").style.backgroundColor = "aliceblue";
+        }else {
+            this.elementRef.nativeElement.querySelector(".nav-desktop__box-search").style.backgroundColor = "transparent";
+        }
     }
 
     isRoleAdmin(){

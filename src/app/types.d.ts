@@ -29,7 +29,6 @@ export type Category = {
     createdAt: Date;
 };
 
-
 export type Categories = {
     content: Category[];
     size: number;
@@ -89,6 +88,10 @@ export type Manga = {
     createdAt: Date;
     price: number;
     pointFidelity: number;
+    priceExcludingTaxe: number
+    vatRate: number
+    stockQuantity: number
+    discountPercentage: number
     category: Category;
     authors: Author[];
     genres: Genre[];
@@ -252,6 +255,37 @@ export type AddressDto = {
     line3: string;
     postalCode: string;
 
+}
+
+export type LineOrder = {
+    idLineOrders: string,
+    idManga: string,
+    nbArticles: string,
+    discountPercentage: number,
+    priceExcludingTaxe: number,
+    totalPrice: number,
+    unitPrice: number,
+    vatRate: number,
+}
+
+export type Orders = {
+    idOrders: string,
+    idAddress: string,
+    idCarts: string,
+    createdAt: Date,
+    invoiceDate: string,
+    validationDate: Date,
+    totalAmountExcludingTaxe: number,
+    totalDiscountPercentage: number,
+    totalVat: number,
+}
+
+export type BasketLine = {
+    id_basket_line: string,
+    id_manga: number,
+    id_user: number|null,
+    quantity: number,
+    manga: Manga | null,
 }
 
 //DTO For update

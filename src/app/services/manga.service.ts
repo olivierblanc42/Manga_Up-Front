@@ -43,19 +43,23 @@ export class MangaService {
     oneManga =  new BehaviorSubject<Manga | null>(null);
     currentMangaOne=this.oneManga.asObservable();
 
-    mangas=new BehaviorSubject<Manga[]>([]);
-    dataManga=new BehaviorSubject<DataManga | null>(null);
-    isFavorite=new BehaviorSubject<boolean | null>(null);
-    manga=new BehaviorSubject<Manga | null>(null);
     //pageComments=new BehaviorSubject<Comment[]>([]);
-
+    
+    // Accept tous les mangas.
+    mangas=new BehaviorSubject<Manga[]>([]);
     currentMangas=this.mangas.asObservable();
+    
+    manga=new BehaviorSubject<Manga | null>(null);
     currentManga=this.manga.asObservable();
+    
+    dataManga=new BehaviorSubject<DataManga | null>(null);
     currentDataManga=this.dataManga.asObservable();
+    
+    isFavorite=new BehaviorSubject<boolean | null>(null);
     currentIsFavorite=this.isFavorite.asObservable();
     //currentPageComments=this.pageComments.asObservable();
 
-    // utilisation de la pagination
+    // Accpet les mangas avec une pagination
     mangaPagination  = new BehaviorSubject<Mangas | null>(null);
     currentMangaPagination = this.mangaPagination.asObservable()
     // Dto
@@ -69,42 +73,37 @@ export class MangaService {
 
     }
 
-
-
-
-
-    /**
-     * Récupère la page des commentaires du manga.
-     * @param id L'id du manga.
-     * @param page Le numéro de page.
-     */
-    //getPageComments(idManga: number, page: number){
-    //    this.http.get<Comment[]>(`${this.url}/${idManga}?page=${page}`, {
-    //        headers: this.options.headers
-    //     })
-    //     .pipe()
-    //     .toPromise()
-    //     .then(r=>{
-    //        if(!r) return;
-    //        this.pageComments.next(r);
-    //     })
-    //}
-//`${this.url}/${id}?page=${page}`
     /**
      * recuprere   tout les mangas
+     *
+     */
+    getAllManga( page: number=0, notPagination: boolean=false){
+        this.http.get<Manga[]>(`${this.url}/all`, {
+            headers: {'Access-Control-Allow-Origin': '*'}
+        })
+        .pipe()
+        .toPromise()
+        .then((r)=>{
+            if(!r) return;
+            this.mangas.next(r);
+        })
+    }
+
+    /**
+     * recuprere tout les mangas avec pagination
      *
      */
     getMangas( page: number=0){
         this.http.get<Mangas>(`${this.url}?page=${page}`, {
             headers: {'Access-Control-Allow-Origin': '*'}
         })
-            .pipe()
-            .toPromise()
-            .then((r)=>{
-                if(!r) return;
+        .pipe()
+        .toPromise()
+        .then((r)=>{
+            if(!r) return;
 
-                this.mangaPagination.next(r);
-            })
+            this.mangaPagination.next(r);
+        })
     }
 
 
@@ -170,6 +169,7 @@ export class MangaService {
             .toPromise()
             .then((r)=>{
                 if(!r) return;
+                //console.log("getManga r :", r)
                 this.dataManga.next(r);
             })
     }
