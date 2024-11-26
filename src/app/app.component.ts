@@ -93,9 +93,9 @@ import { CartService } from './services/cart.service';
                         <a routerLink="/admin" class="nav__box--admin"> Administrateur</a>
                     }
 
-                    <div>
+                    <div id="icon__panier--box">
                         <a routerLink="/cart" class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
-                        <span>{{ nbArticles }}</span>
+                        <span id="icon-panier-nbarticle">{{ nbArticles }}</span>
                     </div>
 
                     @if(isLogged()){
@@ -218,6 +218,18 @@ import { CartService } from './services/cart.service';
 </div>
   `,
   styles: [`
+    #icon__panier--box{
+        position: relative;
+    }
+
+    #icon-panier-nbarticle{
+        position: absolute;
+        bottom: 2rem;
+        right: 0.5rem;
+        color: red;
+        font-weight: 900;
+        font-size: 1.25rem;
+    }
 
     #panier-info{
         visibility: hidden;
