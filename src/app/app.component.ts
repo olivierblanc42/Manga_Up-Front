@@ -265,11 +265,11 @@ import { CartService } from './services/cart.service';
     }
 
     .nav-desktop__box-search{
-        transition: 0.4s; /* Adds a transition effect when the padding is decreased */
-        position: fixed; /* Sticky/fixed navbar */
+        transition: 0.4s; 
+       /* position: fixed; */
         padding: 0 0 2rem 0;
         width: 100%;
-        top: 0; /* At the top */
+        top: 0; 
         z-index: 99;
     }
 
