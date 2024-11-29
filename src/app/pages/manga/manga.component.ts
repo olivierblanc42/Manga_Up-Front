@@ -4,7 +4,7 @@ import { UserService} from "../../services/user.service";
 import { NgClass, CommonModule } from '@angular/common';
 import { MangaService} from "../../services/manga.service";
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { BasketLine, Comment, DataManga, Picture, User } from '../../types';
+import { BasketLine, Comment, DataManga, Manga, Picture, User } from '../../types';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { faBookBookmark, faMessage, faHeart, faStar, faHouse, faHome, faCartShopping} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -528,6 +528,7 @@ export class MangaComponent implements OnInit{
     oldIdOfUrl!:number;
     basketLines!: BasketLine[];
     nbArticles: number=0;
+    mangas!: Manga[];
 
     //Icon list
     faStar=faStar;
@@ -562,15 +563,37 @@ export class MangaComponent implements OnInit{
         this.mangaService.getManga(this.idOfUrl)
 
         this.currentDataMangaSubs();
-
         this.currentDataUserSubs();
-        
         this.currentIsFavoriteSubs();
+        this.mangaService.getAllManga();
+        this.mangaService.currentMangas.subscribe(mangas =>{
+            this.mangas = mangas;
+        });
     }
 
     addBasket(){
+
         let idUser=this.accountService.getUser()?.id;
         this.cartService.nbArticlesIntoBasket(idUser!, this.data?.manga.id!);
+
+        //this.cartService.getBasketLines().id_Manga
+
+        this.basketLines=this.cartService.getBasketLines()
+        console.log("this.mangas :", this.mangas);
+        this.mangas.map(manga => {
+            this.basketLines.map((elem: BasketLine, i)=> {
+                console.log("elem.id_manga :", elem.id_manga, " === ", manga.id, ": manga.id");
+                
+                if(elem.id_manga === manga.id){
+                    console.log("test");
+                    
+                    this.basketLines[i]['manga']=manga;
+                    this.cartService.setBasketLines(this.basketLines);
+                }
+            })
+        })
+        
+
     }
 
     buyArticle(){

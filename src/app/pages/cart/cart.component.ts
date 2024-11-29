@@ -97,8 +97,8 @@ template: `
             <div class="btn__box flex items-center flex-col sm:flex-row justify-center gap-3 mt-8 mb-8">
                 <a
                     routerLink="/payment"
-                    class="rounded-full w-full max-w-[280px] py-4 text-center justify-center items-center bg-indigo-600 font-semibold text-lg text-white flex transition-all duration-500 hover:bg-indigo-700">Continue
-                    to Payment
+                    class="rounded-full w-full max-w-[280px] py-4 text-center justify-center items-center bg-indigo-600 font-semibold text-lg text-white flex transition-all duration-500 hover:bg-indigo-700">
+                    Passer commande
                     <svg class="ml-2" xmlns="http://www.w3.org/2000/svg" width="23" height="22" viewBox="0 0 23 22"
                         fill="none">
                         <path d="M8.75324 5.49609L14.2535 10.9963L8.75 16.4998" stroke="white" stroke-width="1.6"
@@ -199,11 +199,11 @@ export class CartComponent {
 
 
     ngOnInit(){
-        this.basketLines= this.cartService.getBasketLines();
+        this.basketLines = this.cartService.getBasketLines();
         this.mangaService.getAllManga();
+
         this.mangaService.currentMangas.subscribe(mangas =>{
             this.mangas = mangas;
-            this.cartService.getBasketLines().id_Manga
             this.mangas.map(manga => {
                 this.basketLines.map((elem: BasketLine, i)=> {
                     if(elem.id_manga === manga.id){
@@ -254,6 +254,11 @@ export class CartComponent {
         return price!*quantity;
     }
 
+    /**
+     * Renvoi le pourcentage de réduction de type float.
+     * @param manga Manga|null|undefined
+     * @returns 
+     */
     discountPercentage(manga: Manga|null|undefined){
         let number;
         let isInteger;

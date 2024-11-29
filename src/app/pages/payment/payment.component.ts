@@ -1,6 +1,9 @@
-import { Component, ElementRef } from '@angular/core';
+import { CartService } from './../../services/cart.service';
+import { AccountService } from './../../services/account.service';
+import { Component, ElementRef, HostListener } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { BasketLine, Manga, User } from '../../types';
 
 @Component({
     selector: 'app-payment',
@@ -8,51 +11,72 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
     imports: [FontAwesomeModule],
     template: `
     <section class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
-    <form action="#" class="mx-auto max-w-screen-xl px-4 2xl:px-0">
-    <div class="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-x-4">
+    <div id="payment__container" class="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-x-4">
         <div class="min-w-0 flex-1 space-y-8">
+
+            <!-- CHOOSING A DELIVERY ADDRESS -->
             <div class="space-y-4">
                 <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Choisir une autre adresse de livraison</h2>
 
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
                         <label for="your_name" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Nom </label>
-                        <input type="text" id="your_name" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Bonnie Green" required />
+                        <input type="text" id="name" name="name" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.lastname}}" required />
                     </div>
 
                     <div>
                         <label for="your_email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Email </label>
-                        <input type="email" id="your_email" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="name@flowbite.com" required />
+                        <input type="email" id="email" name="email" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.email}}" required />
                     </div>
 
                     <div>
-                        <label for="email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Adresse </label>
-                        <input type="email" id="email" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="name@flowbite.com" required />
+                        <label for="address" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Adresse </label>
+                        <input type="text" id="address" name="address" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.address?.line1}}" required />
                     </div>
 
                     <div>
-                        <label for="company_name" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Adresse complémentaire </label>
-                        <input type="text" id="company_name" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Flowbite LLC" required />
+                        <label for="line1" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Adresse complémentaire </label>
+                        <input type="text" id="line1" name="line1" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.address?.line2}}" required />
                     </div>
 
                     <div>
-                        <label for="vat_number" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Adresse complémentaire </label>
-                        <input type="text" id="vat_number" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="DE42313253" required />
+                        <label for="line2" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Adresse complémentaire </label>
+                        <input type="text" id="line2" name="line2" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.address?.line3}}" required />
                     </div>
 
                     <div>
-                        <label for="select-city-input-3" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Ville </label>
-                        <input type="text" id="your_city" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Bonnie Green" required />
+                        <label for="postal-code" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Code postal </label>
+                        <input type="text" id="postal-code" name="postal-code" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.address?.postalCode}}" required />
                     </div>
 
                     <div>
-                        <label for="select-country-input-3" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Pays </label>
-                        <input type="text" id="your_country" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="Bonnie Green" required />
+                        <label for="city" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Ville </label>
+                        <input type="text" id="city" name="city" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.address?.city}}" required />
                     </div>
 
                     <div>
-                        <label for="phone-input-3" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Numéro de téléphone </label>
-                        <input type="text" id="phone-input" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:border-s-gray-700  dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" required />
+                        <label for="department" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Département </label>
+                        <input type="text" id="department" name="department" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.address?.department}}" required />
+                    </div>
+
+                    <div>
+                        <label for="country" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Pays </label>
+                        <input type="text" id="country" name="country" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" placeholder="{{user?.address?.country}}" required />
+                    </div>
+
+                    <div>
+                        <label for="phone" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"> Numéro de téléphone </label>
+                        <input type="text" id="phone" name="phone" 
+                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:border-s-gray-700  dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="{{getUserPhone(user!)}}" required />
                     </div>
 
                     <div class="sm:col-span-2">
@@ -60,57 +84,107 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
                         <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
                         </svg>
-                        Add new address
+                        Ajouter une nouvelle adresse
                     </button>
                     </div>
                 </div>
             </div>
 
+            <!-- CHOICE OF DELIVERY -->
+            <form class="space-y-4">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Livraison</h3>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div (click)="choiceDeliveryStandard()" id="choice-delivery__box--standard" class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                        <div class="flex items-start">
+                            <div class="flex h-5 items-center">
+                                <input id="choice-deliver__input--standard" aria-describedby="dhl-text" type="radio" name="delivery-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" checked />
+                            </div>
+
+                            <div class="ms-4 text-sm">
+                                <label for="choice-deliver__input--standard" class="font-medium leading-none text-gray-900 dark:text-white"> Standard 8€25 </label>
+                                <p id="dhl-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Livré sous 48h minimum</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div (click)="choiceDeliveryChronopost()" id="choice-delivery__box--chronopost" class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                        <div class="flex items-start">
+                            <div class="flex h-5 items-center">
+                                <input id="choice-deliver__input--chronopost" aria-describedby="express-text" type="radio" name="delivery-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
+                            </div>
+
+                            <div class="ms-4 text-sm">
+                                <label for="choice-deliver__input--chronopost" class="font-medium leading-none text-gray-900 dark:text-white"> Chronopost classique 12€95</label>
+                                <p id="express-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Livré sous 24h</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div (click)="choiceDeliveryChronopostExpress()" id="choice-delivery__box--chronopostExpress" class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                        <div class="flex items-start">
+                            <div class="flex h-5 items-center">
+                                <input id="choice-deliver__input--chronopost-express" aria-describedby="fedex-text" type="radio" name="delivery-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
+                            </div>
+
+                            <div class="ms-4 text-sm">
+                                <label for="choice-deliver__input--chronopost-express" class="font-medium leading-none text-gray-900 dark:text-white"> Chronopost Express 13€95 </label>
+                                <p id="fedex-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Livré demain avant 10h</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- CHOICE OF PAYMENT -->
             <div class="space-y-4">
                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Paiement</h3>
 
-                <div class="payment__box grid grid-cols-1 gap-4 md:grid-cols-3">
-                    <div (click)="choicePaymentCB($event)" id="payment__box--cb" class="payment__box--border rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-start">
+                <div (click)="choicePayment()" class="choice-payment__box grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div (click)="choicePayementCard()" id="choice-payment__box--card" class="choice-payment__box--border rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                        <img class="choice-payment__box--img" src="/assets/img/credit-card.png" title="image transfer-bank">
+                        <div class="flex items-start justify-center">
                             <div class="flex h-5 items-center">
-                                <input id="credit-card" aria-describedby="credit-card-text" type="radio" name="payment-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" checked />
+                                <input id="choice-payment__input--card" aria-describedby="credit-card-text" type="radio" name="payment-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" checked />
                             </div>
 
                             <div class="ms-4 text-sm">
-                                <label for="credit-card" class="font-medium leading-none text-gray-900 dark:text-white"> Carte bancaire </label>
+                                <label for="choice-payment__input--card" class="font-medium leading-none text-gray-900 dark:text-white"> Carte bancaire </label>
                             </div>
                         </div>
-                        <div class="payment__box--icon-triangle-cb"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
+                        <div class="choice-payment__box--icon-triangle-cb"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
                     </div>
 
-                    <div (click)="choicePaymentCheque($event)" id="payment__box--cheque" class="payment__box--border rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-start">
+                    <div (click)="choicePayementTransfer()" id="choice-payment__box--transfer" class="choice-payment__box--border rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                        <img class="choice-payment__box--img" src="/assets/img/transfer-bank.png" title="image transfer-bank">
+                        <div class="flex items-start justify-center">
                             <div class="flex h-5 items-center">
-                                <input id="pay-by-cheque" aria-describedby="pay-by-cheque-text" type="radio" name="payment-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
+                                <input id="choice-payment__input--transfer" aria-describedby="pay-by-transfer-text" type="radio" name="payment-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
                             </div>
 
                             <div class="ms-4 text-sm">
-                                <label for="pay-by-cheque" class="font-medium leading-none text-gray-900 dark:text-white"> Paiement par chèque </label>
+                                <label for="choice-payment__input--transfer" class="font-medium leading-none text-gray-900 dark:text-white"> Virement bancaire </label>
                             </div>
                         </div>
-                        <div class="payment__box--icon-triangle-cheque"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
+                        <div class="choice-payment__box--icon-triangle-transfer"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
                     </div>
 
-                    <div (click)="choicePaymentPaypal($event)" id="payment__box--paypal" class="payment__box--border rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-start">
+                    <div (click)="choicePayementPaypal()" id="choice-payment__box--paypal" class="choice-payment__box--border rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                        <img class="choice-payment__box--img" src="/assets/img/paypal.png" title="image paypal">
+                        <div class="flex items-start justify-center">
                             <div class="flex h-5 items-center">
-                                <input id="paypal-2" aria-describedby="paypal-text" type="radio" name="payment-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
+                                <input id="choice-payment__input--paypal" aria-describedby="paypal-text" type="radio" name="payment-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
                             </div>
 
                             <div class="ms-4 text-sm">
-                                <label for="paypal-2" class="font-medium leading-none text-gray-900 dark:text-white"> Paypal </label>
+                                <label for="choice-payment__input--paypal" class="font-medium leading-none text-gray-900 dark:text-white"> Paypal </label>
                             </div>
                         </div>
-                        <div class="payment__box--icon-triangle-paypal"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
+                        <div class="choice-payment__box--icon-triangle-paypal"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
                     </div>
                 </div>
 
-                <div id="payment__box--card" style="margin-top: 1.5rem;">
+                <form id="payment__box--card" class="payment__box" style="margin-top: 1.5rem;">
                     <div class="flex justify-center  mt-4 col-xs-12 text-center payment-card-autorized">
                         <img class="mx-1" src="/assets/img/payment-cb.png" title="Cartes Bancaires">
                         <img class="mx-1" src="/assets/img/payment-visa.png" title="Visa">
@@ -156,102 +230,106 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>   
-            </div>
 
-
-            <div class="space-y-4">
-                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Livraison</h3>
-
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-start">
-                            <div class="flex h-5 items-center">
-                                <input id="dhl" aria-describedby="dhl-text" type="radio" name="delivery-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" checked />
-                            </div>
-
-                            <div class="ms-4 text-sm">
-                                <label for="dhl" class="font-medium leading-none text-gray-900 dark:text-white"> Standard 8€25 </label>
-                                <p id="dhl-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Livré sous 48h minimum</p>
-                            </div>
+                        <div>
+                            <input checked="checked" class="form-control mr-4" name="cgv" type="checkbox" value="true" id="payment__box--card-input">
+                            <label for="payment__box--card-input">Je certifie avoir lu, compris et accepté les <a class="text-blue-800" href="">conditions générales de vente</a></label>
+                        </div>
+                        
+                        <div id="payment__box--card-btn">
+                            <button type="submit" class="mt-2 text-sm px-4 py-3 w-full font-semibold tracking-wide bg-purple-600 hover:bg-purple-700 text-white rounded-md">Payer ma commande</button>
                         </div>
                     </div>
+                </form>     
 
-                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-start">
-                            <div class="flex h-5 items-center">
-                                <input id="express" aria-describedby="express-text" type="radio" name="delivery-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
-                            </div>
-
-                            <div class="ms-4 text-sm">
-                                <label for="express" class="font-medium leading-none text-gray-900 dark:text-white"> Chronopost classique 12€95</label>
-                                <p id="express-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Livré sous 24h</p>
-                            </div>
-                        </div>
+                <form method="get" action="" id="payment__box--transfer" class="payment__box" style="margin-top: 1.5rem;">
+                    <p id="payment__box--transfer-text">Les instructions pour réaliser le virement seront indiquées sur la page de confirmation de commande et rappelées dans l'email de confirmation de commande. Une fois le virement effectué, comptez 2 à 4 jours ouvrés pour sa validation par nos services ou 2 heures ouvrées si vous optez pour l'option virement instantané proposée par votre banque.</p>
+                    <div>
+                        <input checked="checked" class="form-control mr-4" name="cgv" type="checkbox" value="true" id="payment__box--transfer-input">
+                        <label for="payment__box--transfer-input">Je certifie avoir lu, compris et accepté les <a class="text-blue-800" href="">conditions générales de vente</a></label>
                     </div>
 
-                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                        <div class="flex items-start">
-                            <div class="flex h-5 items-center">
-                                <input id="fedex" aria-describedby="fedex-text" type="radio" name="delivery-method" value="" class="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />
-                            </div>
-
-                            <div class="ms-4 text-sm">
-                                <label for="fedex" class="font-medium leading-none text-gray-900 dark:text-white"> Chronopost Express 13€95 </label>
-                                <p id="fedex-text" class="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">Livré demain avant 10h</p>
-                            </div>
-                        </div>
+                    <div id="payment__box--transfer-btn">
+                        <button type="submit" class="mt-2 text-sm px-4 py-3 w-full font-semibold tracking-wide bg-purple-600 hover:bg-purple-700 text-white rounded-md">Payer ma commande</button>
                     </div>
-                </div>
+                </form>
+
+                <form id="payment__box--paypal" class="payment__box" style="margin-top: 1.5rem;">
+                    <p class="payment__box--paypal-text">Vous serez redirigé vers le site Paypal afin de valider votre paiement.</p>
+                    <div>
+                        <input checked="checked" class="form-control mr-4" name="cgv" type="checkbox" value="true" id="payment__box--paypal-input">
+                        <label for="payment__box--paypal-input">Je certifie avoir lu, compris et accepté les <a class="text-blue-800" href="">conditions générales de vente</a></label>
+                    </div>
+
+                    <div id="payment__box--paypal-btn">
+                        <button type="submit" class="mt-2 text-sm px-4 py-3 w-full font-semibold tracking-wide bg-purple-600 hover:bg-purple-700 text-white rounded-md">Valider ma commande</button>
+                    </div>
+                </form>
             </div>
         </div>
 
-        <div class="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
+        <div id="command__box" class="mt-6 w-full space-y-6 sm:mt-8 lg:mt-0 lg:max-w-xs xl:max-w-md">
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Commande</h2>
             <div class="flow-root">
             <div class="my-1 divide-y divide-gray-200 dark:divide-gray-800">
+
                 <dl class="flex items-center justify-between gap-4 py-3">
-                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Subtotal</dt>
-                <dd class="text-base font-medium text-gray-900 dark:text-white">$8,094.00</dd>
+                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Sous total HT</dt>
+                <dd class="text-base font-medium text-gray-900 dark:text-white">{{ getSubTotalPriceExcludingTax() }}</dd>
                 </dl>
 
                 <dl class="flex items-center justify-between gap-4 py-3">
-                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Savings</dt>
-                <dd class="text-base font-medium text-green-500">0</dd>
+                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Montant TVA (5,5%)</dt>
+                <dd class="text-base font-medium text-gray-900 dark:text-white">{{ getAmountSubTotalVAT() }}</dd>
                 </dl>
 
                 <dl class="flex items-center justify-between gap-4 py-3">
-                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Store Pickup</dt>
-                <dd class="text-base font-medium text-gray-900 dark:text-white">$99</dd>
+                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Sous total TTC</dt>
+                <dd class="text-base font-medium text-green-500">{{ getSubTotalIncludingVAT() }}</dd>
                 </dl>
 
                 <dl class="flex items-center justify-between gap-4 py-3">
-                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tax</dt>
-                <dd class="text-base font-medium text-gray-900 dark:text-white">$199</dd>
+                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Livraison</dt>
+                <dd class="text-base font-medium text-gray-900 dark:text-white">{{ getDeliveryPrice() }}</dd>
                 </dl>
 
                 <dl class="flex items-center justify-between gap-4 py-3">
-                <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
-                <dd class="text-base font-bold text-gray-900 dark:text-white">$8,392.00</dd>
+                <dt class="text-base font-bold text-gray-900 dark:text-white">Total TTC</dt>
+                <dd class="text-base font-bold text-gray-900 dark:text-white">{{getTotal()}}</dd>
                 </dl>
             </div>
             </div>
 
             <div class="space-y-3">
-            <button type="submit" class="mt-8 text-sm px-4 py-3 w-full font-semibold tracking-wide bg-purple-600 hover:bg-purple-700 text-white rounded-md">Proceed to Payment</button>
+            <!--<button type="submit" id="command__box--btn" class="mt-8 text-sm px-4 py-3 w-full font-semibold tracking-wide bg-purple-600 hover:bg-purple-700 text-white rounded-md">Payer ma commande</button>-->
 
-            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">One or more items in your cart require an account. <a href="#" title="" class="font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">Sign in or create an account now.</a>.</p>
+            <!--<p class="text-sm font-normal text-gray-500 dark:text-gray-400">One or more items in your cart require an account. <a href="#" title="" class="font-medium text-primary-700 underline hover:no-underline dark:text-primary-500">Sign in or create an account now.</a>.</p>-->
             </div>
         </div>
     </div>
-    </form>
     </section>
   `,
 
     styles: [`
 
-        #payment__box--card{
+        #payment__container{
+            //width: 49rem;
+            margin-left: 2rem;
+        }   
+
+        #payment__box--transfer-btn,
+        #payment__box--card-btn,
+        #payment__box--paypal-btn{
+            width: 12rem;
+            margin: auto;
+        }
+
+        .choice-payment__box--img{
+            width: 5rem;
+            margin: auto;
+        }
+
+        .payment__box{
             border: 2px solid rgb(118, 109, 97);
             padding: 1rem;
             margin-top: 2rem;
@@ -265,76 +343,213 @@ import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
             display: block;
         }
 
-        .payment__box--border{
+        .choice-payment__box--border{
             position: relative;
             border: 2px solid rgb(25, 33, 44);
         }
 
-        .payment__box--icon-triangle-cheque,
-        .payment__box--icon-triangle-paypal{
+        .choice-payment__box--icon-triangle-transfer,
+        .choice-payment__box--icon-triangle-paypal{
             display:none;
         }
 
-        .payment__box--icon-triangle-cb,
-        .payment__box--icon-triangle-cheque,
-        .payment__box--icon-triangle-paypal{
+        .choice-payment__box--icon-triangle-cb,
+        .choice-payment__box--icon-triangle-transfer,
+        .choice-payment__box--icon-triangle-paypal{
             position: absolute;
-            top: 62%;
+            top: 84%;
             left: 46%;
             font-size: 2rem;
             color: rgb(25, 33, 44);
+        }
+
+        #payment__box--transfer, 
+        #payment__box--paypal{
+            display:none;
+        }
+
+        #command__box--btn{
+            width: 12rem;
+            margin: auto;
+            display: flex;
+            justify-content: center;        
+        }
+
+        #command__box{
+            margin: 64.5rem 2rem 0rem 2rem;
+            border: 2px solid rgb(25, 33, 44);
+            width: 24rem;
+            padding: 0 1rem 1rem 1rem;
+            background-color: aliceblue;
         }
     `]
 })
 
 export class PaymentComponent {
     protected readonly faCaretDown = faCaretDown;
+    user!: User|null;
+    basketLines!: BasketLine[];
+    x: number=0;
+
 
     constructor(
         private elementRef:ElementRef,
+        private accountService:AccountService,
+        private cartService:CartService,
     ){
 
     }
 
     ngOnInit(){
         // récupérer l'address + price
+        this.user=this.accountService.getUser();
+        this.basketLines=this.cartService.getBasketLines();
+
+        this.getSubTotalPriceExcludingTax();
     }
 
-    
+    //@HostListener('window:scroll', ['$event'])
+    //scrollFunction() {
+        ////let scrollLimitTop=475;
+        //let scrollLimitTop=475;
+        //let scrollLimitBottom=800;
+        //let commandBox=this.elementRef.nativeElement.querySelector("#command__box");
+        //if (document.body.scrollTop < scrollLimitTop || document.documentElement.scrollTop < scrollLimitTop) {
+        //    window.scrollTo(0, 0);
+        //    //commandBox.style.position = 'fixed'
 
-    choicePaymentCB(event: Event){
-        event.stopPropagation();
-        const paymentBoxCard=this.elementRef.nativeElement.querySelector('#payment__box--card');
-        const paymentBoxCB=this.elementRef.nativeElement.querySelector('#payment__box--cb');
-        const paymentBoxIconHide=paymentBoxCB.querySelector('.payment__box--icon-hide');
-        console.log("paymentBoxCB :", paymentBoxCB);
-        const input=paymentBoxCB.querySelector('#credit-card')
-        console.log("input.checked :", input.checked);
-        input.checked = !input.checked;
-        //paymentBoxIconHide.classList.toggle('payment__box--icon-show')
-        paymentBoxCard.style.display='none';
-    }
-    
-    choicePaymentCheque(event: Event){
-        const paymentBoxCheque=this.elementRef.nativeElement.querySelector('#payment__box--cheque');
-        const paymentBoxIconHide=paymentBoxCheque.querySelector('.payment__box--icon-hide');
-        const input=paymentBoxCheque.querySelector('#pay-by-cheque')
-        input.checked = !input.checked;
-        paymentBoxIconHide.classList.toggle('payment__box--icon-show')
-    }
-    
-    choicePaymentPaypal(event: Event){
-        const paymentPaypal=this.elementRef.nativeElement.querySelector('#payment__box--paypal');
-        const paymentBoxIconHide=paymentPaypal.querySelector('.payment__box--icon-hide');
-        const input=paymentPaypal.querySelector('#paypal-2')
-        input.checked = !input.checked;
-
-        paymentBoxIconHide.classList.toggle('payment__box--icon-show')
-    }
-    //userProfile(event: Event){
-    //    event.stopPropagation();
-    //    const userInfo=this.elementRef.nativeElement.querySelector("#user-info");
-    //    userInfo.style.visibility=userInfo.style.visibility==="visible" ? "hidden" : "visible";
-    //    document.body.addEventListener('click', this.closeMenu)
+        //    //console.log("scroll if", this.x+=1);
+        //}else if(document.body.scrollTop > scrollLimitBottom || document.documentElement.scrollTop > scrollLimitBottom){
+        //    window.scrollTo(0, 0);
+        //    //commandBox.style.bottom = '800px';
+        //    //commandBox.style.position = 'fixed'
+        //}
     //}
+
+    getUserPhone(user: User){
+        let str='';
+        for (let i = 0, j=0; i < user.phone.length; i++, j++) {
+            let cc=user.phone[i];
+            if(j < 2){
+                str+=cc
+            }else{
+                str+='-';
+                j=-1;
+                i--;
+            }
+        }
+       
+        return str;
+    }
+
+    /**
+     * Sous total TTC
+     */
+    getSubTotalIncludingVAT(){
+        let total=0;
+       
+        this.basketLines.map(elem => {
+            total+=this.getSubTotalQtyByManga(elem.manga, elem.quantity)
+        });
+       
+        return Math.round(total*100)/100;
+    }
+
+    /**
+     * Montant de la quantités acheté d'un manga
+     * @param manga 
+     * @param quantity 
+     * @returns 
+     */
+    getSubTotalQtyByManga(manga: Manga|null|undefined, quantity: number){
+        let price=manga?.price;
+        let percentage=manga?.discountPercentage;
+        
+        if(percentage){
+            price=price!-price!*percentage!
+            price=Math.round(price*100)/100;
+            return price*quantity;
+        }
+
+        return price!*quantity;
+    }
+
+    /**
+     * Total TTC
+     */
+    getTotal(){
+        return this.getSubTotalIncludingVAT()+this.getDeliveryPrice();
+    }
+
+    /**
+     * Montant sous total TVA.
+     */
+    getAmountSubTotalVAT(){
+        let amountTva=this.getSubTotalIncludingVAT()-this.getSubTotalPriceExcludingTax()
+        return Math.round(amountTva*100)/100; 
+    }
+
+    /**
+     * Sous total HT.
+     */
+    getSubTotalPriceExcludingTax(){
+        let totalIncluTax=this.getSubTotalIncludingVAT();
+        let totalExcluTax=totalIncluTax-totalIncluTax*0.055;
+        return Math.round(totalExcluTax*100)/100;
+    }
+
+    /**
+     * Sous de la livraison.
+     */
+    getDeliveryPrice(){
+        return 8.25;
+    }
+    
+    
+    
+    choiceDeliveryStandard(){
+        const input=this.elementRef.nativeElement.querySelector("#choice-deliver__input--standard");
+        input.checked = true;        
+    }
+    
+    choiceDeliveryChronopost(){
+        const input=this.elementRef.nativeElement.querySelector("#choice-deliver__input--chronopost");
+        input.checked = true;
+    }
+    
+    choiceDeliveryChronopostExpress(){
+        const input=this.elementRef.nativeElement.querySelector("#choice-deliver__input--chronopost-express");
+        input.checked = true;
+    }
+
+    choicePayementCard(){
+        const input=this.elementRef.nativeElement.querySelector("#choice-payment__input--card");
+        input.checked = true;
+    }
+
+    choicePayementTransfer(){
+        const input=this.elementRef.nativeElement.querySelector("#choice-payment__input--transfer");
+        input.checked = true;
+    }
+
+    choicePayementPaypal(){
+        const input=this.elementRef.nativeElement.querySelector("#choice-payment__input--paypal");
+        input.checked = true;
+    }
+
+    choicePayment(){
+        const inputAll=this.elementRef.nativeElement.querySelectorAll(".choice-payment__box input");
+        
+        for (let j = 0; j < inputAll.length; j++) {
+            console.log("input", inputAll[j]);
+            let typePayA=(inputAll[j].id).split("--").pop();
+            if( ! inputAll[j].checked){
+                const paymentBox=this.elementRef.nativeElement.querySelector('#payment__box--'+typePayA);
+                paymentBox.style.display="none";
+            }else{
+                const paymentBox=this.elementRef.nativeElement.querySelector('#payment__box--'+typePayA);
+                paymentBox.style.display="block";
+            }
+        }
+    }
 }

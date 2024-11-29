@@ -136,6 +136,7 @@ export type User = {
     password: string;
     firstname: string;
     lastname: string;
+    phone: string;
     createdAt: Date;
     img: string;
     address: Address;

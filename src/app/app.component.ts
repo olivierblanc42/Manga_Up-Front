@@ -224,11 +224,17 @@ import { CartService } from './services/cart.service';
 
     #icon-panier-nbarticle{
         position: absolute;
-        bottom: 2rem;
-        right: 0.5rem;
-        color: red;
+        bottom: 1.75rem;
+        right: -0.5rem;
         font-weight: 900;
         font-size: 1.25rem;
+        background-color: rgb(153, 120, 0);
+        border-radius: 50%;
+        width: 1.5rem;
+        height: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     #panier-info{
