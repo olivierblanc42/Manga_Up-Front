@@ -152,7 +152,7 @@ import { BasketLine, Manga, User } from '../../types';
                                 <label for="choice-payment__input--card" class="font-medium leading-none text-gray-900 dark:text-white"> Carte bancaire </label>
                             </div>
                         </div>
-                        <div class="choice-payment__box--icon-triangle-cb"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
+                        <div id="choice-payment__box--icon-triangle-card"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
                     </div>
 
                     <div (click)="choicePayementTransfer()" id="choice-payment__box--transfer" class="choice-payment__box--border rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
@@ -166,7 +166,7 @@ import { BasketLine, Manga, User } from '../../types';
                                 <label for="choice-payment__input--transfer" class="font-medium leading-none text-gray-900 dark:text-white"> Virement bancaire </label>
                             </div>
                         </div>
-                        <div class="choice-payment__box--icon-triangle-transfer"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
+                        <div id="choice-payment__box--icon-triangle-transfer"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
                     </div>
 
                     <div (click)="choicePayementPaypal()" id="choice-payment__box--paypal" class="choice-payment__box--border rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
@@ -180,7 +180,7 @@ import { BasketLine, Manga, User } from '../../types';
                                 <label for="choice-payment__input--paypal" class="font-medium leading-none text-gray-900 dark:text-white"> Paypal </label>
                             </div>
                         </div>
-                        <div class="choice-payment__box--icon-triangle-paypal"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
+                        <div id="choice-payment__box--icon-triangle-paypal"><fa-icon class="" [icon]="faCaretDown"></fa-icon></div>
                     </div>
                 </div>
 
@@ -348,14 +348,14 @@ import { BasketLine, Manga, User } from '../../types';
             border: 2px solid rgb(25, 33, 44);
         }
 
-        .choice-payment__box--icon-triangle-transfer,
-        .choice-payment__box--icon-triangle-paypal{
+        #choice-payment__box--icon-triangle-transfer,
+        #choice-payment__box--icon-triangle-paypal{
             display:none;
         }
 
-        .choice-payment__box--icon-triangle-cb,
-        .choice-payment__box--icon-triangle-transfer,
-        .choice-payment__box--icon-triangle-paypal{
+        #choice-payment__box--icon-triangle-card,
+        #choice-payment__box--icon-triangle-transfer,
+        #choice-payment__box--icon-triangle-paypal{
             position: absolute;
             top: 84%;
             left: 46%;
@@ -539,16 +539,20 @@ export class PaymentComponent {
 
     choicePayment(){
         const inputAll=this.elementRef.nativeElement.querySelectorAll(".choice-payment__box input");
-        
+
         for (let j = 0; j < inputAll.length; j++) {
             console.log("input", inputAll[j]);
             let typePayA=(inputAll[j].id).split("--").pop();
             if( ! inputAll[j].checked){
                 const paymentBox=this.elementRef.nativeElement.querySelector('#payment__box--'+typePayA);
+                const triangle=this.elementRef.nativeElement.querySelector('#choice-payment__box--icon-triangle-'+typePayA);
                 paymentBox.style.display="none";
+                triangle.style.display="none";
             }else{
                 const paymentBox=this.elementRef.nativeElement.querySelector('#payment__box--'+typePayA);
+                const triangle=this.elementRef.nativeElement.querySelector('#choice-payment__box--icon-triangle-'+typePayA);
                 paymentBox.style.display="block";
+                triangle.style.display="block";
             }
         }
     }
