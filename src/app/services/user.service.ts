@@ -46,7 +46,6 @@ export class UserService {
             })
         };
         let data=JSON.stringify(registerUser);
-        console.log("editUser", data);
 
         return this.http.post<any>(this.urlAdminEdit, data, { headers:options.headers }).pipe(
             tap((user: User) => {
@@ -61,13 +60,12 @@ export class UserService {
         .toPromise()
         .then(r=>{
             if(!r) return;
-            console.log("r : ", r);
             this.dataUser.next(r);
         })
     }
 
     /**
-     * Récupère tout les utlisateur
+     * Récupère tous les utlisateurs
      *
      */
     getUsers(){
@@ -76,7 +74,6 @@ export class UserService {
             .toPromise()
             .then(r=>{
                 if(!r) return;
-                //console.log("user.service getUser : ", r);
                 this.users.next(r);
             })
     }

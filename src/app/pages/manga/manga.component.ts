@@ -561,13 +561,19 @@ export class MangaComponent implements OnInit{
         this.idOfUrl=parseInt(this.activatedRoute.snapshot.paramMap.get('id')!);
         
         this.mangaService.getManga(this.idOfUrl)
-
+        
         this.currentDataMangaSubs();
         this.currentDataUserSubs();
         this.currentIsFavoriteSubs();
         this.mangaService.getAllManga();
         this.mangaService.currentMangas.subscribe(mangas =>{
             this.mangas = mangas;
+        });
+
+        let idUser=this.accountService.getUser()?.id;
+        this.userService.getUser(idUser?.toString()!);
+        this.userService.currentDataUser.subscribe( dataUser => {
+            this.user = dataUser?.user!
         });
     }
 
@@ -579,23 +585,19 @@ export class MangaComponent implements OnInit{
         //this.cartService.getBasketLines().id_Manga
 
         this.basketLines=this.cartService.getBasketLines()
-        console.log("this.mangas :", this.mangas);
         this.mangas.map(manga => {
             this.basketLines.map((elem: BasketLine, i)=> {
-                console.log("elem.id_manga :", elem.id_manga, " === ", manga.id, ": manga.id");
-                
                 if(elem.id_manga === manga.id){
-                    console.log("test");
-                    
                     this.basketLines[i]['manga']=manga;
                     this.cartService.setBasketLines(this.basketLines);
                 }
             })
         })
-        
-
     }
 
+    /**
+     * Achat d'un article.
+     */
     buyArticle(){
 
     }
@@ -659,8 +661,6 @@ export class MangaComponent implements OnInit{
     currentDataUserSubs(){
         this.userService.currentDataUser.subscribe(dataUser => {
             this.user=dataUser?.user!
-            console.log("currentDataUserSubs user :", this.user);
-            
             this.mangasIdOfUser=dataUser?.mangasId!;
             this.isFavorite=this.searchIfMangaIsFavorite(this.mangasIdOfUser);
             this.colorIconHeart=this.isFavorite ? "yellow" : "grey"
@@ -769,7 +769,7 @@ export class MangaComponent implements OnInit{
     }
 
     /**
-     * Calcule le nombre de like
+     * Calcule le nombre de like (coeur)
      * @returns {number} Retourne le nombre de like ou 0
      */
     calculNbLikes(){
@@ -794,7 +794,7 @@ export class MangaComponent implements OnInit{
     }
 
     /**
-     * Calcule le taux satisfactions des utilisateurs
+     * Calcule le taux satisfactions des utilisateurs (stars)
      * @returns {number}
      */
     calculSatisfactionRate(){
@@ -802,7 +802,7 @@ export class MangaComponent implements OnInit{
     }
 
     /**
-     * Calcul le nombre de commentaire
+     * Calcul le nombre de commentaires
      * @returns {number} 
      */
     nbComments(data: DataManga|null){
