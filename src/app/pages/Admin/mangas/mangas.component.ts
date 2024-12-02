@@ -363,17 +363,17 @@ export class MangasAdminComponent implements OnInit {
     // Vérifie si le champ 'title' est vide
     if (!this.title) {
       // Définit un message d'erreur si 'title' est vide
-      this.error = "title is required";
+      this.error = "le titre est requis ";
       return;
     }
     if (!this.summary  ) {
       // Définit un message d'erreur si 'summary' est vide
-      this.error = "summary is required";
+      this.error = "le résumé est requis";
       return;
     }
     if (!this.price  ) {
       // Définit un message d'erreur si 'price' est vide
-      this.error = "price is required";
+      this.error = "le prix est requis";
       return;
     }
     if (this.price == 0 ) {
@@ -382,7 +382,7 @@ export class MangasAdminComponent implements OnInit {
       return;
     }
 
-    // Appelle le service pour ajouter un nouvel auteur avec les données fournies
+    // Appelle le service pour ajouter un nouveau manga avec les données fournies
 
     this.mangaService.addMangaTest({
       title: this.title,
@@ -397,12 +397,8 @@ export class MangasAdminComponent implements OnInit {
 
     });
 
-
-
     this.summary="";
     this.title="";
-
-
 
   }
 

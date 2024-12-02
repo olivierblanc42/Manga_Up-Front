@@ -210,16 +210,15 @@ export class GenreAdminComponent implements OnInit{
               this.router.navigate(['/admin/genres']);
             }),
             catchError(error => {
-              // Gérez l'erreur ici (par exemple, afficher un message d'erreur)
               console.error('Error updating category', error);
               this.error = 'Erreur lors de la mise à jour de la category';
-              return throwError(error); // Relancez l'erreur pour un traitement supplémentaire si nécessaire
+              return throwError(error);
             }),
             finalize(() => {
-              // Actions finales à réaliser, qu'il y ait une erreur ou non
+
             })
         )
-        .subscribe(); // Nécessaire pour déclencher l'exécution du pipeline
+        .subscribe();
   }
 
 

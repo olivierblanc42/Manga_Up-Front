@@ -214,18 +214,18 @@ export class MangaAdminComponent implements OnInit{
   pictures!:Picture[];
   picture!:Picture;
   comments!:Comment[];
-  idOfUrl!:number; // id du manga récupéré à partir de l'url.
+  idOfUrl!:number;
   base64:string="data:image/webp;base64,";
   poster!:string;
-  count:number=1; // Pour compter le nombre de commentaires.
+  count:number=1;
   nbLikes:number=0;
-  colorIconHeart:string="grey"; // Définie la couleur lorsque le manga est en favorie ou pas.
+  colorIconHeart:string="grey";
   user!:User | null;
-  mangasIdOfUser!: number[]; // Liste des id des mangas de l'utilisateur.
+  mangasIdOfUser!: number[];
   isFavorite!:boolean | null;
   test!: boolean;
 
-  pages!: number[]; // Nombre de page
+  pages!: number[];
   lastPage!: number;
   currentPage!: number;
   isLoading:boolean=false;
@@ -565,19 +565,17 @@ export class MangaAdminComponent implements OnInit{
         .pipe(
             tap(response =>{
               console.log('category update')
-              //    this.router.navigate(['/admin/categories']);
+                 this.router.navigate(['/admin/mangas']);
             }),
             catchError(error => {
-              // Gérez l'erreur ici (par exemple, afficher un message d'erreur)
               console.error('Error updating category', error);
               this.error = 'Erreur lors de la mise à jour de la category';
-              return throwError(error); // Relancez l'erreur pour un traitement supplémentaire si nécessaire
+              return throwError(error);
             }),
             finalize(() => {
-              // Actions finales à réaliser, qu'il y ait une erreur ou non
             })
         )
-        .subscribe(); // Nécessaire pour déclencher l'exécution du pipeline
+        .subscribe();
 
 
 

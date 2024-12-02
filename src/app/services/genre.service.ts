@@ -135,7 +135,6 @@ export class GenreService {
 
     updateGenre(updateGenre: UpdateGenreDto):Observable<UpdateGenreDto> {
         return this.http.put<GenreDto>(`${this.urlDto}/${updateGenre.id}`,updateGenre)
-
     }
 
     removeGenre(id: number){

@@ -11,20 +11,26 @@ import {GenreService} from "../../services/genre.service";
 import { Comment, Manga, Picture, Genre, User } from '../../types';
 import { PicturesPipe } from '../../pipes/pictures.pipe';
 import { NgClass } from '@angular/common';
+import {CarouselComponent} from "../../components/carousel/carousel.component";
+import {CarouselComponentDate} from "../../components/carousel-date/carousel-date.component";
+import {CarouselGenreComponent} from "../../components/carousel/carouselGenre.component";
 
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [RouterModule, CardComponent, FontAwesomeModule, PicturesPipe, NgClass],
+    imports: [RouterModule, CardComponent, FontAwesomeModule, PicturesPipe, NgClass, CarouselComponent, CarouselComponent, CarouselComponent, CarouselComponent, CarouselComponentDate, CarouselGenreComponent],
     template: `
-
+ 
 
     <section class="container mx-auto px-5 md:px-10  my-5\t">
         <a routerLink="/mangas" class="flex flex-row items-center\tgap-2">
             <h2 class="my-5">Manga</h2>
             <fa-icon [icon]="faArrowRight"></fa-icon>
         </a>
+        <ui-carousel>
+
+        </ui-carousel>
         <div class="content-manga ">
             @for (manga of nineMangas; track manga.id) {
             <div class="content-manga__link">
@@ -49,13 +55,13 @@ import { NgClass } from '@angular/common';
     </section>
 
     <div class="py-3 bg-dark flex flex-row justify-center items-center gap-10	utile-desktop">
-        <div class="flex flex-row justify-center items-center gap-4	">
+        <div class="flex flex-row justify-center items-center gap-4 flex-wrap text-center	">
             <img src="assets/svg/shield.svg" alt="">
             <p>Fiable et sûr <br>10,000 référence</p>
         </div>
         <img src="assets/img/line-desktop2.png" alt="">
 
-        <div class=" flex flex-row justify-center items-center gap-4		 ">
+        <div class=" flex flex-row justify-center items-center gap-4 flex-wrap  text-center">
             <img src="assets/svg/customer-service.svg" alt="">
             <p>Service client <br> disponibles 24/7</p>
         </div>
@@ -72,6 +78,11 @@ import { NgClass } from '@angular/common';
             <h2 class="my-5">les plus récents </h2>
             <fa-icon [icon]="faArrowRight"></fa-icon>
         </a>
+        
+      <ui-carousel-date>
+          
+      </ui-carousel-date>
+        
         <div class="content-manga ">
             @for (manga of dateOrderMangas; track manga.id) {
             <div class="content-manga__link">
@@ -107,6 +118,12 @@ import { NgClass } from '@angular/common';
             <h2 class="my-5">Genre</h2>
             <fa-icon [icon]="faArrowRight"></fa-icon>
         </a>
+
+        
+        
+        <ui-carousel-genre>
+            
+        </ui-carousel-genre>
         <div class="content-genre">
             @for (genre of genres; track genre.id) {
             <div class="content-manga__link">                
@@ -156,6 +173,11 @@ import { NgClass } from '@angular/common';
   `,
     styles: [`
 
+      ui-carousel,ui-carousel-date ,ui-carousel-genre{
+        display: none;
+      }
+      
+      
 .content-manga__discount{
     text-decoration-line: line-through;
     color: rgb(113 113 122);
@@ -324,7 +346,7 @@ display:flex;
           display: flex;
         }
         .card_single_home {
-          width: 40%;
+          width: 60%;
           background-color: rgb(60, 60, 60, 10%);
           display: flex;
           flex-direction: row;
@@ -357,6 +379,27 @@ display:flex;
 
       }
 
+@media (max-width: 768px) {
+  ui-carousel,ui-carousel-date ,ui-carousel-genre{
+    display: block;
+  }
+  .content-manga,.content-genre{
+    display : none;
+  }
+
+ img{
+   margin-bottom: 10px;
+ }
+
+  .card_single_home__infos {
+    width: 100% !important;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  
+  
+}
 
 
     `]
