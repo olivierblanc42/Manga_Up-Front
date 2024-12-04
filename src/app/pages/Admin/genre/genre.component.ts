@@ -90,7 +90,7 @@ import {MangaService} from "../../../services/manga.service";
           }
           <li>
 
-            <button (click)="pageMangas(page)"
+            <button (click)="pagesGenre(page)"
                     class="flex items-center justify-center px-4 h-10 leading-tight text-black bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-yellow-100 dark:hover:text-gray-700"
                     [ngClass]="currentPage===page ? 'bg-yellow-100':'background-color-pagination-yellow'"
             >
@@ -168,10 +168,10 @@ export class GenreAdminComponent implements OnInit{
   }
 
   /**
-   * Récupère la page des commentaires souhaité.
+   * Récupère la page des genres souhaités.
    * @param {string} page
    */
-  pageMangas(page: number){
+  pagesGenre(page: number){
     console.log("dans pageComments page : ", page);
     this.currentPage=page;
     console.log("dans pageComments currentPage : ", this.currentPage);
@@ -182,13 +182,13 @@ export class GenreAdminComponent implements OnInit{
   pagePrevious(){
     console.log("dans pagePrevious currentPage : ", this.currentPage);
     if(this.currentPage > 0){
-      this.pageMangas(this.currentPage-1);
+      this.pagesGenre(this.currentPage-1);
     }
   }
   pageNext(){
     console.log("dans pageNext currentPage : ", this.currentPage);
     if(this.currentPage < this.lastPage-1){
-      this.pageMangas(this.currentPage+1);
+      this.pagesGenre(this.currentPage+1);
     }
   }
 

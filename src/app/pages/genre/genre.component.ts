@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+gitimport {Component, OnInit} from '@angular/core';
 import {Comment, DataGenre, Picture, User} from '../../types';
 import {MangaService} from "../../services/manga.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
