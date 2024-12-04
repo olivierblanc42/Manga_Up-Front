@@ -42,6 +42,9 @@ import { CartService } from './services/cart.service';
                 <li><a routerLink="/genres" (click)="closeMenuModale()">Genre</a></li>
                 <li><a routerLink="/authors" (click)="closeMenuModale()">Auteurs</a></li>
                 <li><a routerLink="/categories" (click)="closeMenuModale()">Catégories</a></li>
+                @if(isRoleAdmin()){
+                    <a routerLink="/admin"> Administrateur</a>
+                }
             </ul>
         </div>
     </div>
@@ -510,6 +513,9 @@ import { CartService } from './services/cart.service';
     @media (max-width: 768px) {
       .icon-menu{
         display: block;
+      }
+      .nav__box--admin{
+        display: none;
       }
    .nav__box--menu{
      display:none;
