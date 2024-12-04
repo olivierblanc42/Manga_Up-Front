@@ -31,23 +31,24 @@ import { CartService } from './services/cart.service';
   template: `
 
 <div (click)="removeDisplaySearchManga()" id="global-page">
-    <!-- nav mobile -->
-    <div class="container mx-auto">
-        <nav class="flex py-3 justify-evenly nav-mobile">
-            <ul class="flex flex-row items-center gap-x-8">
-                <li><a routerLink="/"><img src="assets/img/logo.png" alt=""></a></li>
-                <li><a class="icon-menu"><img src="assets/svg/ri_bar-chart-horizontal-fill.svg"></a></li>
-                <li><a class="icon-panier"><img src="assets/svg/carbon_shopping-cart-plus.svg"></a></li>
 
-                @if(isLogged()){
-                <li><a class="icon-user" routerLink=""><fa-icon [icon]="faUser"></fa-icon></a></li>
-                }@else {
-                <li><a class="icon-user" routerLink="/login"><fa-icon [icon]="faUserLargeSlash"></fa-icon></a></li>
+
+    <div class="menu-overlay" [class.active]="isMenuOpen">
+        <div class="menu-content">
+            <button class="close-btn" (click)="closeMenuModale()">×</button>
+            <h2>Menu</h2>
+            <ul>
+                <li><a routerLink="/" (click)="closeMenuModale()">Accueil</a></li>
+                <li><a routerLink="/genres" (click)="closeMenuModale()">Genre</a></li>
+                <li><a routerLink="/authors" (click)="closeMenuModale()">Auteurs</a></li>
+                <li><a routerLink="/categories" (click)="closeMenuModale()">Catégories</a></li>
+                @if(isRoleAdmin()){
+                    <a routerLink="/admin"> Administrateur</a>
                 }
             </ul>
-        </nav>
+        </div>
     </div>
-
+    
     <div class="banner">
         <div class="container mx-auto">
             @if(!msg){
@@ -74,97 +75,102 @@ import { CartService } from './services/cart.service';
             </div>
             }
             
-            <!-- NAV DESKTOP -->
-            <div class="nav-desktop__box-search" (scroll)="scrollFunction()">
-            <nav class="py-3 flex justify-between nav-desktop">
-                <ul class="nav-desktop-box-items flex flex-row py-1 nav__box">
-                    <li><a routerLink="/"><img class="nav__box--logo" src="assets/img/manga-up.png" alt=""></a></li>
-                    <li><a routerLink="/genres" class="flex flex-row nav__box--genres" href=""><fa-icon class="mr-1 faBook" [icon]="faBook"></fa-icon> Genres</a></li>
-                    <li><a routerLink="/authors" class="flex flex-row nav__box--auteurs" href=""><fa-icon class="mr-1 faAddressCard" [icon]="faAddressCard"></fa-icon> Auteur</a></li>
-                    <li><a routerLink="/categories" class="flex flex-row nav__box--categories" href=""><fa-icon class="mr-1 faTag" [icon]="faTag"></fa-icon>Catégories</a></li>
-                </ul>
-                <div class="mb-5">
-                    @if(msg){
-                        <div class="text-center">{{msg}}</div>
-                    }
-                </div>
-                <div class="icon__box flex flex-row items-center">
-                    @if(isRoleAdmin()){
-                        <a routerLink="/admin" class="nav__box--admin"> Administrateur</a>
-                    }
-
-                    <div id="icon__panier--box">
-                        <a routerLink="/cart" class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
-                        <span id="icon-panier-nbarticle">{{ nbArticles }}</span>
+            <!-- NAV  -->
+            <div class="nav-desktop__ box-search" (scroll)="scrollFunction()">
+                <nav class="py-3 flex justify-between nav-desktop">
+                    <ul class="nav-desktop-box-items flex flex-row py-1 nav__box">
+                        <li><a routerLink="/"><img class="nav__box--logo" src="assets/img/manga-up.png" alt=""></a></li>
+                        <li><a routerLink="/genres" class="flex flex-row nav__box--menu nav__box--genres" href=""><fa-icon class="mr-1 faBook"
+                                                                                                            [icon]="faBook"></fa-icon> Genres</a></li>
+                        <li><a routerLink="/authors" class="flex flex-row  nav__box--menu nav__box--auteurs" href=""><fa-icon
+                                class="mr-1 faAddressCard" [icon]="faAddressCard"></fa-icon> Auteurs</a></li>
+                        <li><a routerLink="/categories" class="flex  nav__box--menu flex-row nav__box--categories" href=""><fa-icon
+                                class="mr-1 faTag" [icon]="faTag"></fa-icon>Catégories</a></li>
+                    </ul>
+                    <div class="mb-5">
+                        @if(msg){
+                            <div class="text-center">{{msg}}</div>
+                        }
                     </div>
+                    <div class="icon__box flex flex-row items-center">
+                        <a class="icon-menu"><button class="menu-btn" (click)="openMenu()"><img
+                                src="assets/svg/ri_bar-chart-horizontal-fill.svg"></button></a>
+                        @if(isRoleAdmin()){
+                            <a routerLink="/admin" class="nav__box--admin"> Administrateur</a>
+                        }
 
-                    @if(isLogged()){
-                    <div type="button" (click)="userProfile($event)" class="icon-user"><fa-icon [icon]="faUser"></fa-icon></div>
-                        <div id="user-info" class="bg-white overflow-hidden shadow rounded-lg border">
-                            <div class="px-4 py-5 sm:px-6">
-                                <h3 class="text-lg leading-6 font-medium text-gray-900">
-                                    Profil de l'utilisateur
-                                </h3>
-                                <p class="mt-1 max-w-2xl text-sm text-gray-500">
-                                    Il s'agit de vos informations personnel
-                                </p>
-                            </div>
-                            <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
-                                <dl class="sm:divide-y sm:divide-gray-200">
-                                    <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                        <dt class="text-sm font-medium text-gray-500">
-                                            Nom complet 
-                                        </dt>
-                                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                            {{user?.firstname}} {{user?.lastname}}
-                                        </dd>
-                                    </div>
-                                    <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                        <dt class="text-sm font-medium text-gray-500">
-                                            Adresse email
-                                        </dt>
-                                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                            {{user?.email}}
-                                        </dd>
-                                    </div>
-                                    <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                        <dt class="text-sm font-medium text-gray-500">
-                                            Nom d'utilisateur
-                                        </dt>
-                                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                            {{user?.username}}
-                                        </dd>
-                                    </div>
-                                    <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                        <dt class="text-sm font-medium text-gray-500">
-                                            Adresse
-                                        </dt>
-                                        <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                                            {{user?.address?.line1}}<br>
-                                            {{user?.address?.postalCode}} {{user?.address?.city}}, {{user?.address?.country}}
-                                        </dd>
-                                    </div>
-                                    <div class="py-3 grid gap-4 px-6 text-center">
-                                        <a class="user-info-logout" routerLink="/login" (click)="logout()">Déconnexion</a>
-                                    </div>
-                                </dl>
-                            </div>
+                        <div id="icon__panier--box">
+                            <a routerLink="/cart" class="icon-panier"><fa-icon [icon]="faCartShopping"></fa-icon></a>
+                            <span id="icon-panier-nbarticle">{{ nbArticles }}</span>
                         </div>
-                    }@else {
-                        <a class="icon-user" routerLink="/login"><fa-icon [icon]="faUserLargeSlash"></fa-icon></a>
-                    }
-                </div>
-            </nav>
+
+                        @if(isLogged()){
+                            <div type="button" (click)="userProfile($event)" class="icon-user"><fa-icon [icon]="faUser"></fa-icon></div>
+                            <div id="user-info" class="bg-white overflow-hidden shadow rounded-lg border">
+                                <div class="px-4 py-5 sm:px-6">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900">
+                                        Profil de l'utilisateur
+                                    </h3>
+                                    <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                                        Il s'agit de vos informations personnel
+                                    </p>
+                                </div>
+                                <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+                                    <dl class="sm:divide-y sm:divide-gray-200">
+                                        <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                Nom complet
+                                            </dt>
+                                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                {{user?.firstname}} {{user?.lastname}}
+                                            </dd>
+                                        </div>
+                                        <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                Adresse email
+                                            </dt>
+                                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                {{user?.email}}
+                                            </dd>
+                                        </div>
+                                        <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                Nom d'utilisateur
+                                            </dt>
+                                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                {{user?.username}}
+                                            </dd>
+                                        </div>
+                                        <div class="py-3 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                            <dt class="text-sm font-medium text-gray-500">
+                                                Adresse
+                                            </dt>
+                                            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                                {{user?.address?.line1}}<br>
+                                                {{user?.address?.postalCode}} {{user?.address?.city}}, {{user?.address?.country}}
+                                            </dd>
+                                        </div>
+                                        <div class="py-3 grid gap-4 px-6 text-center">
+                                            <a class="user-info-logout" routerLink="/login" (click)="logout()">Déconnexion</a>
+                                        </div>
+                                    </dl>
+                                </div>
+                            </div>
+                        }@else {
+                            <a class="icon-user" routerLink="/login"><fa-icon [icon]="faUserLargeSlash"></fa-icon></a>
+                        }
+                    </div>
+                </nav>
 
 
-            <div class="search-div">
-                <form (submit)="searchManga($event)">
-                <div class="flex flex-row">
-                    <input type="text" [(ngModel)]="manga" name="manga" placeholder="Search.." >
-                    <button type="submit" class="ml-1 search-btn"><fa-icon [icon]="faSearch"></fa-icon></button>
+                <div class="search-div">
+                    <form (submit)="searchManga($event)">
+                        <div class="flex flex-row">
+                            <input type="text" [(ngModel)]="manga" name="manga" placeholder="Search..">
+                            <button type="submit" class="ml-1 search-btn"><fa-icon [icon]="faSearch"></fa-icon></button>
+                        </div>
+                    </form>
                 </div>
-                </form>
-            </div>
             </div>
             <ui-flash-message></ui-flash-message>
         </div>
@@ -173,7 +179,7 @@ import { CartService } from './services/cart.service';
 
     <router-outlet></router-outlet>
 
-    <!-- Footer mobile -->
+    <!-- Footer -->
     <footer class="bg-dark-up py-3 text-white">
     <div class="flex flex-col md:flex-row md:px-10 justify-around items-center">
         <div class="flex flex-col w-1/3">
@@ -262,6 +268,7 @@ import { CartService } from './services/cart.service';
         position:absolute;
         top: 4rem;
         right: 6.5rem;
+      z-index: 99;
     }
 
     .nav-desktop-box-mangas-find{
@@ -271,20 +278,20 @@ import { CartService } from './services/cart.service';
     }
 
     .nav-desktop__box-search{
-        transition: 0.4s; /* Adds a transition effect when the padding is decreased */
-        position: fixed; /* Sticky/fixed navbar */
+        transition: 0.4s; 
+       /* position: fixed; */
         padding: 0 0 2rem 0;
         width: 100%;
-        top: 0; /* At the top */
+        top: 0; 
         z-index: 99;
     }
 
-    .nav-desktop {
+    /*.nav-desktop {
         display: none;
     }
     .footer-desktop {
       display: none;
-    }
+    }*/
     input {
       color: black;
     }
@@ -330,13 +337,45 @@ import { CartService } from './services/cart.service';
         stroke: blue; 
     }
 
+    .search-div {
+      width: 50%;
+      overflow: hidden;
+      margin: 0 auto;
+      input {
+        width: 95%;
+        padding: 2px 24px 2px 12px;
+        height: 32px;
+        border-radius: 30px;
+        background-color: transparent;
+        color: white;
+        border: solid 2px;
+        border-top-right-radius: 0%;
+        border-bottom-right-radius: 0%;
+        border-color: #E7E08B;
+      }
+      input:focus {
+        outline: #E7E08B;
+      }
+      button {
+        cursor: pointer;
+      }
+    }
+    .search-btn {
+      border: solid 2px;
+      border-radius: 10px;
+      border-top-left-radius: 0%;
+      border-bottom-left-radius: 0%;
+      border-left: none;
+      border-color: #E7E08B;
+      margin-left: 0px;
+      padding-right: 4px;
+      padding-left: 4px;
+    }
     @media (min-width: 1163px) {
       .footer-mobile {
         display: none;
       }
-      .nav-mobile {
-        display: none;
-      }
+  
       .nav-desktop {
         display: flex;
         margin: 0 5rem;
@@ -390,6 +429,105 @@ import { CartService } from './services/cart.service';
         padding-left: 4px;
       }
     }
+    .icon-menu{
+      display:none;
+    }
+
+    /* Bouton Menu */
+    .menu-btn {
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Overlay de la modale */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .menu-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Contenu du menu */
+    .menu-content {
+      color: #e7e08b;
+      background-color: #1d1d1d;
+      width: 80%;
+      max-width: 400px;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      a{
+        color:#e7e08b !important;
+      }
+    }
+    .menu-content h2 {
+      margin-bottom: 20px;
+    }
+
+    .menu-content ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .menu-content li {
+      margin: 10px 0;
+    }
+
+    .menu-content a {
+      text-decoration: none;
+      font-size: 18px;
+      color: #333;
+      transition: color 0.3s;
+    }
+
+    .menu-content a:hover {
+      color: #007bff;
+    }
+
+    /* Bouton de fermeture */
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
+    }
+
+    .close-btn:hover {
+      color: #ff0000;
+    }
+
+    /* Affichage uniquement pour mobile */
+    @media (max-width: 768px) {
+      .icon-menu{
+        display: block;
+      }
+      .nav__box--admin{
+        display: none;
+      }
+   .nav__box--menu{
+     display:none;
+   }
+    }
+    
   `]
 })
 
@@ -516,7 +654,15 @@ export class AppComponent {
     log(obj: Object, msg: string=""){
         console.log(msg, obj);
     }
+    isMenuOpen = false;
 
+    openMenu(): void {
+        this.isMenuOpen = true;
+    }
+
+    closeMenuModale(): void {
+        this.isMenuOpen = false;
+    }
 
 }
 

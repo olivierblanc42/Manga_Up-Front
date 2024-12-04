@@ -235,8 +235,9 @@ export class MangaService {
             .catch((error) => {
                 console.error('Error deleting category:', error);
             });
-
     }
+
+
 
     updateManga(mangaDto: UpdateMangaDto): Observable<UpdateMangaDto> {
         const url = `${this.urlAction}/${mangaDto.id}`;

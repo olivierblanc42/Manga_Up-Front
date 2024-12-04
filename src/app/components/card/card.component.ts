@@ -6,7 +6,6 @@ import { Manga} from "../../types";
 import {Picture} from "../../types";
 import { ActivatedRoute } from '@angular/router';
 
-
 @Component({
     selector: 'ui-card',
     standalone: true,
@@ -33,11 +32,8 @@ import { ActivatedRoute } from '@angular/router';
         }
       
       }
-
-     
-        
         .card-genre {
-          width: 310px;
+          width: 250px;
           height: 268px;
           transition: transform 0.3s ease, box-shadow 0.3s ease;
           border-radius: 15px;
